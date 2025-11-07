@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend Chat</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
+        
+        .login-screen, .container { width: 100%; max-width: 500px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 30px 20px; text-align: center; }
+        .login-screen h1 { font-size: 32px; margin-bottom: 10px; color: #333; }
+        .login-screen p { font-size: 16px; color: #666; margin-bottom: 25px; }
+        
+        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .login-btn { padding: 15px 20px; background: #667eea; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .login-btn:hover { background: #764ba2; transform: scale(1.05); }
+        
+        .container { display: none; flex-direction: column; height: 90vh; max-height: 800px; padding: 0; }
+        .container.show { display: flex; }
+        
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 20px 20px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 24px; font-weight: bold; }
+        .header-title { flex-grow: 1; }
+        .logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+        
+        .tabs { display: flex; gap: 6px; padding: 10px; background: #f0f0f0; border-bottom: 2px solid #e0e0e0; overflow-x: auto; }
+        .tab { padding: 10px 14px; background: white; border: 2px solid #ddd; border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 13px; white-space: nowrap; transition: all 0.3s; }
+        .tab.active { background: #667eea; color: white; border-color: #667eea; }
+        
+        .chat-display { flex: 1; overflow-y: auto; padding: 15px; background: #fafafa; }
+        .message { margin-bottom: 12px; display: flex; flex-direction: column; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message.own { align-items: flex-end; }
+        
+        .message-bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; word-wrap: break-word; font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .message.own .message-bubble { background: #667eea; color: white; border-bottom-right-radius: 4px; }
+        .message.esther .message-bubble { background: #667eea; color: white; border-bottom-left-radius: 4px; }
+        .message.valley .message-bubble { background: #ff6b9d; color: white; border-bottom-left-radius: 4px; }
+        .message.amaaya .message-bubble { background: #4ecdc4; color: white; border-bottom-left-radius: 4px; }
+        .message.mama .message-bubble { background: #95e1d3; color: white; border-bottom-left-radius: 4px; }
+        .message.mummy .message-bubble { background: #f38181; color: white; border-bottom-left-radius: 4px; }
+        .message.hilary .message-bubble { background: #aa96da; color: white; border-bottom-left-radius: 4px; }
+        .message.nan .message-bubble { background: #fcbad3; color: white; border-bottom-left-radius: 4px; }
+        .message.rishy .message-bubble { background: #ffd1b3; color: white; border-bottom-left-radius: 4px; }
+        .message.poppy .message-bubble { background: #a8e6cf; color: white; border-bottom-left-radius: 4px; }
+        .message.sienna .message-bubble { background: #c7ceea; color: white; border-bottom-left-radius: 4px; }
+        
+        .message-sender { font-size: 12px; color: #999; margin: 4px 0; font-weight: 600; }
+        .message.own .message-sender { text-align: right; }
+        
+        .input-area { padding: 12px; background: white; border-top: 2px solid #e0e0e0; display: flex; flex-direction: column; gap: 8px; }
+        
+        .emoji-picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 12px; background: #fff3cd; border-radius: 12px; max-height: 200px; overflow-y: auto; border: 2px solid #ffc107; }
+        .emoji-option { font-size: 28px; cursor: pointer; text-align: center; padding: 8px; border-radius: 8px; transition: all 0.2s; user-select: none; }
+        .emoji-option:hover { background: white; transform: scale(1.2); }
+        
+        .compose-area { background: #f9f9f9; border: 2px solid #e0e0e0; border-radius: 12px; padding: 12px; }
+        .compose-title { font-weight: bold; font-size: 13px; color: #333; margin-bottom: 8px; }
+        .compose-textarea { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px; margin-bottom: 8px; }
+        .compose-textarea:focus { outline: none; border-color: #667eea; }
+        .compose-buttons { display: flex; gap: 8px; }
+        .compose-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .compose-send { background: #667eea; color: white; }
+        .compose-clear { background: #ccc; color: #333; }
+        
+        .input-container { display: flex; gap: 8px; }
+        .input-field { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 15px; font-family: inherit; }
+        .input-field:focus { outline: none; border-color: #667eea; }
+        
+        .send-btn { background: #667eea; color: white; border: none; padding: 12px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .send-btn:hover { background: #764ba2; }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+        
+        .emoji-btn, .mic-btn, .compose-btn-toggle { border: none; padding: 10px 14px; border-radius: 16px; font-size: 20px; cursor: pointer; transition: all 0.3s; }
+        .emoji-btn { background: #fff; border: 2px solid #ffc107; color: #333; }
+        .emoji-btn:hover { background: #ffc107; transform: scale(1.1); }
+        .mic-btn { background: #ff6b6b; color: white; }
+        .mic-btn:hover { background: #ff5252; transform: scale(1.1); }
+        .mic-btn.listening { background: #ff9800; animation: micPulse 1s infinite; }
+        @keyframes micPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        
+        .compose-btn-toggle { background: #9c27b0; color: white; margin-right: 8px; }
+        .compose-btn-toggle:hover { background: #7b1fa2; transform: scale(1.1); }
+        
+        .empty { text-align: center; color: #999; padding: 40px 20px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="login">
+        <h1>💬 Chat</h1>
+        <p>Who are you?</p>
+        <div class="login-buttons">
+            <button class="login-btn" onclick="login('esther')">Esther</button>
+            <button class="login-btn" onclick="login('valley')">Valley</button>
+            <button class="login-btn" onclick="login('amaaya')">Amaaya</button>
+            <button class="login-btn" onclick="login('mama')">Mama</button>
+            <button class="login-btn" onclick="login('mummy')">Mummy</button>
+            <button class="login-btn" onclick="login('hilary')">Hilary</button>
+            <button class="login-btn" onclick="login('nan')">Nan</button>
+            <button class="login-btn" onclick="login('rishy')">Rishy</button>
+            <button class="login-btn" onclick="login('poppy')">Poppy</button>
+            <button class="login-btn" onclick="login('sienna')">Sienna</button>
+        </div>
+    </div>
+
+    <div class="container" id="app">
+        <div class="header">
+            <div class="header-title">💬 <span id="myname"></span></div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="tabs" id="tabs"></div>
+        <div class="chat-display" id="chat"><div class="empty">Loading...</div></div>
+        
+        <div class="input-area">
+            <div id="emojiPicker" class="emoji-picker" style="display: none;"></div>
+            <div id="composeArea" class="compose-area" style="display: none;">
+                <div class="compose-title">✍️ Compose</div>
+                <textarea class="compose-textarea" id="composeText" placeholder="Write message..."></textarea>
+                <div class="compose-buttons">
+                    <button class="compose-btn compose-send" onclick="sendFromCompose()">Send</button>
+                    <button class="compose-btn compose-clear" onclick="clearCompose()">Clear</button>
+                </div>
+            </div>
+            <div class="input-container">
+                <button class="compose-btn-toggle" onclick="toggleCompose()">✍️</button>
+                <button class="emoji-btn" onclick="toggleEmojiPicker()">😀</button>
+                <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()">🎤</button>
+                <input type="text" class="input-field" id="msg" placeholder="Type message..." disabled>
+                <button class="send-btn" id="sendBtn" onclick="send()" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const EMOJIS = ['😀', '😂', '😍', '🥰', '😎', '🤗', '😭', '😤', '🤔', '🤐', '🤨', '😏', '🎉', '🎊', '🎈', '🎁', '🎀', '🎂', '🍰', '🍪', '🍩', '🍕', '🍔', '🍟', '☕', '🍹', '👍', '👏', '🎨', '🎭', '🎪', '🎬', '🎤', '🎸', '🎹', '🎺', '🎮', '🚗', '🚀', '🌟', '⭐', '✨', '💫', '🔥', '🌈', '☀️', '🌤️', '⛅', '☁️', '🌦️', '🌧️', '🐱', '🐶', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🦄', '🐝', '🦋', '🐛', '🐢', '🐍', '🦎', '🐙', '🦑', '🐠', '🐟', '🐬', '🐳', '🦈'];
+
+        const USERS = {
+            'esther': 'Esther',
+            'valley': 'Valley',
+            'amaaya': 'Amaaya',
+            'mama': 'Mama',
+            'mummy': 'Mummy',
+            'hilary': 'Hilary',
+            'nan': 'Nan',
+            'rishy': 'Rishy',
+            'poppy': 'Poppy',
+            'sienna': 'Sienna'
+        };
+
+        let currentUser = null;
+        let currentChat = 'group';
+        let allChats = [];
+        let messages = {};
+        let ws = null;
+        let connected = false;
+        let showEmojiPicker = false;
+        let recognition = null;
+        let showCompose = false;
+        let drafts = {};
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+            recognition.onstart = () => { document.getElementById('micBtn').classList.add('listening'); };
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('msg').value += transcript;
+            };
+            recognition.onend = () => { document.getElementById('micBtn').classList.remove('listening'); };
+            recognition.onerror = () => { document.getElementById('micBtn').classList.remove('listening'); };
+        }
+
+        function toggleVoiceInput() {
+            if (!recognition) { alert('Voice not supported'); return; }
+            if (document.getElementById('micBtn').classList.contains('listening')) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        function getAvailableChats(user) {
+            const chats = [];
+            if (['esther', 'valley', 'amaaya', 'mama', 'mummy', 'hilary'].includes(user)) {
+                chats.push('group');
+            }
+            if (user === 'esther') {
+                chats.push('esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna');
+            } else if (['mama', 'mummy', 'hilary', 'nan', 'rishy', 'poppy', 'sienna'].includes(user)) {
+                chats.push('esther-' + user);
+            }
+            return chats;
+        }
+
+        function getChatName(chatId) {
+            if (chatId === 'group') return '👥 Group';
+            const parts = chatId.split('-');
+            const other = parts[0] === currentUser ? parts[1] : parts[0];
+            return '💬 ' + USERS[other];
+        }
+
+        function login(user) {
+            currentUser = user;
+            localStorage.setItem('user', user);
+            allChats = getAvailableChats(user);
+            currentChat = allChats[0];
+            allChats.forEach(chat => {
+                if (!messages[chat]) messages[chat] = [];
+                const draft = localStorage.getItem('draft_' + chat);
+                if (draft) drafts[chat] = draft;
+            });
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('app').classList.add('show');
+            document.getElementById('myname').textContent = USERS[user];
+            renderTabs();
+            connect();
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            location.reload();
+        }
+
+        function connect() {
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(proto + '//' + location.host);
+            ws.onopen = () => {
+                connected = true;
+                document.getElementById('msg').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+            };
+            ws.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                if (data.type === 'load_messages') {
+                    messages = data.messages;
+                    render();
+                } else if (data.type === 'message') {
+                    const chatId = data.data.chatId;
+                    if (!messages[chatId]) messages[chatId] = [];
+                    messages[chatId].push(data.data);
+                    if (chatId === currentChat) render();
+                }
+            };
+            ws.onclose = () => {
+                connected = false;
+                setTimeout(connect, 3000);
+            };
+        }
+
+        function renderTabs() {
+            const div = document.getElementById('tabs');
+            div.innerHTML = '';
+            allChats.forEach(chatId => {
+                const btn = document.createElement('button');
+                btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
+                btn.textContent = getChatName(chatId);
+                btn.onclick = () => {
+                    currentChat = chatId;
+                    renderTabs();
+                    render();
+                    showEmojiPicker = false;
+                    document.getElementById('emojiPicker').style.display = 'none';
+                };
+                div.appendChild(btn);
+            });
+        }
+
+        function renderEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            picker.innerHTML = '';
+            EMOJIS.forEach(emoji => {
+                const btn = document.createElement('div');
+                btn.className = 'emoji-option';
+                btn.textContent = emoji;
+                btn.onclick = () => {
+                    document.getElementById('msg').value += emoji;
+                    document.getElementById('msg').focus();
+                };
+                picker.appendChild(btn);
+            });
+        }
+
+        function toggleEmojiPicker() {
+            showEmojiPicker = !showEmojiPicker;
+            document.getElementById('emojiPicker').style.display = showEmojiPicker ? 'grid' : 'none';
+        }
+
+        function toggleCompose() {
+            showCompose = !showCompose;
+            document.getElementById('composeArea').style.display = showCompose ? 'block' : 'none';
+            if (showCompose) {
+                document.getElementById('composeText').focus();
+                if (drafts[currentChat]) {
+                    document.getElementById('composeText').value = drafts[currentChat];
+                }
+            }
+        }
+
+        function sendFromCompose() {
+            const text = document.getElementById('composeText').value.trim();
+            if (!text || !connected) return;
+            const msg = { type: 'new_message', user: currentUser, chatId: currentChat, text };
+            ws.send(JSON.stringify(msg));
+            document.getElementById('composeText').value = '';
+            delete drafts[currentChat];
+            localStorage.removeItem('draft_' + currentChat);
+            showCompose = false;
+            document.getElementById('composeArea').style.display = 'none';
+        }
+
+        function clearCompose() {
+            document.getElementById('composeText').value = '';
+            delete drafts[currentChat];
+            localStorage.removeItem('draft_' + currentChat);
+        }
+
+        document.addEventListener('input', (e) => {
+            if (e.target.id === 'composeText') {
+                const text = e.target.value;
+                drafts[currentChat] = text;
+                if (text) {
+                    localStorage.setItem('draft_' + currentChat, text);
+                } else {
+                    localStorage.removeItem('draft_' + currentChat);
+                }
+            }
+        });
+
+        function send() {
+            const inp = document.getElementById('msg');
+            const text = inp.value.trim();
+            if (!text || !connected) return;
+            const msg = { type: 'new_message', user: currentUser, chatId: currentChat, text };
+            ws.send(JSON.stringify(msg));
+            inp.value = '';
+            showEmojiPicker = false;
+            document.getElementById('emojiPicker').style.display = 'none';
+        }
+
+        function render() {
+            const div = document.getElementById('chat');
+            div.innerHTML = '';
+            const msgs = messages[currentChat] || [];
+            if (msgs.length === 0) {
+                div.innerHTML = '<div class="empty">No messages yet 💬</div>';
+                return;
+            }
+            msgs.forEach(m => {
+                const d = document.createElement('div');
+                d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
+                d.innerHTML = '<div class="message-sender">' + USERS[m.user] + '</div><div class="message-bubble">' + m.text + '</div>';
+                div.appendChild(d);
+            });
+            div.scrollTop = div.scrollHeight;
+        }
+
+        document.getElementById('msg').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') send();
+        });
+
+        renderEmojiPicker();
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) login(savedUser);
+    </script>
+</body>
+</html>
