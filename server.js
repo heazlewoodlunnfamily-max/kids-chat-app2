@@ -105,7 +105,7 @@ const html = `<!DOCTYPE html>
         .hangman-word { font-size: 28px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 12px 0; font-family: monospace; color: #a0e7e5; }
         .hangman-stage { font-size: 48px; text-align: center; margin: 8px 0; }
         .story-input { width: 100%; padding: 10px; border: 2px solid #7c8fff; border-radius: 8px; font-size: 13px; margin-bottom: 8px; background: #f0f2f7; color: #1a1f3a; resize: vertical; min-height: 40px; }
-        .story-line { background: rgba(90, 95, 223, 0.2); padding: 8px; border-radius: 8px; margin: 6px 0; border-left: 3px solid #9a5fff; color: #d4dcff; }
+        .story-line { background: rgba(61, 78, 200, 0.2); padding: 10px 12px; border-radius: 8px; margin: 8px 0; border-left: 4px solid #7c8fff; color: #d4dcff; font-size: 14px; line-height: 1.6; }
         .generator-btn { width: 100%; padding: 8px; background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 8px 0; }
         .rps-display { font-size: 48px; text-align: center; margin: 12px 0; }
         .dice-display { text-align: center; margin: 12px 0; }
@@ -205,11 +205,11 @@ const html = `<!DOCTYPE html>
                 </div>
 
                 <div id="storyContainer" style="display: none;">
-                    <div class="game-status">Write a Story Together!</div>
-                    <div id="storyText" style="background: rgba(26, 47, 95, 0.4); padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 100px; overflow-y: auto; font-size: 12px; color: #c7d2fe; border: 1px solid rgba(61, 78, 200, 0.5);"></div>
-                    <textarea id="storyLine" class="story-input" placeholder="Add your line..." maxlength="150"></textarea>
-                    <button class="game-btn" style="width: 100%;" onclick="window.addStoryLine()">Add Line</button>
-                    <button class="generator-btn" onclick="window.generateStoryIdea()">💡 Get Story Idea</button>
+                    <div class="game-status" style="font-size: 18px; margin-bottom: 20px;">📖 Write a Story Together!</div>
+                    <div id="storyText" style="background: linear-gradient(135deg, rgba(45, 74, 127, 0.3), rgba(90, 95, 223, 0.2)); padding: 15px; border-radius: 12px; margin-bottom: 15px; max-height: 350px; min-height: 200px; overflow-y: auto; font-size: 16px; color: #d4dcff; border: 2px solid rgba(124, 143, 255, 0.5); line-height: 1.8;"></div>
+                    <textarea id="storyLine" class="story-input" placeholder="Add your line to the story..." maxlength="150" style="font-size: 14px; min-height: 60px;"></textarea>
+                    <button class="game-btn" style="width: 100%; padding: 14px; font-size: 14px;" onclick="window.addStoryLine()">📖 Add Line</button>
+                    <button class="generator-btn" style="padding: 12px; font-size: 14px;" onclick="window.generateStoryIdea()">💡 Get Story Idea</button>
                 </div>
             </div>
             <div class="input-container">
@@ -467,6 +467,30 @@ const html = `<!DOCTYPE html>
                     messages[data.data.chatId].push(data.data);
                     localStorage.setItem('chat_' + data.data.chatId, JSON.stringify(messages[data.data.chatId]));
                     if (data.data.chatId === currentChat) window.render();
+                } else if (data.type === 'game_state') {
+                    // Sync game state from other player
+                    const gameData = data.data;
+                    if (gameData.game === 'story') {
+                        storyLines = gameData.storyLines;
+                        document.getElementById('storyText').innerHTML = '';
+                        storyLines.forEach(line => {
+                            const p = document.createElement('div');
+                            p.className = 'story-line';
+                            const parts = line.split(': ');
+                            const playerName = parts[0];
+                            const playerLine = parts.slice(1).join(': ');
+                            p.innerHTML = '<strong style="color: #a0e7e5;">' + playerName + ':</strong> <span style="color: #d4dcff;">' + playerLine + '</span>';
+                            document.getElementById('storyText').appendChild(p);
+                        });
+                        document.getElementById('storyText').scrollTop = document.getElementById('storyText').scrollHeight;
+                    } else if (gameData.game === 'hangman') {
+                        hangmanWord = gameData.word;
+                        hangmanGuessed = gameData.guessed;
+                        hangmanWrong = gameData.wrong;
+                        hangmanGameActive = gameData.active;
+                        hangmanSetter = gameData.setter;
+                        window.renderHangmanGame();
+                    }
                 } else if (data.type === 'rps_reveal') {
                     rpsChoices[data.user] = data.choice;
                     if (Object.keys(rpsChoices).length >= 2) {
@@ -751,6 +775,9 @@ const html = `<!DOCTYPE html>
             window.renderHangmanGame();
             
             if (connected) {
+                // Broadcast hangman state to all players for real-time sync
+                ws.send(JSON.stringify({ type: 'game_state', data: { game: 'hangman', word: hangmanWord, guessed: hangmanGuessed, wrong: hangmanWrong, active: hangmanGameActive, setter: hangmanSetter } }));
+                
                 let status = '🎯 ' + currentUser + ' guessed: ' + letter + ' | ' + HANGMAN_STAGES[Math.min(hangmanWrong, 6)] + ' | ' + display + ' | Wrong: ' + hangmanWrong + '/6';
                 if (won) {
                     status = '🎯 WON! The word was: ' + hangmanWord + ' ✓ (Guessers win!)';
@@ -772,6 +799,9 @@ const html = `<!DOCTYPE html>
                 document.getElementById('storyText').innerHTML = '';
             }
             document.getElementById('storyLine').value = '';
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '📖 ' + currentUser + ' started a Story!' }));
+            }
         };
 
         window.addStoryLine = function() {
@@ -781,12 +811,14 @@ const html = `<!DOCTYPE html>
             const storyDiv = document.getElementById('storyText');
             const p = document.createElement('div');
             p.className = 'story-line';
-            p.textContent = storyLines[storyLines.length - 1];
+            p.innerHTML = '<strong style="color: #a0e7e5;">' + currentUser + ':</strong> <span style="color: #d4dcff;">' + line + '</span>';
             storyDiv.appendChild(p);
             storyDiv.scrollTop = storyDiv.scrollHeight;
             document.getElementById('storyLine').value = '';
             if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '📖 ' + line }));
+                // Broadcast story state to all players
+                ws.send(JSON.stringify({ type: 'game_state', data: { game: 'story', storyLines: storyLines } }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '📖 ' + currentUser + ': ' + line }));
             }
         };
 
@@ -917,6 +949,13 @@ wss.on('connection', (ws) => {
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({ type: 'message', data: newMsg }));
+          }
+        });
+      } else if (msg.type === 'game_state') {
+        // Broadcast game state to all clients so everyone sees the same thing
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'game_state', data: msg.data }));
           }
         });
       } else if (msg.type === 'rps_reveal') {
