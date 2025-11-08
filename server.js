@@ -13,266 +13,206 @@ const html = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
-    <title>✨ Cosmic Anime Chat ✨</title>
+    <title>✨ Anime Chat ✨</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 10px #FF00FF, 0 0 20px #00FFFF; } 50% { box-shadow: 0 0 20px #FF00FF, 0 0 40px #00FFFF; } }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        @keyframes shimmer { 0%, 100% { text-shadow: 0 0 10px #FF00FF; } 50% { text-shadow: 0 0 20px #00FFFF; } }
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         html { height: 100%; }
-        body { height: 100%; overflow: hidden; font-family: 'Arial Black', sans-serif; -webkit-user-select: none; user-select: none; background: #000814; }
-        .stars { position: fixed; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
-        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: pulse 3s infinite; }
-        .login-screen { position: fixed; width: 100vw; height: 100vh; background: radial-gradient(circle at 20% 50%, #001a4d 0%, #000814 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; z-index: 100; }
-        .login-screen h1 { font-size: 54px; margin-bottom: 10px; color: #00FFFF; font-weight: 900; text-shadow: 0 0 20px #00FFFF, 0 0 40px #FF00FF; animation: glow 2s infinite; }
-        .login-screen p { font-size: 18px; color: #FFD700; margin-bottom: 30px; font-weight: 800; text-shadow: 0 0 10px #FFD700; }
-        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px; }
-        .login-btn { padding: 16px; background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 50%, #FFD700 100%); color: #000814; border: none; border-radius: 20px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px #FF00FF; transition: all 0.3s; }
-        .login-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px #00FFFF; }
+        body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(90deg, #FF1493 0%, #FFD700 25%, #00FF00 50%, #00BFFF 75%, #FF69B4 100%); }
+        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(90deg, #FF1493 0%, #FFD700 25%, #00FF00 50%, #00BFFF 75%, #FF69B4 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
+        .login-screen h1 { font-size: 48px; margin-bottom: 15px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .login-screen p { font-size: 16px; color: white; margin-bottom: 30px; font-weight: bold; }
+        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 360px; }
+        .login-btn { padding: 14px; background: white; color: #FF1493; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
         .login-btn:active { transform: scale(0.95); }
-        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #001a4d 0%, #000814 100%); display: none; flex-direction: column; z-index: 50; }
+        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #FF1493 0%, #FFD700 25%, #00FF00 50%, #00BFFF 75%, #FF69B4 100%); display: none; flex-direction: column; z-index: 50; }
         .container.show { display: flex; }
-        .header { background: linear-gradient(90deg, #FF00FF 0%, #00FFFF 50%, #FFD700 100%); color: #000814; padding: 16px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 900; flex-shrink: 0; gap: 8px; text-shadow: 0 0 10px rgba(255,255,255,0.5); box-shadow: 0 8px 25px #FF00FF; }
-        #myname { font-size: 22px; text-transform: uppercase; letter-spacing: 2px; }
-        .logout-btn { background: rgba(0,8,20,0.7); border: 2px solid #FFD700; color: #FFD700; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 900; text-transform: uppercase; }
-        .dark-mode-btn { background: rgba(0,8,20,0.7); border: 2px solid #00FFFF; color: #00FFFF; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 900; }
-        .tabs { display: flex; gap: 8px; padding: 12px; background: rgba(0,8,20,0.8); border-bottom: 3px solid #00FFFF; overflow-x: auto; flex-shrink: 0; box-shadow: 0 0 15px #00FFFF; }
-        .tab { padding: 10px 18px; background: rgba(255,0,255,0.2); border: 2px solid #FF00FF; border-radius: 15px; cursor: pointer; font-weight: 900; font-size: 13px; white-space: nowrap; color: #00FFFF; flex-shrink: 0; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
-        .tab:hover { background: rgba(0,255,255,0.2); border-color: #00FFFF; box-shadow: 0 0 10px #00FFFF; }
-        .tab.active { background: linear-gradient(135deg, #FF00FF, #00FFFF); color: #000814; border-color: #FFD700; box-shadow: 0 0 20px #00FFFF; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; background: rgba(0,8,20,0.6); position: relative; }
-        .chat-display::before { content: ''; position: fixed; top: 90px; right: -30px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(255,0,255,0.1) 0%, transparent 70%); pointer-events: none; z-index: 1; border-radius: 50%; }
-        .message { margin-bottom: 14px; display: flex; flex-direction: column; animation: float 3s infinite; position: relative; z-index: 2; }
+        .header { background: white; color: #FF1493; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; flex-shrink: 0; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        #myname { font-size: 18px; text-transform: uppercase; }
+        .logout-btn { background: #FF1493; color: white; border: none; color: white; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .tabs { display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,0.3); border-bottom: 2px solid white; overflow-x: auto; flex-shrink: 0; }
+        .tab { padding: 8px 14px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: #FF1493; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
+        .tab:hover { opacity: 0.8; }
+        .tab.active { background: #FFD700; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 12px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.4); position: relative; }
+        .chat-display::before { content: ''; position: fixed; bottom: 0; right: 0; width: 280px; height: 280px; background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><circle cx="150" cy="150" r="150" fill="rgba(0,0,0,0.05)"/></svg>'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; z-index: 0; opacity: 0.08; }
+        .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
-        .message-content { display: flex; gap: 10px; align-items: flex-end; }
-        .message.own .message-content { flex-direction: row-reverse; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,255,255,0.2); border: 2px solid #00FFFF; box-shadow: 0 0 10px #00FFFF; }
-        .message-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; word-wrap: break-word; font-size: 13px; font-weight: 700; line-height: 1.4; border: 2px solid; }
-        .message.own .message-bubble { background: linear-gradient(135deg, #FF00FF, #FF1493); color: #FFFFFF; border-color: #FFD700; box-shadow: 0 0 15px #FF00FF; text-transform: uppercase; }
-        .message.esther .message-bubble { background: linear-gradient(135deg, #1E90FF, #00BFFF); color: white; border-color: #00FFFF; box-shadow: 0 0 12px #1E90FF; }
-        .message.valley .message-bubble { background: linear-gradient(135deg, #FF1493, #FF69B4); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF1493; }
-        .message.amaaya .message-bubble { background: linear-gradient(135deg, #00CED1, #40E0D0); color: #000814; border-color: #FFD700; box-shadow: 0 0 12px #00CED1; }
-        .message.mama .message-bubble { background: linear-gradient(135deg, #32CD32, #00FF00); color: #000814; border-color: #FFD700; box-shadow: 0 0 12px #00FF00; }
-        .message.mummy .message-bubble { background: linear-gradient(135deg, #FF4500, #FF6347); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF4500; }
-        .message.hilary .message-bubble { background: linear-gradient(135deg, #9370DB, #BA55D3); color: white; border-color: #FFD700; box-shadow: 0 0 12px #9370DB; }
-        .message.nan .message-bubble { background: linear-gradient(135deg, #FF00FF, #FF1493); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF00FF; }
-        .message.rishy .message-bubble { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000814; border-color: #FF00FF; box-shadow: 0 0 12px #FFD700; }
-        .message.poppy .message-bubble { background: linear-gradient(135deg, #00FF7F, #32CD32); color: #000814; border-color: #FFD700; box-shadow: 0 0 12px #00FF7F; }
-        .message.sienna .message-bubble { background: linear-gradient(135deg, #FF6347, #DC143C); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF6347; }
-        .message.penelope .message-bubble { background: linear-gradient(135deg, #FF00FF, #FF69B4); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF00FF; }
-        .message-sender { font-size: 12px; color: #00FFFF; margin: 0 0 4px 0; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px #00FFFF; }
-        .message.own .message-sender { text-align: right; color: #FFD700; }
-        .input-area { background: rgba(0,8,20,0.95); border-top: 3px solid #FF00FF; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; box-shadow: 0 -8px 25px #FF00FF; }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 12px; background: rgba(255,215,0,0.1); border-radius: 15px; max-height: 140px; overflow-y: auto; border: 2px solid #FFD700; }
+        .message-sender { font-size: 11px; color: #666; margin: 0 0 4px 0; font-weight: bold; text-transform: uppercase; }
+        .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 14px; word-wrap: break-word; font-size: 13px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.3); }
+        .message.own .message-bubble { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; align-self: flex-end; }
+        .message.esther .message-bubble { background: rgba(0,200,255,0.8); color: white; }
+        .message.valley .message-bubble { background: rgba(255,20,147,0.8); color: white; }
+        .message.amaaya .message-bubble { background: rgba(50,205,50,0.8); color: white; }
+        .message.mama .message-bubble { background: rgba(255,215,0,0.8); color: #333; }
+        .message.mummy .message-bubble { background: rgba(255,105,180,0.8); color: white; }
+        .message.hilary .message-bubble { background: rgba(147,112,219,0.8); color: white; }
+        .message.nan .message-bubble { background: rgba(220,20,60,0.8); color: white; }
+        .message.rishy .message-bubble { background: rgba(255,165,0,0.8); color: white; }
+        .message.poppy .message-bubble { background: rgba(0,191,255,0.8); color: white; }
+        .message.sienna .message-bubble { background: rgba(240,128,128,0.8); color: white; }
+        .message.penelope .message-bubble { background: rgba(255,192,203,0.8); color: #333; }
+        .input-area { background: rgba(255,255,255,0.8); border-top: 2px solid white; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: white; border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid #ddd; }
         .emoji-picker.show { display: grid; }
-        .emoji-option { font-size: 24px; cursor: pointer; text-align: center; padding: 8px; border-radius: 10px; background: rgba(0,255,255,0.1); transition: all 0.2s; }
-        .emoji-option:hover { background: rgba(255,0,255,0.2); transform: scale(1.2); }
-        .emoji-option:active { transform: scale(0.9); }
-        .games-panel { display: none; background: rgba(255,0,255,0.1); border-radius: 15px; padding: 12px; border: 2px solid #FF00FF; max-height: 250px; overflow-y: auto; }
+        .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; border-radius: 8px; transition: all 0.2s; }
+        .emoji-option:hover { transform: scale(1.15); }
+        .games-panel { display: none; background: white; border-radius: 10px; padding: 10px; border: 1px solid #ddd; max-height: 220px; overflow-y: auto; }
         .games-panel.show { display: block; }
-        .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .game-btn { padding: 14px; background: linear-gradient(135deg, #FF00FF, #FF1493); color: white; border: 2px solid #FFD700; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 12px #FF00FF; transition: all 0.3s; }
-        .game-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px #00FFFF; }
+        .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .game-btn { padding: 10px; background: linear-gradient(90deg, #FF1493, #FFD700); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
+        .game-btn:hover { transform: translateY(-1px); }
         .game-btn:active { transform: scale(0.95); }
-        .game-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .input-container { display: flex; gap: 8px; align-items: center; width: 100%; }
-        .input-field { flex: 1; padding: 12px 16px; border: 2px solid #00FFFF; border-radius: 20px; font-size: 14px; font-family: inherit; height: 48px; background: rgba(0,255,255,0.1); color: #00FFFF; font-weight: 700; }
-        .input-field:focus { outline: none; border-color: #FF00FF; box-shadow: 0 0 15px #FF00FF; }
-        .input-field::placeholder { color: #00FFFF; opacity: 0.7; }
-        .emoji-btn { background: rgba(255,215,0,0.2); border: 2px solid #FFD700; color: #FFD700; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; min-width: 48px; flex-shrink: 0; font-weight: 900; transition: all 0.3s; }
-        .emoji-btn:hover { background: rgba(255,215,0,0.4); box-shadow: 0 0 12px #FFD700; }
-        .games-btn { background: rgba(0,255,255,0.2); border: 2px solid #00FFFF; color: #00FFFF; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; font-weight: 900; min-width: 48px; flex-shrink: 0; transition: all 0.3s; }
-        .games-btn:hover { background: rgba(0,255,255,0.4); box-shadow: 0 0 12px #00FFFF; }
-        .send-btn { background: linear-gradient(135deg, #FF00FF, #00FFFF); color: #000814; border: 2px solid #FFD700; padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 900; cursor: pointer; height: 48px; min-width: 60px; flex-shrink: 0; text-transform: uppercase; box-shadow: 0 0 15px #FF00FF; transition: all 0.3s; }
-        .send-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px #00FFFF; }
+        .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .input-container { display: flex; gap: 6px; align-items: center; width: 100%; }
+        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #FF1493; border-radius: 10px; font-size: 13px; font-family: inherit; height: 40px; background: white; color: #333; font-weight: 500; }
+        .input-field:focus { outline: none; border-color: #00BFFF; }
+        .input-field::placeholder { color: #999; }
+        .emoji-btn { background: white; border: 2px solid #FFD700; color: #FF1493; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; min-width: 40px; flex-shrink: 0; font-weight: bold; transition: all 0.3s; }
+        .emoji-btn:hover { background: #FFD700; }
+        .games-btn { background: white; border: 2px solid #00BFFF; color: #FF1493; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; font-weight: bold; min-width: 40px; flex-shrink: 0; transition: all 0.3s; }
+        .games-btn:hover { background: #00BFFF; }
+        .send-btn { background: linear-gradient(90deg, #FF1493, #FFD700); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
+        .send-btn:hover { transform: translateY(-1px); }
         .send-btn:active { transform: scale(0.95); }
-        .send-btn:disabled { background: #333; cursor: not-allowed; }
-        .empty { text-align: center; color: #00FFFF; padding: 50px 15px; font-size: 18px; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px #00FFFF; }
-        .game-status { text-align: center; padding: 12px; background: rgba(0,255,255,0.1); border-radius: 12px; color: #FFD700; font-weight: 900; margin-bottom: 10px; font-size: 14px; border: 2px solid #00FFFF; text-transform: uppercase; }
-        .trivia-q { font-weight: 900; margin-bottom: 12px; color: #00FFFF; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 8px #00FFFF; }
-        .trivia-answers { display: grid; gap: 10px; margin-bottom: 12px; }
-        .trivia-btn { padding: 12px; background: rgba(0,255,255,0.1); border: 2px solid #00FFFF; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 13px; color: #00FFFF; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 0 8px #00FFFF; }
-        .trivia-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 15px #00FFFF; }
-        .trivia-btn.correct { background: linear-gradient(135deg, #00FF7F, #32CD32); color: #000814; border-color: #FFD700; box-shadow: 0 0 15px #00FF7F; }
-        .trivia-btn.wrong { background: linear-gradient(135deg, #FF4500, #FF6347); color: white; border-color: #FFD700; box-shadow: 0 0 15px #FF4500; }
-        .trivia-result { text-align: center; margin-top: 12px; font-weight: 900; color: #FFD700; font-size: 16px; text-transform: uppercase; text-shadow: 0 0 10px #FFD700; }
-        .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
-        .letter-btn { padding: 10px; background: rgba(0,255,255,0.1); border: 2px solid #00FFFF; border-radius: 8px; cursor: pointer; font-weight: 900; color: #00FFFF; font-size: 12px; text-transform: uppercase; box-shadow: 0 0 8px #00FFFF; transition: all 0.2s; }
-        .letter-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 12px #FF00FF; }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .empty { text-align: center; color: white; padding: 40px 15px; font-size: 16px; font-weight: bold; text-transform: uppercase; }
+        .game-status { text-align: center; padding: 10px; background: white; border-radius: 8px; color: #FF1493; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
+        .trivia-q { font-weight: bold; margin-bottom: 10px; color: #333; font-size: 13px; text-transform: uppercase; }
+        .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
+        .trivia-btn { padding: 10px; background: white; border: 2px solid #FF1493; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; color: #FF1493; text-transform: uppercase; transition: all 0.3s; }
+        .trivia-btn:hover { background: rgba(255,20,147,0.1); }
+        .trivia-btn.correct { background: #00FF00; color: white; border-color: #00FF00; }
+        .trivia-btn.wrong { background: #FF6347; color: white; border-color: #FF6347; }
+        .trivia-result { text-align: center; margin-top: 8px; font-weight: bold; color: #333; font-size: 14px; }
+        .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
+        .letter-btn { padding: 8px; background: white; border: 2px solid #FF1493; border-radius: 6px; cursor: pointer; font-weight: bold; color: #FF1493; font-size: 11px; transition: all 0.2s; }
+        .letter-btn:hover { background: rgba(255,20,147,0.1); }
         .letter-btn:disabled { opacity: 0.2; cursor: not-allowed; }
-        .hangman-word { font-size: 36px; font-weight: 900; letter-spacing: 10px; text-align: center; margin: 14px 0; font-family: monospace; color: #00FFFF; text-shadow: 0 0 10px #00FFFF; }
-        .hangman-stage { font-size: 60px; text-align: center; margin: 8px 0; animation: float 3s infinite; }
+        .hangman-word { font-size: 28px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 12px 0; font-family: monospace; color: #FF1493; }
+        .hangman-stage { font-size: 48px; text-align: center; margin: 8px 0; }
     </style>
 </head>
 <body>
-    <div class="stars" id="stars"></div>
-    
     <div class="login-screen" id="login">
-        <h1>🚀 COSMIC CHAT 🚀</h1>
-        <p>⭐ Pick Your Space Name ⭐</p>
+        <h1>✨ Anime Chat ✨</h1>
+        <p>Pick Your Character</p>
         <div class="login-buttons">
-            <button class="login-btn" onclick="window.login('esther')">🐱 ESTHER</button>
-            <button class="login-btn" onclick="window.login('valley')">🎀 VALLEY</button>
-            <button class="login-btn" onclick="window.login('amaaya')">✨ AMAAYA</button>
-            <button class="login-btn" onclick="window.login('mama')">👑 MAMA</button>
-            <button class="login-btn" onclick="window.login('mummy')">💎 MUMMY</button>
-            <button class="login-btn" onclick="window.login('hilary')">🌟 HILARY</button>
-            <button class="login-btn" onclick="window.login('nan')">💫 NAN</button>
-            <button class="login-btn" onclick="window.login('rishy')">🔆 RISHY</button>
-            <button class="login-btn" onclick="window.login('poppy')">🌈 POPPY</button>
-            <button class="login-btn" onclick="window.login('sienna')">🎪 SIENNA</button>
-            <button class="login-btn" onclick="window.login('penelope')">💝 PENELOPE</button>
+            <button class="login-btn" onclick="window.login('esther')">🐱 Esther</button>
+            <button class="login-btn" onclick="window.login('valley')">🎀 Valley</button>
+            <button class="login-btn" onclick="window.login('amaaya')">✨ Amaaya</button>
+            <button class="login-btn" onclick="window.login('mama')">👑 Mama</button>
+            <button class="login-btn" onclick="window.login('mummy')">💎 Mummy</button>
+            <button class="login-btn" onclick="window.login('hilary')">🌸 Hilary</button>
+            <button class="login-btn" onclick="window.login('nan')">💜 Nan</button>
+            <button class="login-btn" onclick="window.login('rishy')">⭐ Rishy</button>
+            <button class="login-btn" onclick="window.login('poppy')">🌷 Poppy</button>
+            <button class="login-btn" onclick="window.login('sienna')">🌺 Sienna</button>
+            <button class="login-btn" onclick="window.login('penelope')">💝 Penelope</button>
         </div>
     </div>
 
     <div class="container" id="app">
         <div class="header">
-            <div>🚀 <span id="myname"></span> 🚀</div>
-            <button class="dark-mode-btn" onclick="window.toggleDarkMode()">🌙</button>
-            <button class="logout-btn" onclick="window.logout()">LOGOUT</button>
+            <div>✨ <span id="myname"></span></div>
+            <button class="logout-btn" onclick="window.logout()">Logout</button>
         </div>
         <div class="tabs" id="tabs"></div>
-        <div class="chat-display" id="chat"><div class="empty">🚀 LOADING COSMIC CHAT...</div></div>
+        <div class="chat-display" id="chat"><div class="empty">Loading chat...</div></div>
         
         <div class="input-area">
             <div id="emojiPicker" class="emoji-picker"></div>
             <div id="gamesPanel" class="games-panel">
                 <div class="game-buttons">
                     <button class="game-btn" onclick="window.playRPS()">✊ RPS</button>
-                    <button class="game-btn" onclick="window.playDice()">🎲 DICE</button>
-                    <button class="game-btn" onclick="window.playTrivia()">🧠 TRIVIA</button>
-                    <button class="game-btn" onclick="window.playHangman()">🎯 HANGMAN</button>
+                    <button class="game-btn" onclick="window.playDice()">🎲 Dice</button>
+                    <button class="game-btn" onclick="window.playTrivia()">🧠 Trivia</button>
+                    <button class="game-btn" onclick="window.playHangman()">🎯 Hangman</button>
                 </div>
 
                 <div id="rpsContainer" style="display: none;">
-                    <div class="game-status" id="rpsStatus">⏱️ Choose in 10s!</div>
+                    <div class="game-status" id="rpsStatus">Choose in 10s!</div>
                     <div class="game-buttons">
-                        <button class="game-btn" onclick="window.selectRPS('rock')">✊ ROCK</button>
-                        <button class="game-btn" onclick="window.selectRPS('paper')">✋ PAPER</button>
-                        <button class="game-btn" onclick="window.selectRPS('scissors')">✌️ SCISSORS</button>
+                        <button class="game-btn" onclick="window.selectRPS('rock')">✊ Rock</button>
+                        <button class="game-btn" onclick="window.selectRPS('paper')">✋ Paper</button>
+                        <button class="game-btn" onclick="window.selectRPS('scissors')">✌️ Scissors</button>
                     </div>
                 </div>
 
                 <div id="diceContainer" style="display: none;">
-                    <div class="game-status">🎲 ROLL THE DICE!</div>
-                    <div style="font-size: 48px; text-align: center; margin: 12px 0; animation: spin 2s linear infinite;" id="diceResult">🎲</div>
-                    <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">🎲 ROLL!</button>
+                    <div class="game-status">Roll the Dice!</div>
+                    <div style="font-size: 36px; text-align: center; margin: 10px 0;" id="diceResult">🎲</div>
+                    <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">Roll!</button>
                 </div>
 
                 <div id="triviaContainer" style="display: none;">
                     <div class="trivia-q" id="triviaQuestion"></div>
                     <div id="triviaAnswers" class="trivia-answers"></div>
                     <div class="trivia-result" id="triviaResult"></div>
-                    <div style="text-align: center; font-size: 13px; color: #00FFFF; margin-top: 8px;" id="playersScore"></div>
                     <div class="game-status" id="triviaScore"></div>
                 </div>
 
                 <div id="hangmanContainer" style="display: none;">
-                    <div class="game-status" id="hangmanStatus">🎯 HANGMAN CHALLENGE</div>
+                    <div class="game-status" id="hangmanStatus">Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Enter secret word..." maxlength="12" style="width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #00FFFF; border-radius: 8px; color: #00FFFF; font-size: 13px; background: rgba(0,255,255,0.1); font-weight: 700;">
-                        <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">🚀 SET WORD!</button>
+                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 8px; margin: 6px 0; border: 2px solid #FF1493; border-radius: 8px; color: #333; font-size: 12px; font-weight: bold;">
+                        <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">Set Word</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div class="hangman-stage" id="hangmanStage">😊</div>
                         <div class="hangman-word" id="hangmanWord">_ _ _</div>
                         <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: 900; margin-top: 8px; color: #FFD700; font-size: 14px; text-transform: uppercase;"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: bold; margin-top: 8px; color: #FF1493; font-size: 13px;"></div>
                     </div>
                 </div>
             </div>
             <div class="input-container">
-                <button class="emoji-btn" onclick="window.toggleEmoji()">😀</button>
+                <button class="emoji-btn" onclick="window.toggleEmoji()">😊</button>
                 <button class="games-btn" onclick="window.toggleGames()">🎮</button>
-                <input type="text" class="input-field" id="msg" placeholder="💬 Say something..." disabled>
-                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>SEND!</button>
+                <input type="text" class="input-field" id="msg" placeholder="Say something..." disabled>
+                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>Send</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Create stars background
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-
-        const EMOJIS = ['😀','😂','😍','🥰','😎','🤗','😊','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🧋','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','💜','🚀','🛸'];
+        const EMOJIS = ['😊','😂','😍','🥰','😎','🤗','🎉','🎊','🎈','🎁','🍰','🍕','🍔','☕','🧋','🐱','😺','😸','👍','💕','💖','⭐','✨','🌟','💫'];
         
         const TRIVIA_QUESTIONS = [
-            {q: '🌍 CAPITAL OF AUSTRALIA?', a: ['SYDNEY','MELBOURNE','CANBERRA','BRISBANE'], c: 2},
-            {q: '🌊 LARGEST OCEAN?', a: ['ATLANTIC','INDIAN','ARCTIC','PACIFIC'], c: 3},
-            {q: '⛰️ TALLEST MOUNTAIN?', a: ['KILIMANJARO','EVEREST','DENALI','BLANC'], c: 1},
-            {q: '🇫🇷 CAPITAL OF FRANCE?', a: ['LYON','MARSEILLE','PARIS','NICE'], c: 2},
-            {q: '🐆 FASTEST LAND ANIMAL?', a: ['LION','GAZELLE','CHEETAH','PRONGHORN'], c: 2},
-            {q: '🐋 LARGEST ANIMAL?', a: ['ELEPHANT','BLUE WHALE','GIRAFFE','HIPPO'], c: 1},
-            {q: '🌊 LONGEST RIVER?', a: ['AMAZON','CONGO','NILE','YANGTZE'], c: 2},
-            {q: '🇯🇵 CAPITAL OF JAPAN?', a: ['OSAKA','KYOTO','TOKYO','YOKOHAMA'], c: 2},
-            {q: '🕳️ DEEPEST TRENCH?', a: ['MARIANA','TONGA','PHILIPPINE','KURIL'], c: 0},
-            {q: '🇪🇬 CAPITAL OF EGYPT?', a: ['ALEXANDRIA','CAIRO','GIZA','LUXOR'], c: 1},
-            {q: '🦅 BIRD CANNOT FLY?', a: ['OSTRICH','CHICKEN','PENGUIN','KIWI'], c: 0},
-            {q: '🇧🇷 CAPITAL OF BRAZIL?', a: ['RIO','BRASÍLIA','SALVADOR','SAO PAULO'], c: 1},
-            {q: '🐙 OCTOPUS LEGS?', a: ['6','8','10','12'], c: 1},
-            {q: '🇨🇦 CAPITAL OF CANADA?', a: ['TORONTO','VANCOUVER','OTTAWA','MONTREAL'], c: 2},
-            {q: '🇩🇪 CAPITAL OF GERMANY?', a: ['MUNICH','HAMBURG','BERLIN','COLOGNE'], c: 2},
-            {q: '🏜️ LARGEST DESERT?', a: ['SAHARA','GOBI','KALAHARI','ANTARCTIC'], c: 3},
-            {q: '🇮🇹 CAPITAL OF ITALY?', a: ['MILAN','ROME','VENICE','FLORENCE'], c: 1},
-            {q: '🌎 CONTINENTS TOTAL?', a: ['5','6','7','8'], c: 2},
-            {q: '🇪🇸 CAPITAL OF SPAIN?', a: ['BARCELONA','MADRID','VALENCIA','SEVILLE'], c: 1},
-            {q: '🏰 SMALLEST COUNTRY?', a: ['MONACO','VATICAN','SAN MARINO','LIECHTENSTEIN'], c: 1},
-            {q: '🎬 MICKEY MOUSE CREATOR?', a: ['BOB KANE','WALT DISNEY','CHUCK JONES','HAL ROACH'], c: 1},
-            {q: '🎨 VAN GOGH LOST BODY PART?', a: ['NOSE','EYE','FINGER','TOOTH'], c: 2},
-            {q: '🍎 GRAVITY DISCOVERY?', a: ['NEWTON','EINSTEIN','GALILEO','ARCHIMEDES'], c: 0},
-            {q: '⚡ ELECTRICITY SCIENTIST?', a: ['TESLA','NEWTON','KEPLER','BOYLE'], c: 0},
-            {q: '🏀 BASKETBALL CREATOR?', a: ['NAISMITH','SPALDING','MORGAN','GULICK'], c: 0},
-            {q: '🐢 FASTEST REPTILE?', a: ['SNAKE','IGUANA','LIZARD','CROCODILE'], c: 2},
-            {q: '🎯 DARTS PERFECT SCORE?', a: ['100','180','150','200'], c: 1},
-            {q: '📚 FIRST PRINTED BOOK?', a: ['BIBLE','QURAN','TORAH','DICTIONARY'], c: 0},
-            {q: '🎸 GUITAR STRINGS?', a: ['5','6','7','8'], c: 1},
-            {q: '🌸 FASTEST FLOWER?', a: ['BAMBOO','WATERLILY','SUNFLOWER','DANDELION'], c: 0},
-            {q: '💎 HARDEST MATERIAL?', a: ['STEEL','DIAMOND','TUNGSTEN','TITANIUM'], c: 1},
-            {q: '🎤 LOUDEST ANIMAL?', a: ['WHALE','LION','ELEPHANT','MONKEY'], c: 0},
-            {q: '👁️ HUMAN EYE COLOR?', a: ['12','16','5','8'], c: 1},
-            {q: '🦴 ADULT BONES?', a: ['206','216','186','226'], c: 0},
-            {q: '❤️ HEARTBEATS PER MINUTE?', a: ['50-100','100-150','60-120','70-80'], c: 0},
-            {q: '🧠 BRAIN WEIGHT PERCENT?', a: ['1%','2%','3%','5%'], c: 1},
-            {q: '🌙 MOON FULL CYCLE DAYS?', a: ['20','25','28','30'], c: 2},
-            {q: '☀️ SUN AGE BILLIONS YEARS?', a: ['3','4','5','6'], c: 2},
-            {q: '🪐 PLANETS IN SOLAR SYSTEM?', a: ['7','8','9','10'], c: 1},
-            {q: '🌡️ ABSOLUTE ZERO CELSIUS?', a: ['-273','-273.15','-300','-250'], c: 1}
+            {q: 'Capital of France?', a: ['Paris','Lyon','Nice','Marseille'], c: 0},
+            {q: 'Largest ocean?', a: ['Pacific','Atlantic','Indian','Arctic'], c: 0},
+            {q: 'Fastest land animal?', a: ['Cheetah','Lion','Horse','Gazelle'], c: 0},
+            {q: 'Largest animal?', a: ['Blue Whale','Elephant','Giraffe','Hippo'], c: 0},
+            {q: 'Capital of Japan?', a: ['Tokyo','Osaka','Kyoto','Yokohama'], c: 0},
+            {q: 'Deepest ocean trench?', a: ['Mariana','Tonga','Philippine','Kuril'], c: 0},
+            {q: 'Capital of Egypt?', a: ['Cairo','Alexandria','Giza','Luxor'], c: 0},
+            {q: 'Bird cannot fly?', a: ['Penguin','Ostrich','Kiwi','Chicken'], c: 0},
+            {q: 'Capital of Brazil?', a: ['Brasília','Rio','São Paulo','Salvador'], c: 0},
+            {q: 'Octopus legs?', a: ['8','6','10','12'], c: 0},
+            {q: 'Capital of Canada?', a: ['Ottawa','Toronto','Vancouver','Montreal'], c: 0},
+            {q: 'Capital of Germany?', a: ['Berlin','Munich','Hamburg','Cologne'], c: 0},
+            {q: 'Largest desert?', a: ['Antarctic','Sahara','Gobi','Kalahari'], c: 0},
+            {q: 'Capital of Italy?', a: ['Rome','Milan','Venice','Florence'], c: 0},
+            {q: 'Continents total?', a: ['7','5','6','8'], c: 0},
+            {q: 'Capital of Spain?', a: ['Madrid','Barcelona','Valencia','Seville'], c: 0},
+            {q: 'Smallest country?', a: ['Vatican','Monaco','San Marino','Liechtenstein'], c: 0},
+            {q: 'Mickey Mouse creator?', a: ['Walt Disney','Bob Kane','Chuck Jones','Hal Roach'], c: 0},
+            {q: 'Gravity scientist?', a: ['Newton','Einstein','Galileo','Archimedes'], c: 0},
+            {q: 'Basketball inventor?', a: ['Naismith','Spalding','Morgan','Gulick'], c: 0}
         ];
 
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
 
-        const USERS = {
-            esther: 'ESTHER', valley: 'VALLEY', amaaya: 'AMAAYA', mama: 'MAMA', mummy: 'MUMMY',
-            hilary: 'HILARY', nan: 'NAN', rishy: 'RISHY', poppy: 'POPPY', sienna: 'SIENNA', penelope: 'PENELOPE'
-        };
-
         const AVATARS = {
             esther: '🐱', valley: '🎀', amaaya: '✨', mama: '👑', mummy: '💎',
-            hilary: '🌟', nan: '💫', rishy: '🔆', poppy: '🌈', sienna: '🎪', penelope: '💝'
+            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🌺', penelope: '💝'
         };
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
-        let rpsChoice = null, rpsTimeLeft = 0, rpsTimer = null;
+        let rpsTimeLeft = 0, rpsTimer = null;
         let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false;
         let triviaScore = {}, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null, triviaUsers = new Set();
-
-        window.toggleDarkMode = function() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        };
 
         window.login = function(user) {
             if (!user) return;
@@ -343,10 +283,6 @@ const html = `<!DOCTYPE html>
                             window.showTriviaResult();
                         }
                     }
-                } else if (data.type === 'rps_choice') {
-                    if (data.chatId === currentChat) {
-                        document.getElementById('rpsStatus').textContent = '🎮 ' + data.user + ' chose!';
-                    }
                 } else if (data.type === 'hangman_start') {
                     if (data.chatId === currentChat && data.user !== currentUser) {
                         hangmanGameActive = true;
@@ -373,7 +309,7 @@ const html = `<!DOCTYPE html>
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
-                btn.textContent = chatId === 'group' ? '👥 GROUP' : '💬 ' + chatId.split('-')[1].toUpperCase();
+                btn.textContent = chatId === 'group' ? '👥 Group' : '💬 ' + chatId.split('-')[1];
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
@@ -404,16 +340,15 @@ const html = `<!DOCTYPE html>
         };
 
         window.playRPS = function() {
-            rpsChoice = null;
             document.getElementById('rpsContainer').style.display = 'block';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             rpsTimeLeft = 10;
-            document.getElementById('rpsStatus').textContent = '⏱️ Choose in 10s!';
+            document.getElementById('rpsStatus').textContent = 'Choose in 10s!';
             rpsTimer = setInterval(() => {
                 rpsTimeLeft--;
-                document.getElementById('rpsStatus').textContent = '⏱️ ' + rpsTimeLeft + 's left!';
+                document.getElementById('rpsStatus').textContent = rpsTimeLeft + 's left!';
                 if (rpsTimeLeft <= 0) {
                     clearInterval(rpsTimer);
                     document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
@@ -422,11 +357,9 @@ const html = `<!DOCTYPE html>
         };
 
         window.selectRPS = function(choice) {
-            rpsChoice = choice;
             document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
             if (connected) {
-                ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Played RPS: ' + choice.toUpperCase() }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Played: ' + choice }));
             }
         };
 
@@ -442,7 +375,7 @@ const html = `<!DOCTYPE html>
             const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
             document.getElementById('diceResult').textContent = emojis[result - 1];
             document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 ROLLED: ' + result }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Rolled: ' + result }));
         };
 
         window.playTrivia = function() {
@@ -450,24 +383,23 @@ const html = `<!DOCTYPE html>
             triviaTotal = 0;
             triviaUsers.clear();
             triviaAnswered = false;
-            document.getElementById('triviaContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
-            document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'block';
             ws.send(JSON.stringify({ type: 'trivia_start', user: currentUser, chatId: currentChat }));
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 TRIVIA CHALLENGE STARTED!' }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Trivia!' }));
             window.nextTriviaQuestion();
         };
 
         window.nextTriviaQuestion = function() {
             if (triviaTotal >= 5) {
-                let scores = 'FINAL SCORES: ';
+                let scores = 'Final: ';
                 Object.entries(triviaScore).forEach(([u, s]) => { scores += u + ':' + s + ' '; });
-                document.getElementById('triviaQuestion').textContent = '🏆 DONE!';
+                document.getElementById('triviaQuestion').textContent = 'Done!';
                 document.getElementById('triviaAnswers').innerHTML = '';
                 document.getElementById('triviaResult').textContent = '';
-                document.getElementById('playersScore').textContent = scores;
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 ' + scores }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: scores }));
                 return;
             }
             triviaTotal++;
@@ -485,8 +417,7 @@ const html = `<!DOCTYPE html>
                 answers.appendChild(btn);
             });
             document.getElementById('triviaResult').textContent = '';
-            document.getElementById('playersScore').textContent = '';
-            document.getElementById('triviaScore').textContent = 'QUESTION ' + triviaTotal + ' OF 5';
+            document.getElementById('triviaScore').textContent = triviaTotal + '/5';
         };
 
         window.submitTriviaAnswer = function(idx) {
@@ -500,14 +431,11 @@ const html = `<!DOCTYPE html>
                 if (i === triviaCurrentQ.c) b.classList.add('correct');
                 else if (i === idx) b.classList.add('wrong');
             });
-            document.getElementById('triviaResult').textContent = isCorrect ? '✅ CORRECT!' : '❌ WRONG!';
+            document.getElementById('triviaResult').textContent = isCorrect ? '✓' : '✗';
         };
 
         window.showTriviaResult = function() {
-            let result = '';
-            Object.entries(triviaScore).forEach(([u, s]) => { result += u + ':' + s + '  '; });
-            document.getElementById('playersScore').textContent = result;
-            setTimeout(window.nextTriviaQuestion, 1200);
+            setTimeout(window.nextTriviaQuestion, 1000);
         };
 
         window.playHangman = function() {
@@ -526,7 +454,7 @@ const html = `<!DOCTYPE html>
 
         window.startHangman = function() {
             const word = document.getElementById('hangmanSetWord').value.toUpperCase();
-            if (word.length < 3) { alert('Word too short!'); return; }
+            if (word.length < 3) { alert('Too short!'); return; }
             hangmanWord = word;
             hangmanGuessed = [];
             hangmanWrong = 0;
@@ -536,7 +464,7 @@ const html = `<!DOCTYPE html>
             window.renderHangmanGame();
             if (connected) {
                 ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 HANGMAN CHALLENGE STARTED!' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Hangman!' }));
             }
         };
 
@@ -545,7 +473,7 @@ const html = `<!DOCTYPE html>
             const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
             document.getElementById('hangmanWord').textContent = display;
             document.getElementById('hangmanStage').textContent = HANGMAN_STAGES[Math.min(hangmanWrong, 6)];
-            document.getElementById('hangmanStatus').textContent = '🎯 WRONG: ' + hangmanWrong + '/6';
+            document.getElementById('hangmanStatus').textContent = hangmanWrong + '/6';
             const grid = document.getElementById('hangmanLetterGrid');
             if (grid.children.length === 0) {
                 for (let i = 65; i <= 90; i++) {
@@ -563,7 +491,7 @@ const html = `<!DOCTYPE html>
             const lost = hangmanWrong >= 6;
             if (won || lost) {
                 hangmanGameActive = false;
-                document.getElementById('hangmanResult').textContent = won ? '🎉 YOU WIN!' : '💀 WORD: ' + hangmanWord;
+                document.getElementById('hangmanResult').textContent = won ? 'Won!' : 'Lost: ' + hangmanWord;
             }
         };
 
@@ -587,20 +515,19 @@ const html = `<!DOCTYPE html>
             const div = document.getElementById('chat');
             div.innerHTML = '';
             const msgs = messages[currentChat] || [];
-            if (msgs.length === 0) { div.innerHTML = '<div class="empty">🚀 COSMIC CHAT READY! 🚀</div>'; return; }
+            if (msgs.length === 0) { div.innerHTML = '<div class="empty">Chat ready!</div>'; return; }
             msgs.forEach(m => {
                 const d = document.createElement('div');
                 d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
-                const avatar = '<div class="avatar">' + AVATARS[m.user] + '</div>';
-                const content = '<div class="message-content">' + avatar + '<div><div class="message-sender">' + m.user + '</div><div class="message-bubble">' + m.text + '</div></div></div>';
-                d.innerHTML = content;
+                const sender = '<div class="message-sender">' + m.user + '</div>';
+                const content = '<div class="message-bubble">' + m.text + '</div>';
+                d.innerHTML = sender + content;
                 div.appendChild(d);
             });
             div.scrollTop = div.scrollHeight;
         };
 
         window.renderEmojiPicker();
-        createStars();
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') window.send(); });
             const savedUser = localStorage.getItem('user');
@@ -651,4 +578,4 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => { console.log('🚀 COSMIC CHAT SERVER LAUNCHED! 🚀'); });
+server.listen(PORT, () => { console.log('Anime Chat Server Running'); });
