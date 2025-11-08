@@ -1024,18 +1024,34 @@ const html = `<!DOCTYPE html>
             div.scrollTop = div.scrollHeight;
         }
 
-        document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
-
         renderEmojiPicker();
         
-        document.addEventListener('click', () => {
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
-        }, { once: true });
-        
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) login(savedUser);
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+                
+                document.addEventListener('click', () => {
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        Notification.requestPermission();
+                    }
+                }, { once: true });
+                
+                const savedUser = localStorage.getItem('user');
+                if (savedUser) login(savedUser);
+            });
+        } else {
+            document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+            
+            document.addEventListener('click', () => {
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+            }, { once: true });
+            
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) login(savedUser);
+        }
     </script>
 </body>
 </html>`;
