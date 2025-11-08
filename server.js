@@ -18,23 +18,23 @@ const html = `<!DOCTYPE html>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         html { height: 100%; }
-        body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #1a0f3d 0%, #2d1b69 25%, #1e3a5f 50%, #3d2659 75%, #1a2a4d 100%); }
-        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #2d1b69 0%, #3d2659 25%, #1e3a5f 50%, #4a2f7f 75%, #2d1b69 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
+        body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #1a1f3a 0%, #2d4a7f 20%, #4a3a8f 40%, #5a3d7f 60%, #7a4aaf 80%, #4a3a8f 100%); }
+        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #1f2f5f 0%, #2d4a7f 25%, #5a3d7f 50%, #7a4aaf 75%, #4a3a8f 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
         .login-screen p { font-size: 28px; color: white; margin-bottom: 40px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 420px; }
         .login-btn { padding: 20px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: all 0.3s; letter-spacing: 1px; }
         .login-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .login-btn:active { transform: scale(0.95); }
-        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a0f3d 0%, #2d1b69 25%, #1e3a5f 50%, #3d2659 75%, #1a2a4d 100%); display: none; flex-direction: column; z-index: 50; }
+        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1f3a 0%, #2d4a7f 20%, #4a3a8f 40%, #5a3d7f 60%, #7a4aaf 80%, #4a3a8f 100%); display: none; flex-direction: column; z-index: 50; }
         .container.show { display: flex; }
-        .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; flex-shrink: 0; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #2d4a7f 0%, #5a5fdf 50%, #9a5fff 100%); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; flex-shrink: 0; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         #myname { font-size: 18px; text-transform: uppercase; }
         .logout-btn { background: #8b5cf6; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .tabs { display: flex; gap: 8px; padding: 10px; background: rgba(79, 70, 229, 0.2); border-bottom: 2px solid rgba(139, 92, 246, 0.3); overflow-x: auto; flex-shrink: 0; }
-        .tab { padding: 8px 14px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: white; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
+        .tabs { display: flex; gap: 8px; padding: 10px; background: linear-gradient(135deg, rgba(45, 74, 127, 0.4), rgba(154, 90, 255, 0.3)); border-bottom: 2px solid rgba(90, 95, 223, 0.6); overflow-x: auto; flex-shrink: 0; }
+        .tab { padding: 8px 14px; background: linear-gradient(135deg, #2d4a7f 0%, #5a5fdf 100%); border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: white; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
-        .tab.active { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 18px; background: rgba(20, 10, 40, 0.4); position: relative; }
+        .tab.active { background: linear-gradient(135deg, #5a5fdf 0%, #9a5fff 100%); }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 18px; background: linear-gradient(135deg, rgba(26, 31, 58, 0.5), rgba(90, 95, 223, 0.15)); position: relative; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
         .message-sender { font-size: 14px; color: #a0aec0; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
@@ -52,7 +52,7 @@ const html = `<!DOCTYPE html>
         .message.sienna .message-sender .heart { color: #f472b6; }
         .message.penelope .message-sender .heart { color: #d8b4fe; }
         .message-bubble { max-width: 70%; padding: 14px 18px; border-radius: 14px; word-wrap: break-word; font-size: 18px; font-weight: 500; line-height: 1.6; border: 1px solid rgba(255,255,255,0.1); }
-        .message.own .message-bubble { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+        .message.own .message-bubble { background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; }
         .message.esther .message-bubble { background: rgba(6, 182, 212, 0.7); color: white; }
         .message.valley .message-bubble { background: rgba(168, 85, 247, 0.7); color: white; }
         .message.amaaya .message-bubble { background: rgba(16, 185, 129, 0.7); color: white; }
@@ -64,48 +64,48 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-bubble { background: rgba(14, 165, 233, 0.7); color: white; }
         .message.sienna .message-bubble { background: rgba(244, 114, 182, 0.7); color: white; }
         .message.penelope .message-bubble { background: rgba(216, 180, 254, 0.7); color: #1a1a2e; }
-        .input-area { background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(139, 92, 246, 0.15)); border-top: 2px solid rgba(139, 92, 246, 0.3); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: linear-gradient(135deg, #2d1b69, #3d2659); border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid rgba(139, 92, 246, 0.5); }
+        .input-area { background: linear-gradient(135deg, rgba(45, 74, 127, 0.35), rgba(154, 90, 255, 0.25)); border-top: 2px solid rgba(90, 95, 223, 0.6); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid rgba(90, 95, 223, 0.7); }
         .emoji-picker.show { display: grid; }
         .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; border-radius: 8px; transition: all 0.2s; }
         .emoji-option:hover { transform: scale(1.15); }
-        .games-panel { display: none; background: linear-gradient(135deg, #3d2659, #2d1b69); border-radius: 10px; padding: 10px; border: 1px solid rgba(139, 92, 246, 0.5); max-height: 220px; overflow-y: auto; }
+        .games-panel { display: none; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border-radius: 10px; padding: 10px; border: 1px solid rgba(90, 95, 223, 0.7); max-height: 220px; overflow-y: auto; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .game-btn { padding: 10px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
+        .game-btn { padding: 10px; background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
         .game-btn:hover { transform: translateY(-1px); }
         .game-btn:active { transform: scale(0.95); }
         .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .input-container { display: flex; gap: 6px; align-items: center; width: 100%; }
-        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #6366f1; border-radius: 10px; font-size: 13px; font-family: inherit; height: 40px; background: rgba(45, 27, 105, 0.6); color: #e0e7ff; font-weight: 500; }
-        .input-field:focus { outline: none; border-color: #8b5cf6; background: rgba(45, 27, 105, 0.8); }
+        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #5a5fdf; border-radius: 10px; font-size: 13px; font-family: inherit; height: 40px; background: rgba(45, 74, 127, 0.6); color: #e8ecff; font-weight: 500; }
+        .input-field:focus { outline: none; border-color: #9a5fff; background: rgba(45, 74, 127, 0.9); }
         .input-field::placeholder { color: #9ca3af; }
-        .emoji-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); border: 2px solid #8b5cf6; color: white; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; min-width: 40px; flex-shrink: 0; font-weight: bold; transition: all 0.3s; }
-        .emoji-btn:hover { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-        .games-btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); border: 2px solid #8b5cf6; color: white; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; font-weight: bold; min-width: 40px; flex-shrink: 0; transition: all 0.3s; }
-        .games-btn:hover { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-        .send-btn { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
+        .emoji-btn { background: linear-gradient(135deg, #2d4a7f, #5a5fdf); border: 2px solid #9a5fff; color: white; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; min-width: 40px; flex-shrink: 0; font-weight: bold; transition: all 0.3s; }
+        .emoji-btn:hover { background: linear-gradient(135deg, #5a5fdf, #9a5fff); }
+        .games-btn { background: linear-gradient(135deg, #2d4a7f, #5a5fdf); border: 2px solid #9a5fff; color: white; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; font-weight: bold; min-width: 40px; flex-shrink: 0; transition: all 0.3s; }
+        .games-btn:hover { background: linear-gradient(135deg, #5a5fdf, #9a5fff); }
+        .send-btn { background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .send-btn:hover { transform: translateY(-1px); }
         .send-btn:active { transform: scale(0.95); }
         .send-btn:disabled { background: #4b5563; cursor: not-allowed; }
         .empty { text-align: center; color: #a0aec0; padding: 40px 15px; font-size: 16px; font-weight: bold; }
-        .game-status { text-align: center; padding: 10px; background: rgba(79, 70, 229, 0.2); border-radius: 8px; color: #a0e7e5; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
+        .game-status { text-align: center; padding: 10px; background: linear-gradient(135deg, rgba(45, 74, 127, 0.4), rgba(154, 90, 255, 0.3)); border-radius: 8px; color: #b8d4ff; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
         .trivia-q { font-weight: bold; margin-bottom: 10px; color: #c7d2fe; font-size: 13px; }
         .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
-        .trivia-btn { padding: 10px; background: linear-gradient(135deg, #3d2659, #2d1b69); border: 2px solid #6366f1; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; color: #c7d2fe; transition: all 0.3s; }
-        .trivia-btn:hover { background: rgba(99, 102, 241, 0.2); }
+        .trivia-btn { padding: 10px; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border: 2px solid #5a5fdf; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; color: #d4dcff; transition: all 0.3s; }
+        .trivia-btn:hover { background: rgba(90, 95, 223, 0.4); }
         .trivia-btn.correct { background: #10b981; color: white; border-color: #059669; }
         .trivia-btn.wrong { background: #ef4444; color: white; border-color: #dc2626; }
         .trivia-result { text-align: center; margin-top: 8px; font-weight: bold; color: #a0e7e5; font-size: 14px; }
         .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
-        .letter-btn { padding: 8px; background: linear-gradient(135deg, #3d2659, #2d1b69); border: 2px solid #6366f1; border-radius: 6px; cursor: pointer; font-weight: bold; color: #c7d2fe; font-size: 11px; transition: all 0.2s; }
-        .letter-btn:hover { background: rgba(99, 102, 241, 0.2); }
+        .letter-btn { padding: 8px; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border: 2px solid #5a5fdf; border-radius: 6px; cursor: pointer; font-weight: bold; color: #d4dcff; font-size: 11px; transition: all 0.2s; }
+        .letter-btn:hover { background: rgba(90, 95, 223, 0.4); }
         .letter-btn:disabled { opacity: 0.2; cursor: not-allowed; }
         .hangman-word { font-size: 28px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 12px 0; font-family: monospace; color: #a0e7e5; }
         .hangman-stage { font-size: 48px; text-align: center; margin: 8px 0; }
-        .story-input { width: 100%; padding: 10px; border: 2px solid #6366f1; border-radius: 8px; font-size: 13px; margin-bottom: 8px; background: rgba(45, 27, 105, 0.6); color: #e0e7ff; }
-        .story-line { background: rgba(99, 102, 241, 0.15); padding: 8px; border-radius: 8px; margin: 6px 0; border-left: 3px solid #8b5cf6; color: #c7d2fe; }
-        .generator-btn { width: 100%; padding: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 8px 0; }
+        .story-input { width: 100%; padding: 10px; border: 2px solid #5a5fdf; border-radius: 8px; font-size: 13px; margin-bottom: 8px; background: rgba(45, 74, 127, 0.6); color: #e8ecff; }
+        .story-line { background: rgba(90, 95, 223, 0.2); padding: 8px; border-radius: 8px; margin: 6px 0; border-left: 3px solid #9a5fff; color: #d4dcff; }
+        .generator-btn { width: 100%; padding: 8px; background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 8px 0; }
         .rps-display { font-size: 48px; text-align: center; margin: 12px 0; }
         .dice-display { text-align: center; margin: 12px 0; }
         .dice-emoji { font-size: 36px; }
@@ -174,7 +174,7 @@ const html = `<!DOCTYPE html>
                 <div id="hangmanContainer" style="display: none;">
                     <div class="game-status" id="hangmanStatus">Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 8px; margin: 6px 0; border: 2px solid #6366f1; border-radius: 8px; color: #e0e7ff; font-size: 12px; font-weight: bold; background: rgba(45, 27, 105, 0.6);">
+                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 8px; margin: 6px 0; border: 2px solid #5a5fdf; border-radius: 8px; color: #e8ecff; font-size: 12px; font-weight: bold; background: rgba(45, 74, 127, 0.6);">
                         <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">Set Word</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
@@ -187,7 +187,7 @@ const html = `<!DOCTYPE html>
 
                 <div id="storyContainer" style="display: none;">
                     <div class="game-status">Write a Story Together!</div>
-                    <div id="storyText" style="background: rgba(45, 27, 105, 0.4); padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 100px; overflow-y: auto; font-size: 12px; color: #c7d2fe; border: 1px solid rgba(139, 92, 246, 0.3);"></div>
+                    <div id="storyText" style="background: rgba(26, 47, 95, 0.4); padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 100px; overflow-y: auto; font-size: 12px; color: #c7d2fe; border: 1px solid rgba(61, 78, 200, 0.5);"></div>
                     <textarea id="storyLine" class="story-input" placeholder="Add your line..." maxlength="150"></textarea>
                     <button class="game-btn" style="width: 100%;" onclick="window.addStoryLine()">Add Line</button>
                     <button class="generator-btn" onclick="window.generateStoryIdea()">💡 Get Story Idea</button>
