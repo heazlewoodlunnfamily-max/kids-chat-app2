@@ -72,7 +72,7 @@ const html = `<!DOCTYPE html>
         .games-panel { display: none; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border-radius: 10px; padding: 10px; border: 1px solid rgba(90, 95, 223, 0.7); max-height: 220px; overflow-y: auto; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .game-btn { padding: 10px; background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
+        .game-btn { padding: 12px 16px; background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase; transition: all 0.3s; }
         .game-btn:hover { transform: translateY(-1px); }
         .game-btn:active { transform: scale(0.95); }
         .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -89,7 +89,7 @@ const html = `<!DOCTYPE html>
         .send-btn:active { transform: scale(0.95); }
         .send-btn:disabled { background: #4b5563; cursor: not-allowed; }
         .empty { text-align: center; color: #a0aec0; padding: 40px 15px; font-size: 16px; font-weight: bold; }
-        .game-status { text-align: center; padding: 10px; background: linear-gradient(135deg, rgba(45, 74, 127, 0.4), rgba(154, 90, 255, 0.3)); border-radius: 8px; color: #b8d4ff; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
+        .game-status { text-align: center; padding: 12px; background: linear-gradient(135deg, rgba(45, 74, 127, 0.4), rgba(154, 90, 255, 0.3)); border-radius: 8px; color: #b8d4ff; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
         #triviaContainer { max-width: 600px; margin: auto; }
         .trivia-q { font-weight: bold; margin-bottom: 15px; color: #d4dcff; font-size: 18px; }
         .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
@@ -111,7 +111,21 @@ const html = `<!DOCTYPE html>
         .dice-display { text-align: center; margin: 12px 0; }
         .dice-emoji { font-size: 36px; }
         .dice-number { font-size: 24px; font-weight: bold; color: #a0e7e5; margin-top: 8px; }
-        .hangman-game-display { background: linear-gradient(135deg, #2d4a7f, #5a3d7f); padding: 15px; border-radius: 12px; border: 2px solid #7c8fff; margin: 10px 0; color: #d4dcff; }
+        #rpsContainer, #diceContainer, #storyContainer, #hangmanContainer { 
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 9999 !important;
+            max-height: 85vh !important;
+            max-width: 85vw !important;
+            background: linear-gradient(135deg, #2d4a7f, #5a3d7f) !important;
+            border: 3px solid #7c8fff !important;
+            border-radius: 25px !important;
+            padding: 30px !important;
+            box-shadow: 0 0 30px rgba(124, 143, 255, 0.8) !important;
+            overflow-y: auto !important;
+        }
         .hangman-display-word { font-size: 32px; font-weight: bold; letter-spacing: 8px; text-align: center; margin: 10px 0; font-family: monospace; color: #a0e7e5; }
         .hangman-display-stage { font-size: 48px; text-align: center; margin: 10px 0; }
     </style>
@@ -322,7 +336,7 @@ const html = `<!DOCTYPE html>
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
         let rpsTimeLeft = 0, rpsTimer = null;
-        let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false;
+        let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false, hangmanSetter = '';
         let triviaScore = {}, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null, triviaUsers = new Set();
         let usedTriviaQuestions = [];
         let playerTriviaQuestions = {};
@@ -671,6 +685,7 @@ const html = `<!DOCTYPE html>
             hangmanGuessed = [];
             hangmanWrong = 0;
             hangmanGameActive = false;
+            hangmanSetter = '';
             document.getElementById('hangmanContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
@@ -680,7 +695,7 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanGamePhase').style.display = 'none';
             document.getElementById('hangmanSetWord').value = '';
             if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' is setting up Hangman...' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' is setting up Hangman... (will be the WORD SETTER)' }));
             }
         };
 
@@ -688,6 +703,7 @@ const html = `<!DOCTYPE html>
             const word = document.getElementById('hangmanSetWord').value.toUpperCase();
             if (word.length < 3) { alert('Too short!'); return; }
             hangmanWord = word;
+            hangmanSetter = currentUser;
             hangmanGuessed = [];
             hangmanWrong = 0;
             hangmanGameActive = true;
@@ -697,7 +713,7 @@ const html = `<!DOCTYPE html>
             document.getElementById('msg').placeholder = 'Guess a letter...';
             if (connected) {
                 const display = hangmanWord.split('').map(l => '_').join(' ');
-                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman Game Started! ' + HANGMAN_STAGES[0] + ' Word: ' + display + ' | Wrong: 0/6' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 HANGMAN STARTED! Setter: ' + hangmanSetter + ' | Guessers: Everyone else | ' + HANGMAN_STAGES[0] + ' | Word: ' + display + ' | Wrong: 0/6' }));
             }
         };
 
