@@ -172,16 +172,6 @@ const html = `<!DOCTYPE html>
         
         <div class="input-area">
             <div id="emojiPicker" class="emoji-picker" style="display: none;"></div>
-            <div id="gifPicker" style="display: none; background: #f5f5f5; border-radius: 14px; padding: 12px; border: 2px solid #ffc107; max-height: 180px; overflow-y: auto; margin-bottom: 8px;">
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                    <button class="game-btn" style="grid-column: 1/-1; margin: 0; padding: 8px;" onclick="addGif('https://media.giphy.com/media/3o7TKU2pjDRG0Hcf7K/giphy.gif')">🎉 Party!</button>
-                    <button class="game-btn" style="margin: 0; padding: 8px;" onclick="addGif('https://media.giphy.com/media/l0HlDtKPoYJhFtgQ4/giphy.gif')">😂 Laugh</button>
-                    <button class="game-btn" style="margin: 0; padding: 8px;" onclick="addGif('https://media.giphy.com/media/3o85xIO33l7RlmLs1i/giphy.gif')">💃 Dance</button>
-                    <button class="game-btn" style="margin: 0; padding: 8px;" onclick="addGif('https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif')">❤️ Love</button>
-                    <button class="game-btn" style="margin: 0; padding: 8px;" onclick="addGif('https://media.giphy.com/media/l46Cy1rHbQ92uPR0A/giphy.gif')">🎮 Gaming</button>
-                    <button class="game-btn" style="margin: 0; padding: 8px;" onclick="addGif('https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif')">🌈 Rainbow</button>
-                </div>
-            </div>
             <div id="gamesPanel" class="games-panel">
                 <div class="game-buttons">
                     <button class="game-btn" onclick="playRPS()">🎮 Rock Paper</button>
@@ -196,8 +186,11 @@ const html = `<!DOCTYPE html>
                     </div>
                 </div>
                 <div id="diceContainer" style="display: none; text-align: center; padding: 12px;">
-                    <div id="diceResult" style="font-size: 32px; margin-bottom: 10px;">🎲</div>
-                    <button class="game-btn" onclick="sendDice()">Roll!</button>
+                    <div style="font-weight: 600; margin-bottom: 12px;">🎲 CLOSEST TO 6 WINS!</div>
+                    <div id="diceResult" style="font-size: 48px; margin-bottom: 12px;">🎲</div>
+                    <div id="diceScores" style="margin-bottom: 12px; font-size: 14px; color: #666;"></div>
+                    <button class="game-btn" id="diceRollBtn" onclick="rollDice()" style="grid-column: 1/-1; margin: 0;">Roll Now!</button>
+                    <div id="diceWinner" style="margin-top: 12px; font-weight: 700; font-size: 16px;"></div>
                 </div>
                 <div id="drawContainer" style="display: none;">
                     <div class="canvas-container">
@@ -208,11 +201,51 @@ const html = `<!DOCTYPE html>
                         <button class="canvas-btn send" onclick="sendDrawing()">Send</button>
                     </div>
                 </div>
+                <div id="wordleContainer" style="display: none;">
+                    <div id="wordleSetupPhase" style="text-align: center;">
+                        <div style="margin-bottom: 12px; font-weight: 600;">Set a 5-letter word for others to guess!</div>
+                        <input type="text" id="wordleSetWord" placeholder="Type 5-letter word..." maxlength="5" style="width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
+                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="startWordle()">Set Word!</button>
+                    </div>
+                    <div id="wordleGamePhase" style="display: none;">
+                        <div style="text-align: center; margin-bottom: 10px; font-weight: 600; color: #333;">Guess the 5-letter word! (Set by: <span id="wordleSetBy"></span>)</div>
+                        <div id="wordleGuesses" style="display: grid; gap: 6px; margin-bottom: 10px;"></div>
+                        <input type="text" id="wordleInput" placeholder="Type 5 letters..." maxlength="5" style="width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
+                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="submitWordleGuess()">Guess!</button>
+                        <div id="wordleResult" style="text-align: center; margin-top: 10px; font-weight: 700;"></div>
+                    </div>
+                </div>
+                <div id="hangmanContainer" style="display: none;">
+                    <div id="hangmanSetupPhase" style="text-align: center;">
+                        <div style="margin-bottom: 12px; font-weight: 600;">Set a word for others to guess!</div>
+                        <input type="text" id="hangmanSetWord" placeholder="Type a word..." style="width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
+                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="startHangman()">Set Word!</button>
+                    </div>
+                    <div id="hangmanGamePhase" style="display: none;">
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <div id="hangmanDrawing" style="font-size: 48px; margin-bottom: 8px;">😊</div>
+                            <div id="hangmanWord" style="font-size: 24px; letter-spacing: 8px; font-weight: 700; font-family: monospace;"></div>
+                            <div id="hangmanGuesses" style="margin-top: 8px; font-size: 12px; color: #666;"></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px;" id="hangmanLetterGrid"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: 700;"></div>
+                    </div>
+                </div>
+                <div id="triviaContainer" style="display: none;">
+                    <div id="triviaQuestion" style="font-weight: 600; margin-bottom: 12px; font-size: 14px;"></div>
+                    <div id="triviaAnswers" style="display: grid; gap: 8px;"></div>
+                    <div id="triviaResult" style="text-align: center; margin-top: 10px; font-weight: 700;"></div>
+                    <div id="triviaScore" style="text-align: center; margin-top: 8px; font-size: 12px; color: #666;"></div>
+                </div>
+                <div class="game-buttons" style="margin-bottom: 12px;">
+                    <button class="game-btn" onclick="playWordle()">🎮 Wordle</button>
+                    <button class="game-btn" onclick="playHangman()">🎯 Hangman</button>
+                    <button class="game-btn" onclick="playTrivia()">🧠 Trivia</button>
+                </div>
                 <button class="game-btn" style="grid-column: 1/-1;" onclick="playDraw()">🎨 Draw</button>
             </div>
             <div class="input-container">
                 <button class="btn-emoji" onclick="toggleEmoji()" title="Emoji">😀</button>
-                <button class="btn-emoji" style="border-color: #ff69b4; background: white;" onclick="toggleGif()" title="GIF">🎬</button>
                 <button class="btn-games" onclick="toggleGames()" title="Games">🎮</button>
                 <input type="text" class="input-field" id="msg" placeholder="Type message..." disabled>
                 <button class="send-btn" id="sendBtn" onclick="send()" disabled>Send</button>
@@ -234,7 +267,242 @@ const html = `<!DOCTYPE html>
         };
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
-        let rpsChoice = null, rpsOtherChoice = null, rpsOtherUser = null;
+        let rpsChoice = null, rpsOtherChoice = null, rpsOtherUser = null, rpsTimer = null, rpsTimeLeft = 0;
+        let diceRolls = {}, diceGameActive = false;
+
+        // WORDLE GAME STATE
+        const WORDLE_WORDS = ['HAPPY', 'SMILE', 'DANCE', 'PIZZA', 'BEACH', 'MUSIC', 'DREAM', 'MAGIC', 'SUNNY', 'HEART', 'FRIEND', 'LAUGH', 'PARTY', 'CANDY', 'KITTY', 'PUPPY', 'FLOWER', 'RAINBOW'];
+        let wordleWord = '', wordleGuesses = [], wordleGameOver = false, wordleSetBy = '';
+
+        // HANGMAN GAME STATE
+        const HANGMAN_WORDS = ['RAINBOW', 'BUTTERFLY', 'ELEPHANT', 'ADVENTURE', 'CHOCOLATE', 'DINOSAUR', 'PIRATE', 'DRAGON', 'TREASURE', 'CASTLE', 'WIZARD', 'UNICORN', 'ROCKET', 'ASTRONAUT', 'WHALE', 'PENGUIN', 'SKATEBOARD', 'ADVENTURE'];
+        const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
+        let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameOver = false, hangmanSetBy = '';
+
+        // TRIVIA GAME STATE
+        const TRIVIA_QUESTIONS = [
+            { q: 'What color is the sky?', a: ['Blue', 'Green', 'Red', 'Purple'], correct: 0 },
+            { q: 'How many legs does a dog have?', a: ['2', '4', '6', '8'], correct: 1 },
+            { q: 'What animal says "moo"?', a: ['Sheep', 'Cow', 'Pig', 'Horse'], correct: 1 },
+            { q: 'How many fingers do you have?', a: ['8', '10', '12', '20'], correct: 1 },
+            { q: 'What is the opposite of hot?', a: ['Warm', 'Cold', 'Cool', 'Sunny'], correct: 1 },
+            { q: 'Which fruit is yellow?', a: ['Apple', 'Banana', 'Grape', 'Blueberry'], correct: 1 },
+            { q: 'What do we wear on our feet?', a: ['Hat', 'Shirt', 'Shoes', 'Socks'], correct: 2 },
+            { q: 'What sound does a cat make?', a: ['Woof', 'Moo', 'Meow', 'Quack'], correct: 2 },
+            { q: 'How many wheels does a bike have?', a: ['1', '2', '3', '4'], correct: 1 },
+            { q: 'What do we use to write?', a: ['Fork', 'Pencil', 'Spoon', 'Knife'], correct: 1 }
+        ];
+        let triviaScore = 0, triviaTotal = 0, triviaCurrentQ = null, triviaAnswered = false;
+
+        function playWordle() {
+            document.getElementById('wordleContainer').style.display = 'block';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('rpsContainer').style.display = 'none';
+            document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('drawContainer').style.display = 'none';
+            document.getElementById('wordleSetupPhase').style.display = 'block';
+            document.getElementById('wordleGamePhase').style.display = 'none';
+            document.getElementById('wordleSetWord').value = '';
+        }
+
+        function startWordle() {
+            const input = document.getElementById('wordleSetWord').value.toUpperCase().trim();
+            if (input.length !== 5 || !/^[A-Z]+$/.test(input)) {
+                alert('Please enter exactly 5 letters!');
+                return;
+            }
+            wordleWord = input;
+            wordleGuesses = [];
+            wordleGameOver = false;
+            wordleSetBy = USERS[currentUser];
+            document.getElementById('wordleSetupPhase').style.display = 'none';
+            document.getElementById('wordleGamePhase').style.display = 'block';
+            document.getElementById('wordleSetBy').textContent = wordleSetBy;
+            document.getElementById('wordleInput').value = '';
+            document.getElementById('wordleResult').textContent = '';
+            renderWordleBoard();
+            const text = '🎮 ' + USERS[currentUser] + ' started a Wordle game! Everyone guess the 5-letter word!';
+            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+        }
+
+        function submitWordleGuess() {
+            const input = document.getElementById('wordleInput').value.toUpperCase().trim();
+            if (!wordleGameOver && input.length === 5) {
+                wordleGuesses.push(input);
+                document.getElementById('wordleInput').value = '';
+                renderWordleBoard();
+            }
+        }
+
+        function renderWordleBoard() {
+            const div = document.getElementById('wordleGuesses');
+            div.innerHTML = '';
+            wordleGuesses.forEach((guess, idx) => {
+                let row = '<div style="display: flex; gap: 4px; justify-content: center;">';
+                for (let i = 0; i < 5; i++) {
+                    const letter = guess[i];
+                    let color = '#ccc';
+                    if (letter === wordleWord[i]) color = '#4CAF50';
+                    else if (wordleWord.includes(letter)) color = '#FFC107';
+                    row += `<div style="width: 32px; height: 32px; background: ${color}; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">${letter}</div>`;
+                }
+                row += '</div>';
+                div.innerHTML += row;
+            });
+
+            if (wordleGuesses[wordleGuesses.length - 1] === wordleWord) {
+                wordleGameOver = true;
+                document.getElementById('wordleResult').textContent = '🎉 YOU WIN! Word: ' + wordleWord;
+                const text = '🎮 ' + USERS[currentUser] + ' won Wordle! 🎉 Word: ' + wordleWord;
+                if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+                document.getElementById('gamesPanel').classList.remove('show');
+            } else if (wordleGuesses.length >= 6) {
+                wordleGameOver = true;
+                document.getElementById('wordleResult').textContent = '😢 GAME OVER! Word: ' + wordleWord;
+                const text = '🎮 ' + USERS[currentUser] + ' tried Wordle! Word was: ' + wordleWord;
+                if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+                document.getElementById('gamesPanel').classList.remove('show');
+            }
+        }
+
+        function playHangman() {
+            document.getElementById('hangmanContainer').style.display = 'block';
+            document.getElementById('wordleContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('rpsContainer').style.display = 'none';
+            document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('drawContainer').style.display = 'none';
+            document.getElementById('hangmanSetupPhase').style.display = 'block';
+            document.getElementById('hangmanGamePhase').style.display = 'none';
+            document.getElementById('hangmanSetWord').value = '';
+        }
+
+        function startHangman() {
+            const input = document.getElementById('hangmanSetWord').value.toUpperCase().trim();
+            if (input.length < 3 || !/^[A-Z]+$/.test(input)) {
+                alert('Please enter at least 3 letters!');
+                return;
+            }
+            hangmanWord = input;
+            hangmanGuessed = [];
+            hangmanWrong = 0;
+            hangmanGameOver = false;
+            hangmanSetBy = USERS[currentUser];
+            document.getElementById('hangmanSetupPhase').style.display = 'none';
+            document.getElementById('hangmanGamePhase').style.display = 'block';
+            renderHangmanLetters();
+            renderHangman();
+            const text = '🎮 ' + USERS[currentUser] + ' started a Hangman game! Everyone guess the word!';
+            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+        }
+
+        function renderHangmanLetters() {
+            const grid = document.getElementById('hangmanLetterGrid');
+            grid.innerHTML = '';
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const btn = document.createElement('button');
+                btn.className = 'rps-btn';
+                btn.style.padding = '6px';
+                btn.style.fontSize = '14px';
+                btn.textContent = letter;
+                btn.onclick = () => guessHangmanLetter(letter);
+                grid.appendChild(btn);
+            }
+        }
+
+        function guessHangmanLetter(letter) {
+            if (hangmanGameOver || hangmanGuessed.includes(letter)) return;
+            hangmanGuessed.push(letter);
+            if (!hangmanWord.includes(letter)) hangmanWrong++;
+            renderHangman();
+        }
+
+        function renderHangman() {
+            const word = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
+            document.getElementById('hangmanWord').textContent = word;
+            document.getElementById('hangmanDrawing').textContent = HANGMAN_STAGES[hangmanWrong];
+            document.getElementById('hangmanGuesses').textContent = 'Wrong: ' + hangmanWrong + '/6 | Guessed: ' + hangmanGuessed.join(', ');
+
+            document.querySelectorAll('#hangmanContainer .rps-btn').forEach(btn => {
+                if (hangmanGuessed.includes(btn.textContent)) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                }
+            });
+
+            const won = hangmanWord.split('').every(l => hangmanGuessed.includes(l));
+            if (won) {
+                hangmanGameOver = true;
+                document.getElementById('hangmanResult').textContent = '🎉 YOU WIN!';
+                const text = '🎮 ' + USERS[currentUser] + ' won Hangman! Word: ' + hangmanWord;
+                if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+                document.getElementById('gamesPanel').classList.remove('show');
+            } else if (hangmanWrong >= 6) {
+                hangmanGameOver = true;
+                document.getElementById('hangmanResult').textContent = '😢 GAME OVER! Word: ' + hangmanWord;
+                const text = '🎮 ' + USERS[currentUser] + ' tried Hangman! Word: ' + hangmanWord;
+                if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+                document.getElementById('gamesPanel').classList.remove('show');
+            }
+        }
+
+        function playTrivia() {
+            triviaScore = 0;
+            triviaTotal = 0;
+            triviaAnswered = false;
+            document.getElementById('triviaContainer').style.display = 'block';
+            document.getElementById('wordleContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('rpsContainer').style.display = 'none';
+            document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('drawContainer').style.display = 'none';
+            nextTriviaQuestion();
+        }
+
+        function nextTriviaQuestion() {
+            if (triviaTotal >= 5) {
+                document.getElementById('triviaQuestion').textContent = '🎉 Quiz Complete!';
+                document.getElementById('triviaAnswers').innerHTML = '';
+                document.getElementById('triviaResult').textContent = '';
+                document.getElementById('triviaScore').textContent = 'Score: ' + triviaScore + '/5';
+                const text = '🎮 ' + USERS[currentUser] + ' scored ' + triviaScore + '/5 on Trivia!';
+                if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+                setTimeout(() => document.getElementById('gamesPanel').classList.remove('show'), 2000);
+                return;
+            }
+            triviaCurrentQ = TRIVIA_QUESTIONS[Math.floor(Math.random() * TRIVIA_QUESTIONS.length)];
+            triviaAnswered = false;
+            document.getElementById('triviaQuestion').textContent = triviaCurrentQ.q;
+            const answers = document.getElementById('triviaAnswers');
+            answers.innerHTML = '';
+            triviaCurrentQ.a.forEach((ans, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-btn';
+                btn.style.margin = '0';
+                btn.style.paddingRight = '16px';
+                btn.style.paddingLeft = '16px';
+                btn.textContent = ans;
+                btn.onclick = () => submitTriviaAnswer(idx);
+                answers.appendChild(btn);
+            });
+            document.getElementById('triviaResult').textContent = '';
+            document.getElementById('triviaScore').textContent = 'Question ' + (triviaTotal + 1) + '/5';
+        }
+
+        function submitTriviaAnswer(idx) {
+            if (triviaAnswered) return;
+            triviaAnswered = true;
+            triviaTotal++;
+            if (idx === triviaCurrentQ.correct) {
+                triviaScore++;
+                document.getElementById('triviaResult').textContent = '✅ Correct!';
+            } else {
+                document.getElementById('triviaResult').textContent = '❌ Wrong! Answer: ' + triviaCurrentQ.a[triviaCurrentQ.correct];
+            }
+            setTimeout(nextTriviaQuestion, 1500);
+        }
 
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
@@ -314,38 +582,6 @@ const html = `<!DOCTYPE html>
             picker.style.display = picker.style.display === 'none' ? 'grid' : 'none';
         }
 
-        function toggleGif() {
-            const gifs = document.getElementById('gifPicker');
-            const picker = document.getElementById('emojiPicker');
-            const panel = document.getElementById('gamesPanel');
-            panel.classList.remove('show');
-            picker.style.display = 'none';
-            gifs.style.display = gifs.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function addGif(url) {
-            if (isAppLocked()) {
-                alert('⏰ Chat is locked between 9pm-7am');
-                return;
-            }
-            if (!connected) return;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: url }));
-            
-            const newMsg = {
-                id: Date.now(),
-                user: currentUser,
-                text: url,
-                chatId: currentChat,
-                reactions: []
-            };
-            if (!messages[currentChat]) messages[currentChat] = [];
-            messages[currentChat].push(newMsg);
-            localStorage.setItem('chat_' + currentChat, JSON.stringify(messages[currentChat]));
-            
-            document.getElementById('gifPicker').style.display = 'none';
-            render();
-        }
-
         function toggleGames() {
             const panel = document.getElementById('gamesPanel');
             const picker = document.getElementById('emojiPicker');
@@ -360,17 +596,48 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'block';
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('drawContainer').style.display = 'none';
-            document.getElementById('rpsStatus').textContent = '⏱️ Waiting for other player...';
-            document.querySelectorAll('.rps-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('wordleContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('rpsStatus').textContent = '⏱️ 10 seconds to choose!';
+            document.querySelectorAll('#rpsContainer .rps-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.disabled = false;
+            });
+            
+            rpsTimeLeft = 10;
+            if (rpsTimer) clearInterval(rpsTimer);
+            rpsTimer = setInterval(() => {
+                rpsTimeLeft--;
+                document.getElementById('rpsStatus').textContent = '⏱️ ' + rpsTimeLeft + ' seconds to choose!';
+                
+                if (rpsTimeLeft <= 0) {
+                    clearInterval(rpsTimer);
+                    document.querySelectorAll('#rpsContainer .rps-btn').forEach(btn => btn.disabled = true);
+                    
+                    if (rpsChoice) {
+                        document.getElementById('rpsStatus').textContent = '⏳ Revealing choices...';
+                        setTimeout(announceRPSResult, 1000);
+                    } else {
+                        document.getElementById('rpsStatus').textContent = '⏰ TIME UP! You didn\'t choose!';
+                        setTimeout(() => {
+                            document.getElementById('gamesPanel').classList.remove('show');
+                        }, 2000);
+                    }
+                }
+            }, 1000);
+            
+            const text = '🎮 ' + USERS[currentUser] + ' started Rock Paper Scissors! Everyone choose in 10 seconds!';
+            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
         }
 
         function selectRPS(choice) {
+            if (rpsChoice) return; // Already selected
             rpsChoice = choice;
-            document.querySelectorAll('.rps-btn').forEach(btn => btn.classList.remove('selected'));
-            event.target.closest('.rps-btn').classList.add('selected');
+            document.querySelectorAll('#rpsContainer .rps-btn').forEach(btn => btn.disabled = true);
             
             const emojis = { 'rock': '✊', 'paper': '✋', 'scissors': '✌️' };
-            document.getElementById('rpsStatus').textContent = '✅ You played ' + emojis[choice] + '! Waiting...';
+            document.getElementById('rpsStatus').textContent = '✅ You chose ' + emojis[choice] + '! Waiting for countdown to finish...';
             
             if (connected) {
                 ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
@@ -378,20 +645,89 @@ const html = `<!DOCTYPE html>
         }
 
         function playDice() {
-            const result = Math.floor(Math.random() * 6) + 1;
-            const diceEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
-            document.getElementById('diceResult').textContent = diceEmojis[result - 1];
+            diceRolls = {};
+            diceGameActive = true;
             document.getElementById('diceContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('drawContainer').style.display = 'none';
-            window.diceResult = result;
+            document.getElementById('wordleContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('diceResult').textContent = '🎲';
+            document.getElementById('diceScores').textContent = 'Waiting for rolls...';
+            document.getElementById('diceWinner').textContent = '';
+            document.getElementById('diceRollBtn').disabled = false;
+            document.getElementById('diceRollBtn').textContent = 'Roll Now!';
+            
+            const text = '🎲 ' + USERS[currentUser] + ' started a Dice Game! Closest to 6 wins! Everyone roll!';
+            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
         }
 
-        function sendDice() {
-            const result = window.diceResult || 1;
-            const text = '🎲 ' + USERS[currentUser] + ' rolled ' + result + '!';
-            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text }));
-            document.getElementById('gamesPanel').classList.remove('show');
+        function rollDice() {
+            const result = Math.floor(Math.random() * 6) + 1;
+            const diceEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
+            
+            diceRolls[currentUser] = result;
+            document.getElementById('diceResult').textContent = diceEmojis[result - 1];
+            document.getElementById('diceRollBtn').disabled = true;
+            document.getElementById('diceRollBtn').textContent = '✅ Rolled ' + result + '!';
+            
+            // Send roll to others
+            if (connected) {
+                ws.send(JSON.stringify({ 
+                    type: 'dice_roll', 
+                    user: currentUser, 
+                    chatId: currentChat, 
+                    result: result 
+                }));
+            }
+            
+            // Update scores display
+            updateDiceScores();
+            
+            // Auto-determine winner after 3 seconds if multiple people rolled
+            setTimeout(() => {
+                if (Object.keys(diceRolls).length > 1) {
+                    determineDiceWinner();
+                }
+            }, 3000);
+        }
+
+        function updateDiceScores() {
+            let scores = '';
+            Object.entries(diceRolls).forEach(([user, roll]) => {
+                scores += USERS[user] + ': ' + roll + '  ';
+            });
+            document.getElementById('diceScores').textContent = scores || 'Waiting for rolls...';
+        }
+
+        function determineDiceWinner() {
+            if (Object.keys(diceRolls).length === 0) return;
+            
+            // Find closest to 6
+            let winner = null;
+            let minDiff = 6;
+            let winningRoll = 0;
+            
+            Object.entries(diceRolls).forEach(([user, roll]) => {
+                const diff = Math.abs(6 - roll);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    winner = user;
+                    winningRoll = roll;
+                }
+            });
+            
+            const diceEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
+            let resultText = '🏆 ' + USERS[winner] + ' WINS with ' + diceEmojis[winningRoll - 1] + ' (closest to 6!)';
+            
+            document.getElementById('diceWinner').textContent = resultText;
+            
+            const text = '🎲 ' + resultText + ' | Rolls: ' + Object.entries(diceRolls).map(([u, r]) => USERS[u] + ' rolled ' + r).join(', ');
+            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+            
+            diceGameActive = false;
+            setTimeout(() => document.getElementById('gamesPanel').classList.remove('show'), 2000);
         }
 
         function playDraw() {
@@ -553,6 +889,12 @@ const html = `<!DOCTYPE html>
                             setTimeout(announceRPSResult, 500);
                         }
                     }
+                } else if (data.type === 'dice_roll') {
+                    if (data.chatId === currentChat && diceGameActive) {
+                        diceRolls[data.user] = data.result;
+                        updateDiceScores();
+                        playNotificationSound();
+                    }
                 } else if (data.type === 'message') {
                     const chatId = data.data.chatId;
                     if (!messages[chatId]) messages[chatId] = [];
@@ -575,28 +917,22 @@ const html = `<!DOCTYPE html>
         }
 
         function announceRPSResult() {
-            if (!rpsChoice || !rpsOtherChoice) return;
-            
-            const emojis = { 'rock': '✊', 'paper': '✋', 'scissors': '✌️' };
-            
-            // Determine winner
-            let winner = '';
-            if (rpsChoice === rpsOtherChoice) {
-                winner = '🤝 TIE!';
-            } else if (
-                (rpsChoice === 'rock' && rpsOtherChoice === 'scissors') ||
-                (rpsChoice === 'paper' && rpsOtherChoice === 'rock') ||
-                (rpsChoice === 'scissors' && rpsOtherChoice === 'paper')
-            ) {
-                winner = '🎉 ' + USERS[currentUser] + ' WINS!';
-            } else {
-                winner = '🎉 ' + USERS[rpsOtherUser] + ' WINS!';
+            if (!rpsChoice) {
+                document.getElementById('rpsStatus').textContent = '❌ No choice made!';
+                setTimeout(() => document.getElementById('gamesPanel').classList.remove('show'), 1500);
+                return;
             }
             
-            const text = '🎮 ' + USERS[currentUser] + ' ' + emojis[rpsChoice] + ' vs ' + USERS[rpsOtherUser] + ' ' + emojis[rpsOtherChoice] + ' → ' + winner;
+            clearInterval(rpsTimer);
+            const emojis = { 'rock': '✊', 'paper': '✋', 'scissors': '✌️' };
+            
+            // Display result message
+            const text = '🎮 ' + USERS[currentUser] + ' ' + emojis[rpsChoice] + ' - RESULT REVEALED!';
             if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
             
+            document.getElementById('rpsStatus').textContent = '🎉 You chose ' + emojis[rpsChoice] + '!';
             document.getElementById('gamesPanel').classList.remove('show');
+            
             rpsChoice = null;
             rpsOtherChoice = null;
         }
@@ -662,9 +998,6 @@ const html = `<!DOCTYPE html>
                 let content = '';
                 if (m.isDrawing) {
                     content = '<div class="message-sender">' + USERS[m.user] + '</div><img src="' + m.text + '" style="max-width: 100%; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">';
-                } else if (m.text.includes('media.giphy.com') || m.text.includes('.gif')) {
-                    const avatar = '<div class="avatar">' + AVATARS[m.user] + '</div>';
-                    content = '<div class="message-content">' + avatar + '<div><div class="message-sender">' + USERS[m.user] + '</div><img src="' + m.text + '" style="max-width: 100%; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"></div></div>';
                 } else {
                     const sender = m.user === 'system' ? 'Game' : USERS[m.user];
                     const avatar = m.user === 'system' ? '' : '<div class="avatar">' + AVATARS[m.user] + '</div>';
@@ -734,6 +1067,12 @@ wss.on('connection', (ws) => {
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({ type: 'rps_choice', user: msg.user, chatId: msg.chatId, choice: msg.choice }));
+          }
+        });
+      } else if (msg.type === 'dice_roll') {
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'dice_roll', user: msg.user, chatId: msg.chatId, result: msg.result }));
           }
         });
       } else if (msg.type === 'reaction') {
