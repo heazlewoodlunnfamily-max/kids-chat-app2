@@ -618,7 +618,7 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanGamePhase').style.display = 'block';
             if (connected) {
                 const display = hangmanWord.split('').map(l => '_').join(' ');
-                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman Game Started!\n' + HANGMAN_STAGES[0] + '\nWord: ' + display + '\nWrong: 0/6' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman Game Started! ' + HANGMAN_STAGES[0] + ' Word: ' + display + ' | Wrong: 0/6' }));
             }
             window.renderHangmanGame();
         };
