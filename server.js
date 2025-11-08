@@ -421,7 +421,12 @@ const html = `<!DOCTYPE html>
 
         function getAvailableChats(user) {
             const chats = [];
-            if (['esther', 'valley', 'amaaya', 'mama', 'mummy', 'hilary'].includes(user)) chats.push('group');
+            const groupUsers = ['esther', 'valley', 'amaaya', 'mama', 'mummy', 'hilary'];
+            
+            if (groupUsers.includes(user) || ['mama', 'mummy'].includes(user)) {
+                chats.push('group');
+            }
+            
             if (user === 'esther') {
                 chats.push('esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna', 'esther-penelope');
             } else if (['mama', 'mummy', 'hilary', 'nan', 'rishy', 'poppy', 'sienna', 'penelope'].includes(user)) {
