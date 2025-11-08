@@ -290,7 +290,7 @@ const html = `<!DOCTYPE html>
             {q: 'Capital of Greece?', a: ['Athens','Thessaloniki','Patras','Heraklion'], c: 0},
             {q: 'Animal sleeps upright?', a: ['Giraffe','Elephant','Horse','Cow'], c: 0},
             {q: 'How many wheels car?', a: ['4','3','5','6'], c: 0},
-            {q: 'Capital of Israel?', a: ['Jerusalem','Tel Aviv','Haifa','Be\'er Sheva'], c: 0},
+            {q: 'Capital of Israel?', a: ['Jerusalem','Tel Aviv','Haifa','Beer Sheva'], c: 0},
             {q: 'Largest insect?', a: ['Goliath Beetle','Dragonfly','Cicada','Grasshopper'], c: 0},
             {q: 'How many fingers hand?', a: ['5','4','6','3'], c: 0},
             {q: 'Capital of Thailand?', a: ['Bangkok','Chiang Mai','Phuket','Pattaya'], c: 0},
