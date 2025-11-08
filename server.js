@@ -18,30 +18,30 @@ const html = `<!DOCTYPE html>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         html { height: 100%; }
-        body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(90deg, #FF1493 0%, #FFD700 25%, #00FF00 50%, #00BFFF 75%, #FF69B4 100%); }
-        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(90deg, #FF1493 0%, #FFD700 25%, #00FF00 50%, #00BFFF 75%, #FF69B4 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
-        .login-screen h1 { font-size: 48px; margin-bottom: 15px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); }
+        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
+        .login-screen h1 { font-size: 48px; margin-bottom: 15px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
         .login-screen p { font-size: 16px; color: white; margin-bottom: 30px; font-weight: bold; }
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 360px; }
         .login-btn { padding: 14px; background: white; color: #FF1493; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s; }
         .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
         .login-btn:active { transform: scale(0.95); }
-        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #FF1493 0%, #FFD700 25%, #00FF00 50%, #00BFFF 75%, #FF69B4 100%); display: none; flex-direction: column; z-index: 50; }
+        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); display: none; flex-direction: column; z-index: 50; }
         .container.show { display: flex; }
         .header { background: white; color: #FF1493; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; flex-shrink: 0; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         #myname { font-size: 18px; text-transform: uppercase; }
-        .logout-btn { background: #FF1493; color: white; border: none; color: white; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .tabs { display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,0.3); border-bottom: 2px solid white; overflow-x: auto; flex-shrink: 0; }
+        .logout-btn { background: #FF1493; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .tabs { display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,0.4); border-bottom: 2px solid rgba(255,255,255,0.5); overflow-x: auto; flex-shrink: 0; }
         .tab { padding: 8px 14px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: #FF1493; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
-        .tab.active { background: #FFD700; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 12px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.4); position: relative; }
-        .chat-display::before { content: ''; position: fixed; bottom: 0; right: 0; width: 280px; height: 280px; background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><circle cx="150" cy="150" r="150" fill="rgba(0,0,0,0.05)"/></svg>'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; z-index: 0; opacity: 0.08; }
+        .tab.active { background: #FFB6E1; color: white; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.3); position: relative; }
+        .chat-display::before { content: ''; position: fixed; bottom: -30px; right: -30px; width: 350px; height: 350px; background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="150" rx="50" ry="70" fill="rgba(0,0,0,0.08)"/><ellipse cx="150" cy="100" rx="45" ry="60" fill="rgba(0,0,0,0.08)"/><ellipse cx="220" cy="160" rx="40" ry="55" fill="rgba(0,0,0,0.08)"/></svg>'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; z-index: 0; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
-        .message-sender { font-size: 11px; color: #666; margin: 0 0 4px 0; font-weight: bold; text-transform: uppercase; }
+        .message-sender { font-size: 11px; color: #666; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
         .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 14px; word-wrap: break-word; font-size: 13px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.3); }
-        .message.own .message-bubble { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; align-self: flex-end; }
+        .message.own .message-bubble { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; }
         .message.esther .message-bubble { background: rgba(0,200,255,0.8); color: white; }
         .message.valley .message-bubble { background: rgba(255,20,147,0.8); color: white; }
         .message.amaaya .message-bubble { background: rgba(50,205,50,0.8); color: white; }
@@ -53,7 +53,7 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-bubble { background: rgba(0,191,255,0.8); color: white; }
         .message.sienna .message-bubble { background: rgba(240,128,128,0.8); color: white; }
         .message.penelope .message-bubble { background: rgba(255,192,203,0.8); color: #333; }
-        .input-area { background: rgba(255,255,255,0.8); border-top: 2px solid white; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
+        .input-area { background: rgba(255,255,255,0.85); border-top: 2px solid rgba(255,255,255,0.5); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
         .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: white; border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid #ddd; }
         .emoji-picker.show { display: grid; }
         .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; border-radius: 8px; transition: all 0.2s; }
@@ -61,23 +61,23 @@ const html = `<!DOCTYPE html>
         .games-panel { display: none; background: white; border-radius: 10px; padding: 10px; border: 1px solid #ddd; max-height: 220px; overflow-y: auto; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .game-btn { padding: 10px; background: linear-gradient(90deg, #FF1493, #FFD700); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
+        .game-btn { padding: 10px; background: linear-gradient(135deg, #FF1493, #FFD700); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
         .game-btn:hover { transform: translateY(-1px); }
         .game-btn:active { transform: scale(0.95); }
         .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .input-container { display: flex; gap: 6px; align-items: center; width: 100%; }
-        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #FF1493; border-radius: 10px; font-size: 13px; font-family: inherit; height: 40px; background: white; color: #333; font-weight: 500; }
-        .input-field:focus { outline: none; border-color: #00BFFF; }
+        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #FFB6E1; border-radius: 10px; font-size: 13px; font-family: inherit; height: 40px; background: white; color: #333; font-weight: 500; }
+        .input-field:focus { outline: none; border-color: #FF1493; }
         .input-field::placeholder { color: #999; }
         .emoji-btn { background: white; border: 2px solid #FFD700; color: #FF1493; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; min-width: 40px; flex-shrink: 0; font-weight: bold; transition: all 0.3s; }
         .emoji-btn:hover { background: #FFD700; }
-        .games-btn { background: white; border: 2px solid #00BFFF; color: #FF1493; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; font-weight: bold; min-width: 40px; flex-shrink: 0; transition: all 0.3s; }
-        .games-btn:hover { background: #00BFFF; }
-        .send-btn { background: linear-gradient(90deg, #FF1493, #FFD700); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
+        .games-btn { background: white; border: 2px solid #FFB6E1; color: #FF1493; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; font-weight: bold; min-width: 40px; flex-shrink: 0; transition: all 0.3s; }
+        .games-btn:hover { background: #FFE4E1; }
+        .send-btn { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .send-btn:hover { transform: translateY(-1px); }
         .send-btn:active { transform: scale(0.95); }
         .send-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .empty { text-align: center; color: white; padding: 40px 15px; font-size: 16px; font-weight: bold; text-transform: uppercase; }
+        .empty { text-align: center; color: white; padding: 40px 15px; font-size: 16px; font-weight: bold; }
         .game-status { text-align: center; padding: 10px; background: white; border-radius: 8px; color: #FF1493; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
         .trivia-q { font-weight: bold; margin-bottom: 10px; color: #333; font-size: 13px; text-transform: uppercase; }
         .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
@@ -178,6 +178,7 @@ const html = `<!DOCTYPE html>
 
     <script>
         const EMOJIS = ['😊','😂','😍','🥰','😎','🤗','🎉','🎊','🎈','🎁','🍰','🍕','🍔','☕','🧋','🐱','😺','😸','👍','💕','💖','⭐','✨','🌟','💫'];
+        const HEART_EMOJIS = ['💕', '💖', '💗', '💓', '💞', '💘', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤍', '🤎', '🖤'];
         
         const TRIVIA_QUESTIONS = [
             {q: 'Capital of France?', a: ['Paris','Lyon','Nice','Marseille'], c: 0},
@@ -213,6 +214,10 @@ const html = `<!DOCTYPE html>
         let rpsTimeLeft = 0, rpsTimer = null;
         let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false;
         let triviaScore = {}, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null, triviaUsers = new Set();
+
+        function getRandomHeartEmoji() {
+            return HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)];
+        }
 
         window.login = function(user) {
             if (!user) return;
@@ -519,7 +524,8 @@ const html = `<!DOCTYPE html>
             msgs.forEach(m => {
                 const d = document.createElement('div');
                 d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
-                const sender = '<div class="message-sender">' + m.user + '</div>';
+                const heartEmoji = getRandomHeartEmoji();
+                const sender = '<div class="message-sender">' + heartEmoji + ' ' + m.user + ' ' + heartEmoji + '</div>';
                 const content = '<div class="message-bubble">' + m.text + '</div>';
                 d.innerHTML = sender + content;
                 div.appendChild(d);
