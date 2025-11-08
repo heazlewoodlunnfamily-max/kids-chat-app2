@@ -13,14 +13,13 @@ const html = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
-    <title>✨ Anime Chat ✨</title>
+    <title>Chat</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         html { height: 100%; }
         body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); }
         .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
-        .login-screen h1 { font-size: 48px; margin-bottom: 15px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
         .login-screen p { font-size: 16px; color: white; margin-bottom: 30px; font-weight: bold; }
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 360px; }
         .login-btn { padding: 14px; background: white; color: #FF1493; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s; }
@@ -31,11 +30,11 @@ const html = `<!DOCTYPE html>
         .header { background: white; color: #FF1493; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; flex-shrink: 0; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         #myname { font-size: 18px; text-transform: uppercase; }
         .logout-btn { background: #FF1493; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .tabs { display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,0.4); border-bottom: 2px solid rgba(255,255,255,0.5); overflow-x: auto; flex-shrink: 0; }
+        .tabs { display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,0.5); border-bottom: 2px solid rgba(255,255,255,0.7); overflow-x: auto; flex-shrink: 0; }
         .tab { padding: 8px 14px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: #FF1493; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
         .tab.active { background: #FFB6E1; color: white; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.5); position: relative; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.65); position: relative; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
         .message-sender { font-size: 11px; color: #666; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
@@ -65,7 +64,7 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-bubble { background: rgba(0,191,255,0.8); color: white; }
         .message.sienna .message-bubble { background: rgba(240,128,128,0.8); color: white; }
         .message.penelope .message-bubble { background: rgba(255,192,203,0.8); color: #333; }
-        .input-area { background: rgba(255,255,255,0.85); border-top: 2px solid rgba(255,255,255,0.5); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
+        .input-area { background: rgba(255,255,255,0.9); border-top: 2px solid rgba(255,255,255,0.7); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
         .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: white; border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid #ddd; }
         .emoji-picker.show { display: grid; }
         .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; border-radius: 8px; transition: all 0.2s; }
@@ -73,7 +72,7 @@ const html = `<!DOCTYPE html>
         .games-panel { display: none; background: white; border-radius: 10px; padding: 10px; border: 1px solid #ddd; max-height: 220px; overflow-y: auto; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .game-btn { padding: 10px; background: linear-gradient(135deg, #FF1493, #FFD700); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
+        .game-btn { padding: 10px; background: linear-gradient(135deg, #FF69B4, #FFB6E1); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: all 0.3s; }
         .game-btn:hover { transform: translateY(-1px); }
         .game-btn:active { transform: scale(0.95); }
         .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -85,15 +84,15 @@ const html = `<!DOCTYPE html>
         .emoji-btn:hover { background: #FFD700; }
         .games-btn { background: white; border: 2px solid #FFB6E1; color: #FF1493; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; font-weight: bold; min-width: 40px; flex-shrink: 0; transition: all 0.3s; }
         .games-btn:hover { background: #FFE4E1; }
-        .send-btn { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
+        .send-btn { background: linear-gradient(135deg, #FF69B4, #FFB6E1); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; height: 40px; min-width: 50px; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .send-btn:hover { transform: translateY(-1px); }
         .send-btn:active { transform: scale(0.95); }
         .send-btn:disabled { background: #ccc; cursor: not-allowed; }
         .empty { text-align: center; color: white; padding: 40px 15px; font-size: 16px; font-weight: bold; }
         .game-status { text-align: center; padding: 10px; background: white; border-radius: 8px; color: #FF1493; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
-        .trivia-q { font-weight: bold; margin-bottom: 10px; color: #333; font-size: 13px; text-transform: uppercase; }
+        .trivia-q { font-weight: bold; margin-bottom: 10px; color: #333; font-size: 13px; }
         .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
-        .trivia-btn { padding: 10px; background: white; border: 2px solid #FF1493; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; color: #FF1493; text-transform: uppercase; transition: all 0.3s; }
+        .trivia-btn { padding: 10px; background: white; border: 2px solid #FF1493; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; color: #FF1493; transition: all 0.3s; }
         .trivia-btn:hover { background: rgba(255,20,147,0.1); }
         .trivia-btn.correct { background: #00FF00; color: white; border-color: #00FF00; }
         .trivia-btn.wrong { background: #FF6347; color: white; border-color: #FF6347; }
@@ -104,6 +103,13 @@ const html = `<!DOCTYPE html>
         .letter-btn:disabled { opacity: 0.2; cursor: not-allowed; }
         .hangman-word { font-size: 28px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 12px 0; font-family: monospace; color: #FF1493; }
         .hangman-stage { font-size: 48px; text-align: center; margin: 8px 0; }
+        .story-input { width: 100%; padding: 10px; border: 2px solid #FFB6E1; border-radius: 8px; font-size: 13px; margin-bottom: 8px; }
+        .story-line { background: rgba(255,20,147,0.1); padding: 8px; border-radius: 8px; margin: 6px 0; border-left: 3px solid #FF1493; }
+        .generator-btn { width: 100%; padding: 8px; background: #FFB6E1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 8px 0; }
+        .rps-display { font-size: 48px; text-align: center; margin: 12px 0; }
+        .dice-display { text-align: center; margin: 12px 0; }
+        .dice-emoji { font-size: 36px; }
+        .dice-number { font-size: 24px; font-weight: bold; color: #FF1493; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -140,20 +146,21 @@ const html = `<!DOCTYPE html>
                     <button class="game-btn" onclick="window.playDice()">🎲 Dice</button>
                     <button class="game-btn" onclick="window.playTrivia()">🧠 Trivia</button>
                     <button class="game-btn" onclick="window.playHangman()">🎯 Hangman</button>
+                    <button class="game-btn" onclick="window.playStory()">📖 Story</button>
                 </div>
 
                 <div id="rpsContainer" style="display: none;">
                     <div class="game-status" id="rpsStatus">Choose in 10s!</div>
                     <div class="game-buttons">
-                        <button class="game-btn" onclick="window.selectRPS('rock')">✊ Rock</button>
-                        <button class="game-btn" onclick="window.selectRPS('paper')">✋ Paper</button>
-                        <button class="game-btn" onclick="window.selectRPS('scissors')">✌️ Scissors</button>
+                        <button class="game-btn" onclick="window.selectRPS('rock', '✊')">✊ Rock</button>
+                        <button class="game-btn" onclick="window.selectRPS('paper', '✋')">✋ Paper</button>
+                        <button class="game-btn" onclick="window.selectRPS('scissors', '✌️')">✌️ Scissors</button>
                     </div>
                 </div>
 
                 <div id="diceContainer" style="display: none;">
                     <div class="game-status">Roll the Dice!</div>
-                    <div style="font-size: 36px; text-align: center; margin: 10px 0;" id="diceResult">🎲</div>
+                    <div class="dice-display" id="diceResult"></div>
                     <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">Roll!</button>
                 </div>
 
@@ -177,6 +184,14 @@ const html = `<!DOCTYPE html>
                         <div id="hangmanResult" style="text-align: center; font-weight: bold; margin-top: 8px; color: #FF1493; font-size: 13px;"></div>
                     </div>
                 </div>
+
+                <div id="storyContainer" style="display: none;">
+                    <div class="game-status">Write a Story Together!</div>
+                    <div id="storyText" style="background: #f0f0f0; padding: 10px; border-radius: 8px; margin-bottom: 10px; max-height: 100px; overflow-y: auto; font-size: 12px;"></div>
+                    <textarea id="storyLine" class="story-input" placeholder="Add your line..." maxlength="150"></textarea>
+                    <button class="game-btn" style="width: 100%;" onclick="window.addStoryLine()">Add Line</button>
+                    <button class="generator-btn" onclick="window.generateStoryIdea()">💡 Get Story Idea</button>
+                </div>
             </div>
             <div class="input-container">
                 <button class="emoji-btn" onclick="window.toggleEmoji()">😊</button>
@@ -189,7 +204,6 @@ const html = `<!DOCTYPE html>
 
     <script>
         const EMOJIS = ['😊','😂','😍','🥰','😎','🤗','🎉','🎊','🎈','🎁','🍰','🍕','🍔','☕','🧋','🐱','😺','😸','👍','💕','💖','⭐','✨','🌟','💫'];
-        const HEART_EMOJIS = ['💕', '💖', '💗', '💓', '💞', '💘', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤍', '🤎', '🖤'];
         
         const TRIVIA_QUESTIONS = [
             {q: 'Capital of France?', a: ['Paris','Lyon','Nice','Marseille'], c: 0},
@@ -202,16 +216,19 @@ const html = `<!DOCTYPE html>
             {q: 'Bird cannot fly?', a: ['Penguin','Ostrich','Kiwi','Chicken'], c: 0},
             {q: 'Capital of Brazil?', a: ['Brasília','Rio','São Paulo','Salvador'], c: 0},
             {q: 'Octopus legs?', a: ['8','6','10','12'], c: 0},
-            {q: 'Capital of Canada?', a: ['Ottawa','Toronto','Vancouver','Montreal'], c: 0},
-            {q: 'Capital of Germany?', a: ['Berlin','Munich','Hamburg','Cologne'], c: 0},
-            {q: 'Largest desert?', a: ['Antarctic','Sahara','Gobi','Kalahari'], c: 0},
-            {q: 'Capital of Italy?', a: ['Rome','Milan','Venice','Florence'], c: 0},
-            {q: 'Continents total?', a: ['7','5','6','8'], c: 0},
-            {q: 'Capital of Spain?', a: ['Madrid','Barcelona','Valencia','Seville'], c: 0},
-            {q: 'Smallest country?', a: ['Vatican','Monaco','San Marino','Liechtenstein'], c: 0},
-            {q: 'Mickey Mouse creator?', a: ['Walt Disney','Bob Kane','Chuck Jones','Hal Roach'], c: 0},
-            {q: 'Gravity scientist?', a: ['Newton','Einstein','Galileo','Archimedes'], c: 0},
-            {q: 'Basketball inventor?', a: ['Naismith','Spalding','Morgan','Gulick'], c: 0}
+        ];
+
+        const STORY_IDEAS = [
+            'Once upon a time, there was a magical forest...',
+            'A mysterious door appeared in the wall...',
+            'The adventure began when they found a secret map...',
+            'Nobody expected what happened next...',
+            'In a faraway kingdom, there lived...',
+            'The treasure was hidden where nobody could find it...',
+            'It all started on a rainy Tuesday evening...',
+            'The ancient book revealed a shocking secret...',
+            'They never believed in magic until that day...',
+            'The journey took them to a place beyond imagination...'
         ];
 
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
@@ -225,10 +242,7 @@ const html = `<!DOCTYPE html>
         let rpsTimeLeft = 0, rpsTimer = null;
         let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false;
         let triviaScore = {}, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null, triviaUsers = new Set();
-
-        function getRandomHeartEmoji() {
-            return HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)];
-        }
+        let storyLines = [];
 
         window.login = function(user) {
             if (!user) return;
@@ -282,37 +296,14 @@ const html = `<!DOCTYPE html>
                     messages[data.data.chatId].push(data.data);
                     localStorage.setItem('chat_' + data.data.chatId, JSON.stringify(messages[data.data.chatId]));
                     if (data.data.chatId === currentChat) window.render();
-                } else if (data.type === 'trivia_start') {
-                    if (data.chatId === currentChat) {
-                        triviaScore = {};
-                        triviaTotal = 0;
-                        triviaUsers.clear();
-                        triviaAnswered = false;
-                        document.getElementById('triviaContainer').style.display = 'block';
-                        window.nextTriviaQuestion();
-                    }
-                } else if (data.type === 'trivia_answer') {
-                    if (data.chatId === currentChat && !triviaScore[data.user]) {
-                        triviaScore[data.user] = data.correct ? 1 : 0;
-                        triviaUsers.add(data.user);
-                        if (triviaUsers.size >= 2) {
-                            window.showTriviaResult();
-                        }
-                    }
-                } else if (data.type === 'hangman_start') {
-                    if (data.chatId === currentChat && data.user !== currentUser) {
-                        hangmanGameActive = true;
-                        hangmanGuessed = [];
-                        hangmanWrong = 0;
-                        document.getElementById('hangmanSetupPhase').style.display = 'none';
-                        document.getElementById('hangmanGamePhase').style.display = 'block';
-                        window.renderHangmanGame();
-                    }
-                } else if (data.type === 'hangman_guess') {
-                    if (data.chatId === currentChat) {
-                        hangmanGuessed.push(data.letter);
-                        if (!data.correct) hangmanWrong++;
-                        window.renderHangmanGame();
+                } else if (data.type === 'rps_reveal') {
+                    rpsChoices[data.user] = data.choice;
+                    if (Object.keys(rpsChoices).length >= 2) {
+                        let result = '';
+                        Object.entries(rpsChoices).forEach(([user, choice]) => {
+                            result += user + ': ' + choice.emoji + ' ';
+                        });
+                        ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: data.chatId, text: '✊ RPS Results: ' + result }));
                     }
                 }
             };
@@ -325,7 +316,11 @@ const html = `<!DOCTYPE html>
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
-                btn.textContent = chatId === 'group' ? '👥 Group' : '💬 ' + chatId.split('-')[1];
+                if (chatId === 'group') {
+                    btn.textContent = '👥 Group';
+                } else {
+                    btn.textContent = '💬 ESTHER';
+                }
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
@@ -355,28 +350,47 @@ const html = `<!DOCTYPE html>
             document.getElementById('emojiPicker').classList.remove('show');
         };
 
+        let rpsChoice = null;
+        let rpsChoices = {};
+
         window.playRPS = function() {
             document.getElementById('rpsContainer').style.display = 'block';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
+            rpsChoice = null;
+            rpsChoices = {};
             rpsTimeLeft = 10;
             document.getElementById('rpsStatus').textContent = 'Choose in 10s!';
+            document.querySelectorAll('#rpsContainer .game-btn').forEach(b => {
+                if (b.textContent.includes('Rock') || b.textContent.includes('Paper') || b.textContent.includes('Scissors')) {
+                    b.disabled = false;
+                }
+            });
             rpsTimer = setInterval(() => {
                 rpsTimeLeft--;
                 document.getElementById('rpsStatus').textContent = rpsTimeLeft + 's left!';
                 if (rpsTimeLeft <= 0) {
                     clearInterval(rpsTimer);
                     document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
+                    if (rpsChoice) {
+                        if (connected) {
+                            ws.send(JSON.stringify({ type: 'rps_reveal', user: currentUser, chatId: currentChat, choice: rpsChoice }));
+                        }
+                    }
                 }
             }, 1000);
         };
 
-        window.selectRPS = function(choice) {
-            document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
-            if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Played: ' + choice }));
-            }
+        window.selectRPS = function(choice, emoji) {
+            rpsChoice = { choice: choice, emoji: emoji };
+            document.querySelectorAll('#rpsContainer .game-btn').forEach(b => {
+                if (b.textContent.includes('Rock') || b.textContent.includes('Paper') || b.textContent.includes('Scissors')) {
+                    b.disabled = true;
+                }
+            });
+            document.getElementById('rpsStatus').textContent = 'Waiting for others...';
         };
 
         window.playDice = function() {
@@ -384,14 +398,16 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
         };
 
         window.rollDice = function() {
             const result = Math.floor(Math.random() * 6) + 1;
             const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
-            document.getElementById('diceResult').textContent = emojis[result - 1];
+            const diceEmojis = ['🎲', '🎲', '🎲', '🎲', '🎲', '🎲'];
+            document.getElementById('diceResult').innerHTML = '<div class="dice-emoji">' + diceEmojis[result-1] + '</div><div class="dice-number">Number: ' + result + '</div>';
             document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Rolled: ' + result }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 rolled ' + result }));
         };
 
         window.playTrivia = function() {
@@ -402,8 +418,8 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'block';
-            ws.send(JSON.stringify({ type: 'trivia_start', user: currentUser, chatId: currentChat }));
             ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Trivia!' }));
             window.nextTriviaQuestion();
         };
@@ -442,15 +458,11 @@ const html = `<!DOCTYPE html>
             const isCorrect = idx === triviaCurrentQ.c;
             if (!triviaScore[currentUser]) triviaScore[currentUser] = 0;
             if (isCorrect) triviaScore[currentUser]++;
-            ws.send(JSON.stringify({ type: 'trivia_answer', user: currentUser, chatId: currentChat, correct: isCorrect }));
             document.querySelectorAll('.trivia-btn').forEach((b, i) => {
                 if (i === triviaCurrentQ.c) b.classList.add('correct');
                 else if (i === idx) b.classList.add('wrong');
             });
             document.getElementById('triviaResult').textContent = isCorrect ? '✓' : '✗';
-        };
-
-        window.showTriviaResult = function() {
             setTimeout(window.nextTriviaQuestion, 1000);
         };
 
@@ -463,6 +475,7 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
             document.getElementById('hangmanSetupPhase').style.display = 'block';
             document.getElementById('hangmanGamePhase').style.display = 'none';
             document.getElementById('hangmanSetWord').value = '';
@@ -479,7 +492,6 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanGamePhase').style.display = 'block';
             window.renderHangmanGame();
             if (connected) {
-                ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat }));
                 ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Hangman!' }));
             }
         };
@@ -515,8 +527,39 @@ const html = `<!DOCTYPE html>
             if (!hangmanGameActive || hangmanGuessed.includes(letter)) return;
             hangmanGuessed.push(letter);
             if (!hangmanWord.includes(letter)) hangmanWrong++;
-            if (connected) ws.send(JSON.stringify({ type: 'hangman_guess', user: currentUser, chatId: currentChat, letter: letter, correct: hangmanWord.includes(letter) }));
             window.renderHangmanGame();
+        };
+
+        window.playStory = function() {
+            document.getElementById('storyContainer').style.display = 'block';
+            document.getElementById('rpsContainer').style.display = 'none';
+            document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            storyLines = [];
+            document.getElementById('storyText').innerHTML = '';
+            document.getElementById('storyLine').value = '';
+        };
+
+        window.addStoryLine = function() {
+            const line = document.getElementById('storyLine').value.trim();
+            if (!line) return;
+            storyLines.push(currentUser + ': ' + line);
+            const storyDiv = document.getElementById('storyText');
+            const p = document.createElement('div');
+            p.className = 'story-line';
+            p.textContent = storyLines[storyLines.length - 1];
+            storyDiv.appendChild(p);
+            storyDiv.scrollTop = storyDiv.scrollHeight;
+            document.getElementById('storyLine').value = '';
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '📖 ' + line }));
+            }
+        };
+
+        window.generateStoryIdea = function() {
+            const idea = STORY_IDEAS[Math.floor(Math.random() * STORY_IDEAS.length)];
+            document.getElementById('storyLine').value = idea;
         };
 
         window.send = function() {
@@ -534,8 +577,9 @@ const html = `<!DOCTYPE html>
             if (msgs.length === 0) { div.innerHTML = '<div class="empty">Chat ready!</div>'; return; }
             msgs.forEach(m => {
                 const d = document.createElement('div');
-                d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
-                const sender = '<div class="message-sender"><span class="heart">💕</span>' + m.user + '<span class="heart">💕</span></div>';
+                const displayName = (currentChat !== 'group' && m.user !== currentUser) ? 'esther' : m.user;
+                d.className = 'message ' + (m.user === currentUser ? 'own' : displayName);
+                const sender = '<div class="message-sender"><span class="heart">💕</span>' + displayName.toUpperCase() + '<span class="heart">💕</span></div>';
                 const content = '<div class="message-bubble">' + m.text + '</div>';
                 d.innerHTML = sender + content;
                 div.appendChild(d);
@@ -582,7 +626,7 @@ wss.on('connection', (ws) => {
             client.send(JSON.stringify({ type: 'message', data: newMsg }));
           }
         });
-      } else {
+      } else if (msg.type === 'rps_reveal') {
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(data);
@@ -594,4 +638,4 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => { console.log('Anime Chat Server Running'); });
+server.listen(PORT, () => { console.log('Chat Server Running'); });
