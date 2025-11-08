@@ -1,226 +1,219 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 app.use(express.json());
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
-    <title>💬 Chat Games</title>
+    <title>✨ Anime Chat ✨</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        @keyframes drift { 0%, 100% { transform: translateY(0px) translateX(0px); } 25% { transform: translateY(-15px) translateX(5px); } 75% { transform: translateY(-10px) translateX(-5px); } }
+        @keyframes flutter { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+        @keyframes shimmer { 0%, 100% { background-position: 0% center; } 50% { background-position: 100% center; } }
         html { height: 100%; }
-        body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-user-select: none; user-select: none; }
-        .login-screen { width: 100vw; height: 100vh; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; }
-        .login-screen h1 { font-size: 42px; margin-bottom: 8px; color: #9C27B0; font-weight: 800; }
-        .login-screen p { font-size: 16px; color: #9C27B0; margin-bottom: 20px; font-weight: 600; }
-        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 380px; }
-        .login-btn { padding: 14px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; }
-        .login-btn:active { transform: scale(0.98); }
-        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: none; flex-direction: column; }
+        body { height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #D4E8D9 0%, #E8D9E8 25%, #E8E0D9 50%, #D9E8E8 75%, #E8DDD9 100%); }
+        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #D4E8D9 0%, #E8D9E8 25%, #E8E0D9 50%, #D9E8E8 75%, #E8DDD9 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
+        .login-screen h1 { font-size: 52px; margin-bottom: 8px; color: #6B4423; font-weight: 800; text-shadow: 0 4px 8px rgba(107, 68, 35, 0.15); font-family: 'Poppins'; letter-spacing: 1px; }
+        .login-screen p { font-size: 18px; color: #8B6F47; margin-bottom: 25px; font-weight: 700; }
+        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px; }
+        .login-btn { padding: 16px; background: linear-gradient(135deg, #A89F87 0%, #B8AFAA 100%); color: #6B4423; border: 3px solid #6B4423; border-radius: 18px; font-size: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.15); transition: all 0.3s; font-family: 'Poppins'; }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 18px rgba(107, 68, 35, 0.25); }
+        .login-btn:active { transform: scale(0.96); }
+        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #D4E8D9 0%, #E8D9E8 25%, #E8E0D9 50%, #D9E8E8 75%, #E8DDD9 100%); display: none; flex-direction: column; z-index: 50; }
         .container.show { display: flex; }
-        .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; padding: 12px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; flex-shrink: 0; gap: 8px; }
-        #myname { color: #9C27B0; font-weight: 900; }
-        .logout-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
-        .dark-mode-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .tabs { display: flex; gap: 6px; padding: 10px; background: #f8f9fb; border-bottom: 2px solid #e8eaf6; overflow-x: auto; flex-shrink: 0; }
-        .tab { padding: 8px 14px; background: white; border: 2px solid #e0e0e0; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap; color: #9C27B0; flex-shrink: 0; }
-        .tab.active { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 12px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; }
-        .message { margin-bottom: 12px; display: flex; flex-direction: column; }
+        .header { background: linear-gradient(90deg, #A89F87 0%, #B8AFAA 50%, #C0B5AA 100%); color: #6B4423; padding: 14px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 800; flex-shrink: 0; gap: 8px; box-shadow: 0 6px 15px rgba(107, 68, 35, 0.12); border-bottom: 3px solid #6B4423; font-family: 'Poppins'; }
+        #myname { font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .logout-btn { background: rgba(255, 255, 255, 0.7); border: 2px solid #6B4423; color: #6B4423; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .dark-mode-btn { background: rgba(255, 255, 255, 0.7); border: 2px solid #8B6F47; color: #6B4423; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 700; }
+        .tabs { display: flex; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.5); border-bottom: 2px solid #A89F87; overflow-x: auto; flex-shrink: 0; }
+        .tab { padding: 10px 16px; background: rgba(168, 159, 135, 0.2); border: 2px solid #A89F87; border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 13px; white-space: nowrap; color: #6B4423; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; }
+        .tab:hover { background: rgba(168, 159, 135, 0.4); transform: scale(1.05); }
+        .tab.active { background: linear-gradient(135deg, #A89F87, #8B6F47); color: #FFFAF0; border-color: #6B4423; box-shadow: 0 4px 12px rgba(107, 68, 35, 0.2); }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; background: rgba(255, 255, 255, 0.4); position: relative; }
+        .chat-display::before { content: ''; position: fixed; top: 90px; right: -20px; width: 300px; height: 300px; background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwhLS0gUGxhY2Vob2xkZXIgZm9yIGN1dGUgY2F0IGltYWdlcyAtLT4KPC9zdmc+'); background-size: contain; background-repeat: no-repeat; opacity: 0.15; pointer-events: none; z-index: 1; }
+        .message { margin-bottom: 14px; display: flex; flex-direction: column; animation: drift 6s infinite ease-in-out; position: relative; z-index: 2; }
         .message.own { align-items: flex-end; }
-        .message-content { display: flex; gap: 8px; align-items: flex-end; }
+        .message-content { display: flex; gap: 10px; align-items: flex-end; }
         .message.own .message-content { flex-direction: row-reverse; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .message-bubble { max-width: 80%; padding: 10px 14px; border-radius: 14px; word-wrap: break-word; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: 500; line-height: 1.4; }
-        .message.own .message-bubble { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .message.esther .message-bubble { background: #5B6FC7; color: white; }
-        .message.valley .message-bubble { background: #E91E63; color: white; }
-        .message.amaaya .message-bubble { background: #00BCD4; color: white; }
-        .message.mama .message-bubble { background: #26A69A; color: white; }
-        .message.mummy .message-bubble { background: #FF6B6B; color: white; }
-        .message.hilary .message-bubble { background: #AB47BC; color: white; }
-        .message.nan .message-bubble { background: #EC407A; color: white; }
-        .message.rishy .message-bubble { background: #FF9800; color: white; }
-        .message.poppy .message-bubble { background: #4CAF50; color: white; }
-        .message.sienna .message-bubble { background: #9C27B0; color: white; }
-        .message.penelope .message-bubble { background: #FF1493; color: white; }
-        .message-sender { font-size: 11px; color: #9C27B0; margin: 0 0 4px 0; font-weight: 600; }
-        .message.own .message-sender { text-align: right; }
-        .input-area { background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: #fff9e6; border-radius: 12px; max-height: 140px; overflow-y: auto; border: 2px solid #ffc107; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: linear-gradient(135deg, #C0B5AA, #A89F87); border: 3px solid #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
+        .message-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; word-wrap: break-word; font-size: 13px; font-weight: 600; line-height: 1.4; border: 2px solid; }
+        .message.own .message-bubble { background: linear-gradient(135deg, #A89F87, #8B6F47); color: #FFFAF0; border-color: #6B4423; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.2); }
+        .message.esther .message-bubble { background: linear-gradient(135deg, #B8D4E8, #A8C4D8); color: #2C3E50; border-color: #6B9BB0; box-shadow: 0 4px 10px rgba(107, 155, 176, 0.15); }
+        .message.valley .message-bubble { background: linear-gradient(135deg, #D4A89F, #C89890); color: #6B4423; border-color: #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
+        .message.amaaya .message-bubble { background: linear-gradient(135deg, #B8D8B0, #A8C8A0); color: #2C5F2C; border-color: #6B9B6B; box-shadow: 0 4px 10px rgba(107, 155, 107, 0.15); }
+        .message.mama .message-bubble { background: linear-gradient(135deg, #D4C8A8, #C8BCA0); color: #6B4423; border-color: #8B7F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
+        .message.mummy .message-bubble { background: linear-gradient(135deg, #D8B8B0, #C8A8A0); color: #6B4423; border-color: #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
+        .message.hilary .message-bubble { background: linear-gradient(135deg, #D4B0D8, #C8A0C8); color: #4A2C4A; border-color: #7B4F7B; box-shadow: 0 4px 10px rgba(123, 79, 123, 0.15); }
+        .message.nan .message-bubble { background: linear-gradient(135deg, #D4A0C0, #C89FB0); color: #6B2C4A; border-color: #8B5F7B; box-shadow: 0 4px 10px rgba(107, 68, 80, 0.15); }
+        .message.rishy .message-bubble { background: linear-gradient(135deg, #D8D0A8, #C8C0A0); color: #6B6423; border-color: #8B7F47; box-shadow: 0 4px 10px rgba(107, 100, 35, 0.15); }
+        .message.poppy .message-bubble { background: linear-gradient(135deg, #D4B8D0, #C8A8C0); color: #6B2C4A; border-color: #8B5F7B; box-shadow: 0 4px 10px rgba(107, 68, 80, 0.15); }
+        .message.sienna .message-bubble { background: linear-gradient(135deg, #D8A88F, #C89880); color: #6B4423; border-color: #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
+        .message.penelope .message-bubble { background: linear-gradient(135deg, #D4A8C0, #C89FB0); color: #6B2C4A; border-color: #8B5F7B; box-shadow: 0 4px 10px rgba(107, 68, 80, 0.15); }
+        .message-sender { font-size: 12px; color: #6B4423; margin: 0 0 4px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .message.own .message-sender { text-align: right; color: #8B7F47; }
+        .input-area { background: rgba(255, 255, 255, 0.7); border-top: 3px solid #A89F87; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; box-shadow: 0 -6px 15px rgba(107, 68, 35, 0.1); }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 12px; background: rgba(232, 232, 232, 0.5); border-radius: 15px; max-height: 140px; overflow-y: auto; border: 2px solid #C0B5AA; }
         .emoji-picker.show { display: grid; }
-        .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; }
-        .emoji-option:active { transform: scale(1.15); }
-        .games-panel { display: none; background: #f5f5f5; border-radius: 12px; padding: 10px; border: 2px solid #e0e0e0; max-height: 200px; overflow-y: auto; }
+        .emoji-option { font-size: 24px; cursor: pointer; text-align: center; padding: 8px; border-radius: 12px; background: rgba(168, 159, 135, 0.1); transition: all 0.2s; }
+        .emoji-option:hover { background: rgba(168, 159, 135, 0.3); transform: scale(1.2) rotate(5deg); }
+        .emoji-option:active { transform: scale(0.9); }
+        .games-panel { display: none; background: rgba(232, 224, 216, 0.5); border-radius: 15px; padding: 12px; border: 2px solid #C0B5AA; max-height: 250px; overflow-y: auto; }
         .games-panel.show { display: block; }
-        .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .game-btn { padding: 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
-        .game-btn:active { transform: scale(0.97); }
-        .game-btn:disabled { opacity: 0.5; }
-        .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 12px 0; }
-        .letter-btn { padding: 8px; background: white; border: 2px solid #9C27B0; border-radius: 8px; cursor: pointer; font-weight: 700; color: #9C27B0; font-size: 12px; }
-        .letter-btn:disabled { opacity: 0.3; }
-        .hangman-word { font-size: 28px; font-weight: 700; letter-spacing: 6px; text-align: center; margin: 8px 0; font-family: monospace; color: #9C27B0; }
-        .hangman-stage { font-size: 48px; text-align: center; margin: 4px 0; }
+        .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .game-btn { padding: 14px; background: linear-gradient(135deg, #A89F87, #B8AFAA); color: #6B4423; border: 3px solid #6B4423; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.15); transition: all 0.3s; font-family: 'Poppins'; }
+        .game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(107, 68, 35, 0.2); }
+        .game-btn:active { transform: scale(0.95); }
+        .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .input-container { display: flex; gap: 8px; align-items: center; width: 100%; }
-        .input-field { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; font-family: inherit; height: 44px; }
-        .input-field:focus { outline: none; border-color: #667eea; }
-        .input-field::placeholder { color: #999; }
-        .emoji-btn { background: white; border: 2px solid #ffc107; color: #333; padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; height: 44px; min-width: 44px; flex-shrink: 0; }
-        .games-btn { background: white; border: 2px solid #9C27B0; color: #9C27B0; padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; height: 44px; font-weight: 700; min-width: 44px; flex-shrink: 0; }
-        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; height: 44px; min-width: 60px; flex-shrink: 0; }
-        .send-btn:active { transform: scale(0.96); }
-        .send-btn:disabled { background: #ccc; }
-        .empty { text-align: center; color: #9C27B0; padding: 40px 15px; font-size: 16px; font-weight: 600; }
-        .game-status { text-align: center; padding: 10px; background: #f3e5f5; border-radius: 10px; color: #9C27B0; font-weight: 600; margin-bottom: 8px; font-size: 13px; }
-        .trivia-q { font-weight: 600; margin-bottom: 10px; color: #9C27B0; font-size: 14px; }
-        .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
-        .trivia-btn { padding: 10px; background: white; border: 2px solid #9C27B0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; color: #9C27B0; }
-        .trivia-btn:active { background: #f3e5f5; }
-        .trivia-btn.correct { background: #4CAF50; color: white; border-color: #4CAF50; }
-        .trivia-btn.wrong { background: #FF6B6B; color: white; border-color: #FF6B6B; }
-        .trivia-result { text-align: center; margin-top: 10px; font-weight: 700; color: #9C27B0; font-size: 14px; }
-        .trivia-score { text-align: center; margin-top: 8px; font-size: 12px; color: #9C27B0; }
-        .players-score { text-align: center; font-size: 13px; color: #9C27B0; margin-top: 8px; }
+        .input-field { flex: 1; padding: 12px 16px; border: 3px solid #A89F87; border-radius: 18px; font-size: 14px; font-family: inherit; height: 48px; background: rgba(255, 255, 255, 0.9); color: #6B4423; font-weight: 600; }
+        .input-field:focus { outline: none; border-color: #8B6F47; box-shadow: 0 0 12px rgba(107, 68, 35, 0.15); }
+        .input-field::placeholder { color: #A89F87; }
+        .emoji-btn { background: rgba(255, 255, 255, 0.8); border: 3px solid #C0B5AA; color: #6B4423; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; min-width: 48px; flex-shrink: 0; font-weight: 700; transition: all 0.3s; }
+        .emoji-btn:hover { background: rgba(192, 181, 170, 0.2); transform: scale(1.1); }
+        .games-btn { background: rgba(255, 255, 255, 0.8); border: 3px solid #A89F87; color: #6B4423; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; font-weight: 800; min-width: 48px; flex-shrink: 0; transition: all 0.3s; }
+        .games-btn:hover { background: rgba(168, 159, 135, 0.2); transform: scale(1.1); }
+        .send-btn { background: linear-gradient(135deg, #A89F87, #8B6F47); color: #FFFAF0; border: 3px solid #6B4423; padding: 10px 14px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; height: 48px; min-width: 60px; flex-shrink: 0; text-transform: uppercase; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.15); transition: all 0.3s; font-family: 'Poppins'; }
+        .send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(107, 68, 35, 0.2); }
+        .send-btn:active { transform: scale(0.95); }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .empty { text-align: center; color: #6B4423; padding: 50px 15px; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 2px 4px rgba(107, 68, 35, 0.1); }
+        .game-status { text-align: center; padding: 12px; background: rgba(168, 159, 135, 0.15); border-radius: 12px; color: #6B4423; font-weight: 800; margin-bottom: 10px; font-size: 14px; border: 2px solid #A89F87; text-transform: uppercase; }
+        .trivia-q { font-weight: 800; margin-bottom: 12px; color: #6B4423; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .trivia-answers { display: grid; gap: 10px; margin-bottom: 12px; }
+        .trivia-btn { padding: 12px; background: rgba(168, 159, 135, 0.15); border: 2px solid #A89F87; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; color: #6B4423; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; }
+        .trivia-btn:hover { background: rgba(168, 159, 135, 0.3); transform: scale(1.02); }
+        .trivia-btn.correct { background: linear-gradient(135deg, #B8D8B0, #A8C8A0); color: #2C5F2C; border-color: #6B9B6B; }
+        .trivia-btn.wrong { background: linear-gradient(135deg, #D4A89F, #C89890); color: #6B4423; border-color: #8B6F47; }
+        .trivia-result { text-align: center; margin-top: 12px; font-weight: 800; color: #6B4423; font-size: 16px; text-transform: uppercase; }
+        .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
+        .letter-btn { padding: 10px; background: rgba(168, 159, 135, 0.15); border: 2px solid #A89F87; border-radius: 10px; cursor: pointer; font-weight: 700; color: #6B4423; font-size: 12px; text-transform: uppercase; transition: all 0.2s; }
+        .letter-btn:hover { background: rgba(168, 159, 135, 0.3); transform: scale(1.05); }
+        .letter-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+        .hangman-word { font-size: 36px; font-weight: 800; letter-spacing: 8px; text-align: center; margin: 14px 0; font-family: 'Poppins'; color: #6B4423; }
+        .hangman-stage { font-size: 60px; text-align: center; margin: 8px 0; animation: drift 4s infinite ease-in-out; }
     </style>
 </head>
 <body>
     <div class="login-screen" id="login">
-        <h1>💜 Chat Games</h1>
-        <p>Select Your Name 💜</p>
+        <h1>✨ Anime Chat ✨</h1>
+        <p>💚 Pick Your Character 💚</p>
         <div class="login-buttons">
-            <button class="login-btn" onclick="window.login('esther')">ESTHER</button>
-            <button class="login-btn" onclick="window.login('valley')">VALLEY</button>
-            <button class="login-btn" onclick="window.login('amaaya')">AMAAYA</button>
-            <button class="login-btn" onclick="window.login('mama')">MAMA</button>
-            <button class="login-btn" onclick="window.login('mummy')">MUMMY</button>
-            <button class="login-btn" onclick="window.login('hilary')">HILARY</button>
-            <button class="login-btn" onclick="window.login('nan')">NAN</button>
-            <button class="login-btn" onclick="window.login('rishy')">RISHY</button>
-            <button class="login-btn" onclick="window.login('poppy')">POPPY</button>
-            <button class="login-btn" onclick="window.login('sienna')">SIENNA</button>
-            <button class="login-btn" onclick="window.login('penelope')">PENELOPE</button>
+            <button class="login-btn" onclick="window.login('esther')">🐱 ESTHER</button>
+            <button class="login-btn" onclick="window.login('valley')">🎀 VALLEY</button>
+            <button class="login-btn" onclick="window.login('amaaya')">✨ AMAAYA</button>
+            <button class="login-btn" onclick="window.login('mama')">👑 MAMA</button>
+            <button class="login-btn" onclick="window.login('mummy')">💎 MUMMY</button>
+            <button class="login-btn" onclick="window.login('hilary')">🌸 HILARY</button>
+            <button class="login-btn" onclick="window.login('nan')">💜 NAN</button>
+            <button class="login-btn" onclick="window.login('rishy')">⭐ RISHY</button>
+            <button class="login-btn" onclick="window.login('poppy')">🌷 POPPY</button>
+            <button class="login-btn" onclick="window.login('sienna')">🌺 SIENNA</button>
+            <button class="login-btn" onclick="window.login('penelope')">💝 PENELOPE</button>
         </div>
     </div>
 
     <div class="container" id="app">
         <div class="header">
-            <div>💬 <span id="myname"></span></div>
+            <div>💚 <span id="myname"></span> 💚</div>
             <button class="dark-mode-btn" onclick="window.toggleDarkMode()">🌙</button>
-            <button class="logout-btn" onclick="window.logout()">Logout</button>
+            <button class="logout-btn" onclick="window.logout()">LOGOUT</button>
         </div>
         <div class="tabs" id="tabs"></div>
-        <div class="chat-display" id="chat"><div class="empty">Loading...</div></div>
+        <div class="chat-display" id="chat"><div class="empty">💚 loading anime chat...</div></div>
         
         <div class="input-area">
             <div id="emojiPicker" class="emoji-picker"></div>
             <div id="gamesPanel" class="games-panel">
                 <div class="game-buttons">
                     <button class="game-btn" onclick="window.playRPS()">✊ RPS</button>
-                    <button class="game-btn" onclick="window.playDice()">🎲 Dice</button>
-                    <button class="game-btn" onclick="window.playTrivia()">🧠 Trivia</button>
-                    <button class="game-btn" onclick="window.playHangman()">🎯 Hangman</button>
+                    <button class="game-btn" onclick="window.playDice()">🎲 DICE</button>
+                    <button class="game-btn" onclick="window.playTrivia()">🧠 TRIVIA</button>
+                    <button class="game-btn" onclick="window.playHangman()">🎯 HANGMAN</button>
                 </div>
 
                 <div id="rpsContainer" style="display: none;">
-                    <div class="game-status" id="rpsStatus">Choose in 10s!</div>
+                    <div class="game-status" id="rpsStatus">⏱️ Choose in 10s!</div>
                     <div class="game-buttons">
-                        <button class="game-btn" onclick="window.selectRPS('rock')">✊</button>
-                        <button class="game-btn" onclick="window.selectRPS('paper')">✋</button>
-                        <button class="game-btn" onclick="window.selectRPS('scissors')">✌️</button>
+                        <button class="game-btn" onclick="window.selectRPS('rock')">✊ ROCK</button>
+                        <button class="game-btn" onclick="window.selectRPS('paper')">✋ PAPER</button>
+                        <button class="game-btn" onclick="window.selectRPS('scissors')">✌️ SCISSORS</button>
                     </div>
                 </div>
 
                 <div id="diceContainer" style="display: none;">
-                    <div class="game-status">🎲 Roll!</div>
-                    <div style="font-size: 32px; text-align: center; margin: 6px 0;" id="diceResult">🎲</div>
-                    <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">Roll</button>
+                    <div class="game-status">🎲 ROLL!</div>
+                    <div style="font-size: 48px; text-align: center; margin: 12px 0;" id="diceResult">🎲</div>
+                    <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">🎲 ROLL!</button>
                 </div>
 
                 <div id="triviaContainer" style="display: none;">
                     <div class="trivia-q" id="triviaQuestion"></div>
                     <div id="triviaAnswers" class="trivia-answers"></div>
                     <div class="trivia-result" id="triviaResult"></div>
-                    <div class="players-score" id="playersScore"></div>
-                    <div class="trivia-score" id="triviaScore"></div>
+                    <div style="text-align: center; font-size: 13px; color: #6B4423; margin-top: 8px; font-weight: 700;" id="playersScore"></div>
+                    <div class="game-status" id="triviaScore"></div>
                 </div>
 
                 <div id="hangmanContainer" style="display: none;">
-                    <div class="game-status" id="hangmanStatus">🎯 Hangman</div>
+                    <div class="game-status" id="hangmanStatus">🎯 HANGMAN</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Word..." maxlength="12" style="width: 100%; padding: 8px; margin: 4px 0; border: 2px solid #9C27B0; border-radius: 6px; color: #9C27B0; font-size: 13px;">
-                        <button class="game-btn" style="width: 100%; margin-top: 4px;" onclick="window.startHangman()">Set</button>
+                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #A89F87; border-radius: 10px; color: #6B4423; font-size: 13px; background: rgba(168, 159, 135, 0.1); font-weight: 700;">
+                        <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">💚 SET!</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div class="hangman-stage" id="hangmanStage">😊</div>
                         <div class="hangman-word" id="hangmanWord">_ _ _</div>
                         <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 4px; color: #9C27B0; font-size: 12px;"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: 800; margin-top: 8px; color: #6B4423; font-size: 14px; text-transform: uppercase;"></div>
                     </div>
                 </div>
             </div>
             <div class="input-container">
-                <button class="emoji-btn" onclick="window.toggleEmoji()">😀</button>
+                <button class="emoji-btn" onclick="window.toggleEmoji()">😊</button>
                 <button class="games-btn" onclick="window.toggleGames()">🎮</button>
-                <input type="text" class="input-field" id="msg" placeholder="Message..." disabled>
-                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>Send</button>
+                <input type="text" class="input-field" id="msg" placeholder="💬 say something..." disabled>
+                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>SEND</button>
             </div>
         </div>
     </div>
 
     <script>
-        const EMOJIS = ['😀','😂','😍','🥰','😎','🤗','😊','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🧋','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','💜'];
+        const EMOJIS = ['😊','😍','🥰','😘','😻','🐱','💚','💜','💕','✨','🌸','🌺','🌼','🌷','🎀','👯','🎉','🎊','🎈','🎁','🍰','🍪','☕','🧋','🍭','🍬','💚','🎀','⭐','🌟','💫'];
         
         const TRIVIA_QUESTIONS = [
-            {q: 'Capital of Australia?', a: ['Sydney','Melbourne','Canberra','Brisbane'], c: 2},
-            {q: 'Largest ocean?', a: ['Atlantic','Indian','Arctic','Pacific'], c: 3},
-            {q: 'Tallest mountain?', a: ['Kilimanjaro','Everest','Denali','Blanc'], c: 1},
-            {q: 'Capital of France?', a: ['Lyon','Marseille','Paris','Nice'], c: 2},
-            {q: 'Fastest land animal?', a: ['Lion','Gazelle','Cheetah','Pronghorn'], c: 2},
-            {q: 'Largest animal?', a: ['Elephant','Blue Whale','Giraffe','Hippo'], c: 1},
-            {q: 'Longest river?', a: ['Amazon','Congo','Nile','Yangtze'], c: 2},
-            {q: 'Capital of Japan?', a: ['Osaka','Kyoto','Tokyo','Yokohama'], c: 2},
-            {q: 'Deepest trench?', a: ['Mariana','Tonga','Philippine','Kuril'], c: 0},
-            {q: 'Capital of Egypt?', a: ['Alexandria','Cairo','Giza','Luxor'], c: 1},
-            {q: 'Bird cannot fly?', a: ['Ostrich','Chicken','Penguin','Kiwi'], c: 0},
-            {q: 'Capital of Brazil?', a: ['Rio','Brasília','Salvador','Sao Paulo'], c: 1},
-            {q: 'Octopus legs?', a: ['6','8','10','12'], c: 1},
-            {q: 'Capital of Canada?', a: ['Toronto','Vancouver','Ottawa','Montreal'], c: 2},
-            {q: 'Capital of Germany?', a: ['Munich','Hamburg','Berlin','Cologne'], c: 2},
-            {q: 'Largest desert?', a: ['Sahara','Gobi','Kalahari','Antarctic'], c: 3},
-            {q: 'Capital of Italy?', a: ['Milan','Rome','Venice','Florence'], c: 1},
-            {q: 'Continents total?', a: ['5','6','7','8'], c: 2},
-            {q: 'Capital of Spain?', a: ['Barcelona','Madrid','Valencia','Seville'], c: 1},
-            {q: 'Smallest country?', a: ['Monaco','Vatican','San Marino','Liechtenstein'], c: 1},
-            {q: 'Fastest diver?', a: ['Eagle','Falcon','Peregrine','Hawk'], c: 2},
-            {q: 'Most sleep?', a: ['Bear','Koala','Horse','Cat'], c: 1},
-            {q: 'Capital of India?', a: ['Mumbai','New Delhi','Bangalore','Kolkata'], c: 1},
-            {q: 'Violin strings?', a: ['3','4','5','6'], c: 1},
-            {q: 'Capital of Mexico?', a: ['Cancun','Guadalajara','Mexico City','Monterrey'], c: 2},
-            {q: 'Largest mammal?', a: ['Elephant','Whale','Giraffe','Hippo'], c: 1},
-            {q: 'Capital of Russia?', a: ['St Petersburg','Moscow','Vladivostok','Novosibirsk'], c: 1},
-            {q: 'Most salt ocean?', a: ['Pacific','Atlantic','Indian','Arctic'], c: 0},
-            {q: 'Capital of Greece?', a: ['Thessaloniki','Athens','Patras','Larissa'], c: 1},
-            {q: 'Human bones?', a: ['186','206','226','246'], c: 1},
-            {q: 'Capital of Turkey?', a: ['Istanbul','Ankara','Izmir','Bursa'], c: 1},
-            {q: 'Biggest cat?', a: ['Lion','Tiger','Leopard','Jaguar'], c: 1},
-            {q: 'Capital of Portugal?', a: ['Porto','Lisbon','Covilha','Aveiro'], c: 1},
-            {q: 'Arctic ocean?', a: ['Atlantic','Pacific','Indian','Arctic'], c: 3},
-            {q: 'Capital of Poland?', a: ['Krakow','Gdansk','Warsaw','Wroclaw'], c: 2},
-            {q: 'Squid hearts?', a: ['1','2','3','4'], c: 2},
-            {q: 'Capital of Argentina?', a: ['Cordoba','Rosario','Buenos Aires','La Plata'], c: 2},
-            {q: 'Peregrine speed?', a: ['150','200','250','300'], c: 2},
-            {q: 'Capital S.Korea?', a: ['Busan','Seoul','Incheon','Daegu'], c: 1},
-            {q: 'Panda country?', a: ['Japan','Korea','China','Vietnam'], c: 2},
-            {q: 'Capital of Chile?', a: ['Valparaiso','Santiago','Concepcion','Temuco'], c: 1}
+            {q: '🌍 Capital of Australia?', a: ['Sydney','Melbourne','Canberra','Brisbane'], c: 2},
+            {q: '🌊 Largest ocean?', a: ['Atlantic','Indian','Arctic','Pacific'], c: 3},
+            {q: '⛰️ Tallest mountain?', a: ['Kilimanjaro','Everest','Denali','Blanc'], c: 1},
+            {q: '🇫🇷 Capital of France?', a: ['Lyon','Marseille','Paris','Nice'], c: 2},
+            {q: '🐆 Fastest land animal?', a: ['Lion','Gazelle','Cheetah','Pronghorn'], c: 2},
+            {q: '🐋 Largest animal?', a: ['Elephant','Blue Whale','Giraffe','Hippo'], c: 1},
+            {q: '🌊 Longest river?', a: ['Amazon','Congo','Nile','Yangtze'], c: 2},
+            {q: '🇯🇵 Capital of Japan?', a: ['Osaka','Kyoto','Tokyo','Yokohama'], c: 2},
+            {q: '🕳️ Deepest trench?', a: ['Mariana','Tonga','Philippine','Kuril'], c: 0},
+            {q: '🇪🇬 Capital of Egypt?', a: ['Alexandria','Cairo','Giza','Luxor'], c: 1},
+            {q: '🦅 Bird cannot fly?', a: ['Ostrich','Chicken','Penguin','Kiwi'], c: 0},
+            {q: '🇧🇷 Capital of Brazil?', a: ['Rio','Brasília','Salvador','Sao Paulo'], c: 1},
+            {q: '🐙 Octopus legs?', a: ['6','8','10','12'], c: 1},
+            {q: '🇨🇦 Capital of Canada?', a: ['Toronto','Vancouver','Ottawa','Montreal'], c: 2},
+            {q: '🇩🇪 Capital of Germany?', a: ['Munich','Hamburg','Berlin','Cologne'], c: 2},
+            {q: '🏜️ Largest desert?', a: ['Sahara','Gobi','Kalahari','Antarctic'], c: 3},
+            {q: '🇮🇹 Capital of Italy?', a: ['Milan','Rome','Venice','Florence'], c: 1},
+            {q: '🌎 Continents total?', a: ['5','6','7','8'], c: 2},
+            {q: '🇪🇸 Capital of Spain?', a: ['Barcelona','Madrid','Valencia','Seville'], c: 1},
+            {q: '🏰 Smallest country?', a: ['Monaco','Vatican','San Marino','Liechtenstein'], c: 1}
         ];
 
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
@@ -231,8 +224,8 @@ const html = `<!DOCTYPE html>
         };
 
         const AVATARS = {
-            esther: '🐱', valley: '😺', amaaya: '😸', mama: '😻', mummy: '😼',
-            hilary: '😽', nan: '🐱', rishy: '😺', poppy: '😸', sienna: '😻', penelope: '😼'
+            esther: '🐱', valley: '🎀', amaaya: '✨', mama: '👑', mummy: '💎',
+            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🌺', penelope: '💝'
         };
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
@@ -316,7 +309,7 @@ const html = `<!DOCTYPE html>
                     }
                 } else if (data.type === 'rps_choice') {
                     if (data.chatId === currentChat) {
-                        document.getElementById('rpsStatus').textContent = data.user + ' chose!';
+                        document.getElementById('rpsStatus').textContent = '💚 ' + data.user + ' chose!';
                     }
                 } else if (data.type === 'hangman_start') {
                     if (data.chatId === currentChat && data.user !== currentUser) {
@@ -344,7 +337,7 @@ const html = `<!DOCTYPE html>
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
-                btn.textContent = chatId === 'group' ? '👥 GROUP' : '💜 ' + chatId.split('-')[1].toUpperCase();
+                btn.textContent = chatId === 'group' ? '👥 GROUP' : '💬 ' + chatId.split('-')[1].toUpperCase();
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
@@ -381,10 +374,10 @@ const html = `<!DOCTYPE html>
             document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             rpsTimeLeft = 10;
-            document.getElementById('rpsStatus').textContent = '⏱️ 10s';
+            document.getElementById('rpsStatus').textContent = '⏱️ Choose in 10s!';
             rpsTimer = setInterval(() => {
                 rpsTimeLeft--;
-                document.getElementById('rpsStatus').textContent = '⏱️ ' + rpsTimeLeft + 's';
+                document.getElementById('rpsStatus').textContent = '⏱️ ' + rpsTimeLeft + 's left!';
                 if (rpsTimeLeft <= 0) {
                     clearInterval(rpsTimer);
                     document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
@@ -397,7 +390,7 @@ const html = `<!DOCTYPE html>
             document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
             if (connected) {
                 ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Played RPS' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Played: ' + choice.toUpperCase() }));
             }
         };
 
@@ -406,7 +399,6 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
-            document.getElementById('diceResult').textContent = '🎲';
         };
 
         window.rollDice = function() {
@@ -414,7 +406,7 @@ const html = `<!DOCTYPE html>
             const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
             document.getElementById('diceResult').textContent = emojis[result - 1];
             document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 Rolled: ' + result }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 rolled: ' + result }));
         };
 
         window.playTrivia = function() {
@@ -427,15 +419,15 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             ws.send(JSON.stringify({ type: 'trivia_start', user: currentUser, chatId: currentChat }));
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 Started Trivia!' }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 trivia started!' }));
             window.nextTriviaQuestion();
         };
 
         window.nextTriviaQuestion = function() {
             if (triviaTotal >= 5) {
-                let scores = 'Final Scores: ';
+                let scores = 'FINAL: ';
                 Object.entries(triviaScore).forEach(([u, s]) => { scores += u + ':' + s + ' '; });
-                document.getElementById('triviaQuestion').textContent = 'Done!';
+                document.getElementById('triviaQuestion').textContent = '🏆 DONE!';
                 document.getElementById('triviaAnswers').innerHTML = '';
                 document.getElementById('triviaResult').textContent = '';
                 document.getElementById('playersScore').textContent = scores;
@@ -472,7 +464,7 @@ const html = `<!DOCTYPE html>
                 if (i === triviaCurrentQ.c) b.classList.add('correct');
                 else if (i === idx) b.classList.add('wrong');
             });
-            document.getElementById('triviaResult').textContent = isCorrect ? '✅ Correct!' : '❌ Wrong!';
+            document.getElementById('triviaResult').textContent = isCorrect ? '✅ CORRECT!' : '❌ WRONG!';
         };
 
         window.showTriviaResult = function() {
@@ -508,7 +500,7 @@ const html = `<!DOCTYPE html>
             window.renderHangmanGame();
             if (connected) {
                 ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 Hangman started!' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 hangman started!' }));
             }
         };
 
@@ -535,7 +527,7 @@ const html = `<!DOCTYPE html>
             const lost = hangmanWrong >= 6;
             if (won || lost) {
                 hangmanGameActive = false;
-                document.getElementById('hangmanResult').textContent = won ? '🎉 WIN!' : '💀 Word: ' + hangmanWord;
+                document.getElementById('hangmanResult').textContent = won ? '🎉 WIN!' : '💀 ' + hangmanWord;
             }
         };
 
@@ -559,7 +551,7 @@ const html = `<!DOCTYPE html>
             const div = document.getElementById('chat');
             div.innerHTML = '';
             const msgs = messages[currentChat] || [];
-            if (msgs.length === 0) { div.innerHTML = '<div class="empty">💬 Chat! 💜</div>'; return; }
+            if (msgs.length === 0) { div.innerHTML = '<div class="empty">💚 anime chat ready 💚</div>'; return; }
             msgs.forEach(m => {
                 const d = document.createElement('div');
                 d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
@@ -622,4 +614,4 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => { console.log('💜 Server on ' + PORT); });
+server.listen(PORT, () => { console.log('💚 anime chat ready 💚'); });
