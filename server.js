@@ -34,7 +34,7 @@ const html = `<!DOCTYPE html>
         .tab { padding: 8px 14px; background: linear-gradient(135deg, #2d4a7f 0%, #5a5fdf 100%); border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: white; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
         .tab.active { background: linear-gradient(135deg, #5a5fdf 0%, #9a5fff 100%); }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 18px; background: linear-gradient(135deg, rgba(26, 31, 58, 0.5), rgba(90, 95, 223, 0.15)); position: relative; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 22px; background: linear-gradient(135deg, rgba(26, 31, 58, 0.5), rgba(90, 95, 223, 0.15)); position: relative; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
         .message-sender { font-size: 14px; color: #a0aec0; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
@@ -51,7 +51,7 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-sender .heart { color: #0ea5e9; }
         .message.sienna .message-sender .heart { color: #f472b6; }
         .message.penelope .message-sender .heart { color: #d8b4fe; }
-        .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 14px; word-wrap: break-word; font-size: 15px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.1); width: fit-content; display: inline-block; }
+        .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 14px; word-wrap: break-word; font-size: 18px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.1); width: fit-content; display: inline-block; }
         .message.own .message-bubble { background: linear-gradient(135deg, #6a5adf, #a47fff); color: white; }
         .message.esther .message-bubble { background: #d4d9e8; color: #0f1218; }
         .message.valley .message-bubble { background: #d4d9e8; color: #0f1218; }
@@ -599,6 +599,9 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanSetupPhase').style.display = 'block';
             document.getElementById('hangmanGamePhase').style.display = 'none';
             document.getElementById('hangmanSetWord').value = '';
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' is setting up Hangman...' }));
+            }
         };
 
         window.startHangman = function() {
@@ -612,7 +615,7 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanGamePhase').style.display = 'block';
             window.renderHangmanGame();
             if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Hangman!' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 Hangman started! ' + currentUser + ' set the word. Others, start guessing!' }));
             }
         };
 
@@ -648,6 +651,9 @@ const html = `<!DOCTYPE html>
             hangmanGuessed.push(letter);
             if (!hangmanWord.includes(letter)) hangmanWrong++;
             window.renderHangmanGame();
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' guessed: ' + letter }));
+            }
         };
 
         window.playStory = function() {
@@ -760,6 +766,17 @@ wss.on('connection', (ws) => {
       const msg = JSON.parse(data);
       if (msg.type === 'new_message') {
         const newMsg = { id: Date.now(), user: msg.user, text: msg.text, chatId: msg.chatId };
+        const chatId = msg.chatId || 'group';
+        if (!messages[chatId]) messages[chatId] = [];
+        messages[chatId].push(newMsg);
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'message', data: newMsg }));
+          }
+        });
+      } else if (msg.type === 'rps_choice') {
+        // Add RPS choice message to chat
+        const newMsg = { id: Date.now(), user: msg.user, text: '✊ ' + msg.user + ' chose: ' + msg.choice.emoji, chatId: msg.chatId };
         const chatId = msg.chatId || 'group';
         if (!messages[chatId]) messages[chatId] = [];
         messages[chatId].push(newMsg);
