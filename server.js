@@ -108,7 +108,6 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
     <div class="login-screen" id="login">
-        <h1>✨ Anime Chat ✨</h1>
         <p>Pick Your Character</p>
         <div class="login-buttons">
             <button class="login-btn" onclick="window.login('esther')">🐱 Esther</button>
@@ -127,7 +126,7 @@ const html = `<!DOCTYPE html>
 
     <div class="container" id="app">
         <div class="header">
-            <div>✨ <span id="myname"></span></div>
+            <div><span id="myname"></span></div>
             <button class="logout-btn" onclick="window.logout()">Logout</button>
         </div>
         <div class="tabs" id="tabs"></div>
