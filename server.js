@@ -12,41 +12,34 @@ const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
     <title>💬 Chat Games</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; -webkit-user-select: none; user-select: none; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #FFC4DB 0%, #FFE5B4 16%, #FFFFCC 32%, #D4F1ED 48%, #C9D9F4 64%, #E0D4F7 80%, #FFC4DB 100%); display: flex; justify-content: center; align-items: center; padding: 0; }
-        body.dark-mode { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
-        .login-screen { width: 100%; height: 100vh; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .dark-mode .login-screen { background: #2a2a3e; color: white; }
-        .login-screen h1 { font-size: 36px; margin-bottom: 8px; color: #9C27B0; font-weight: 800; }
-        .login-screen p { font-size: 14px; color: #9C27B0; margin-bottom: 25px; font-weight: 600; }
-        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 300px; }
-        .login-btn { padding: 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(156, 39, 176, 0.2); }
-        .login-btn:active { transform: scale(0.98); }
+        html, body { width: 100%; height: 100%; overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #FFC4DB; display: flex; justify-content: center; }
+        .login-screen { width: 100vw; height: 100vh; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; }
+        .login-screen h1 { font-size: 24px; margin-bottom: 4px; color: #9C27B0; font-weight: 800; }
+        .login-screen p { font-size: 11px; color: #9C27B0; margin-bottom: 10px; font-weight: 600; }
+        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 100%; max-width: 240px; }
+        .login-btn { padding: 8px 4px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; }
+        .login-btn:active { transform: scale(0.95); }
         .container { width: 100vw; height: 100vh; background: white; display: none; flex-direction: column; }
-        .dark-mode .container { background: #2a2a3e; }
         .container.show { display: flex; }
-        .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; padding: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
-        .header-title { flex-grow: 1; }
+        .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; padding: 6px 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; flex-shrink: 0; gap: 4px; }
         #myname { color: #9C27B0; font-weight: 900; }
-        .logout-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 600; }
-        .dark-mode-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 4px 8px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
-        .tabs { display: flex; gap: 4px; padding: 8px; background: #f8f9fb; border-bottom: 2px solid #e8eaf6; overflow-x: auto; flex-shrink: 0; }
-        .dark-mode .tabs { background: #1a1a2e; border-color: #444; }
-        .tab { padding: 6px 10px; background: white; border: 2px solid #e0e0e0; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 11px; white-space: nowrap; color: #9C27B0; flex-shrink: 0; }
-        .dark-mode .tab { background: #3a3a4e; border-color: #555; color: #9C27B0; }
+        .logout-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 2px 4px; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: 600; }
+        .dark-mode-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 2px 4px; border-radius: 6px; cursor: pointer; font-size: 10px; }
+        .tabs { display: flex; gap: 2px; padding: 4px; background: #f8f9fb; border-bottom: 1px solid #e8eaf6; overflow-x: auto; flex-shrink: 0; }
+        .tab { padding: 3px 6px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 9px; white-space: nowrap; color: #9C27B0; flex-shrink: 0; }
         .tab.active { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; }
-        .chat-display { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 10px; -webkit-overflow-scrolling: touch; }
-        .dark-mode .chat-display { background: #1a1a2e; }
-        .message { margin-bottom: 10px; display: flex; flex-direction: column; }
+        .chat-display { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px 4px; -webkit-overflow-scrolling: touch; font-size: 11px; }
+        .message { margin-bottom: 6px; display: flex; flex-direction: column; }
         .message.own { align-items: flex-end; }
-        .message-content { display: flex; gap: 6px; align-items: flex-end; }
+        .message-content { display: flex; gap: 3px; align-items: flex-end; }
         .message.own .message-content { flex-direction: row-reverse; }
-        .avatar { width: 24px; height: 24px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .message-bubble { max-width: 85%; padding: 10px 12px; border-radius: 14px; word-wrap: break-word; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-weight: 500; line-height: 1.4; }
+        .avatar { width: 20px; height: 20px; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .message-bubble { max-width: 80%; padding: 6px 8px; border-radius: 10px; word-wrap: break-word; font-size: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-weight: 500; line-height: 1.3; }
         .message.own .message-bubble { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .message.esther .message-bubble { background: #5B6FC7; color: white; }
         .message.valley .message-bubble { background: #E91E63; color: white; }
@@ -59,52 +52,50 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-bubble { background: #4CAF50; color: white; }
         .message.sienna .message-bubble { background: #9C27B0; color: white; }
         .message.penelope .message-bubble { background: #FF1493; color: white; }
-        .message-sender { font-size: 10px; color: #9C27B0; margin: 0 0 4px 0; font-weight: 600; text-transform: capitalize; }
-        .dark-mode .message-sender { color: #9C27B0; }
+        .message-sender { font-size: 9px; color: #9C27B0; margin: 0 0 2px 0; font-weight: 600; }
         .message.own .message-sender { text-align: right; }
-        .input-area { padding: 8px; background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-        .dark-mode .input-area { background: #2a2a3e; border-color: #444; }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 8px; background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%); border-radius: 10px; max-height: 120px; overflow-y: auto; border: 2px solid #ffc107; margin-bottom: 6px; }
+        .input-area { padding: 4px; background: white; border-top: 1px solid #e8eaf6; display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 2px; padding: 4px; background: #fff9e6; border-radius: 8px; max-height: 70px; overflow-y: auto; border: 1px solid #ffc107; margin-bottom: 3px; }
         .emoji-picker.show { display: grid; }
-        .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 4px; border-radius: 8px; user-select: none; background: white; }
+        .emoji-option { font-size: 14px; cursor: pointer; text-align: center; padding: 2px; }
         .emoji-option:active { transform: scale(1.1); }
-        .games-panel { display: none; background: #f5f5f5; border-radius: 10px; padding: 8px; border: 2px solid #e0e0e0; margin-bottom: 6px; }
-        .dark-mode .games-panel { background: #3a3a4e; border-color: #555; }
+        .games-panel { display: none; background: #f5f5f5; border-radius: 8px; padding: 4px; border: 1px solid #e0e0e0; margin-bottom: 3px; }
         .games-panel.show { display: block; }
-        .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
-        .game-btn { padding: 10px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; }
-        .game-btn:active { transform: scale(0.98); }
-        .game-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .letter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 8px 0; }
-        .letter-btn { padding: 6px; background: white; border: 2px solid #9C27B0; border-radius: 6px; cursor: pointer; font-weight: 700; color: #9C27B0; font-size: 11px; }
-        .letter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .hangman-word { font-size: 24px; font-weight: 700; letter-spacing: 6px; text-align: center; margin: 8px 0; font-family: monospace; color: #9C27B0; }
-        .hangman-stage { font-size: 48px; text-align: center; margin: 8px 0; }
-        .input-container { display: flex; gap: 6px; align-items: center; }
-        .input-field { flex: 1; padding: 8px 10px; border: 2px solid #e0e0e0; border-radius: 16px; font-size: 13px; font-family: inherit; height: 36px; }
-        .dark-mode .input-field { background: #3a3a4e; border-color: #555; color: white; }
+        .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 4px; }
+        .game-btn { padding: 6px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 10px; }
+        .game-btn:active { transform: scale(0.95); }
+        .game-btn:disabled { opacity: 0.5; }
+        .letter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin: 6px 0; }
+        .letter-btn { padding: 4px; background: white; border: 1px solid #9C27B0; border-radius: 6px; cursor: pointer; font-weight: 700; color: #9C27B0; font-size: 10px; }
+        .letter-btn:disabled { opacity: 0.3; }
+        .hangman-word { font-size: 20px; font-weight: 700; letter-spacing: 4px; text-align: center; margin: 6px 0; font-family: monospace; color: #9C27B0; }
+        .hangman-stage { font-size: 40px; text-align: center; margin: 4px 0; }
+        .input-container { display: flex; gap: 4px; align-items: center; }
+        .input-field { flex: 1; padding: 6px 8px; border: 1px solid #e0e0e0; border-radius: 14px; font-size: 11px; font-family: inherit; height: 32px; }
         .input-field:focus { outline: none; border-color: #667eea; }
-        .emoji-btn { background: white; border: 2px solid #ffc107; color: #333; padding: 6px 8px; border-radius: 10px; font-size: 14px; cursor: pointer; height: 36px; }
-        .games-btn { background: white; border: 2px solid #9C27B0; color: #9C27B0; padding: 6px 8px; border-radius: 10px; font-size: 14px; cursor: pointer; height: 36px; font-weight: 700; }
-        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; padding: 6px 8px; border-radius: 16px; font-size: 10px; font-weight: 700; cursor: pointer; height: 36px; min-width: 45px; }
+        .input-field::placeholder { color: #999; }
+        .emoji-btn { background: white; border: 1px solid #ffc107; color: #333; padding: 4px 6px; border-radius: 8px; font-size: 13px; cursor: pointer; height: 32px; }
+        .games-btn { background: white; border: 1px solid #9C27B0; color: #9C27B0; padding: 4px 6px; border-radius: 8px; font-size: 13px; cursor: pointer; height: 32px; font-weight: 700; }
+        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; padding: 4px 6px; border-radius: 14px; font-size: 9px; font-weight: 700; cursor: pointer; height: 32px; min-width: 40px; }
         .send-btn:active { transform: scale(0.95); }
-        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .empty { text-align: center; color: #9C27B0; padding: 40px 20px; font-size: 14px; font-weight: 600; }
-        .game-status { text-align: center; padding: 8px; background: #f3e5f5; border-radius: 8px; color: #9C27B0; font-weight: 600; margin-bottom: 6px; font-size: 12px; }
-        .trivia-container { display: none; }
-        .trivia-container.show { display: block; }
-        .trivia-q { font-weight: 600; margin-bottom: 8px; color: #9C27B0; font-size: 13px; }
-        .trivia-answers { display: grid; gap: 6px; margin-bottom: 8px; }
-        .trivia-btn { padding: 8px; background: white; border: 2px solid #9C27B0; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; color: #9C27B0; }
+        .send-btn:disabled { background: #ccc; }
+        .empty { text-align: center; color: #9C27B0; padding: 30px 10px; font-size: 12px; font-weight: 600; }
+        .game-status { text-align: center; padding: 6px; background: #f3e5f5; border-radius: 6px; color: #9C27B0; font-weight: 600; margin-bottom: 4px; font-size: 10px; }
+        .trivia-q { font-weight: 600; margin-bottom: 6px; color: #9C27B0; font-size: 11px; }
+        .trivia-answers { display: grid; gap: 4px; margin-bottom: 6px; }
+        .trivia-btn { padding: 6px; background: white; border: 1px solid #9C27B0; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 10px; color: #9C27B0; }
         .trivia-btn:active { background: #f3e5f5; }
-        .trivia-result { text-align: center; margin-top: 6px; font-weight: 700; color: #9C27B0; font-size: 12px; }
-        .trivia-score { text-align: center; margin-top: 6px; font-size: 12px; color: #9C27B0; }
+        .trivia-btn.correct { background: #4CAF50; color: white; border-color: #4CAF50; }
+        .trivia-btn.wrong { background: #FF6B6B; color: white; border-color: #FF6B6B; }
+        .trivia-result { text-align: center; margin-top: 6px; font-weight: 700; color: #9C27B0; font-size: 11px; }
+        .trivia-score { text-align: center; margin-top: 4px; font-size: 10px; color: #9C27B0; }
+        .players-score { text-align: center; font-size: 10px; color: #9C27B0; margin-top: 4px; }
     </style>
 </head>
 <body>
     <div class="login-screen" id="login">
-        <h1>💜 Chat</h1>
-        <p>Pick Your Name 💜</p>
+        <h1>💜 Chat Games</h1>
+        <p>Select Your Name 💜</p>
         <div class="login-buttons">
             <button class="login-btn" onclick="window.login('esther')">Esther</button>
             <button class="login-btn" onclick="window.login('valley')">Valley</button>
@@ -122,7 +113,7 @@ const html = `<!DOCTYPE html>
 
     <div class="container" id="app">
         <div class="header">
-            <div class="header-title">💬 <span id="myname"></span></div>
+            <div>💬 <span id="myname"></span></div>
             <button class="dark-mode-btn" onclick="window.toggleDarkMode()">🌙</button>
             <button class="logout-btn" onclick="window.logout()">Logout</button>
         </div>
@@ -150,28 +141,29 @@ const html = `<!DOCTYPE html>
 
                 <div id="diceContainer" style="display: none;">
                     <div class="game-status">🎲 Roll!</div>
-                    <div style="font-size: 36px; text-align: center; margin: 8px 0;" id="diceResult">🎲</div>
+                    <div style="font-size: 32px; text-align: center; margin: 6px 0;" id="diceResult">🎲</div>
                     <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">Roll</button>
                 </div>
 
-                <div id="triviaContainer" class="trivia-container">
+                <div id="triviaContainer" style="display: none;">
                     <div class="trivia-q" id="triviaQuestion"></div>
                     <div id="triviaAnswers" class="trivia-answers"></div>
                     <div class="trivia-result" id="triviaResult"></div>
+                    <div class="players-score" id="playersScore"></div>
                     <div class="trivia-score" id="triviaScore"></div>
                 </div>
 
                 <div id="hangmanContainer" style="display: none;">
                     <div class="game-status" id="hangmanStatus">🎯 Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Word..." maxlength="15" style="width: 100%; padding: 6px; margin: 6px 0; border: 2px solid #9C27B0; border-radius: 6px; color: #9C27B0; font-size: 12px;">
-                        <button class="game-btn" style="width: 100%;" onclick="window.startHangman()">Set</button>
+                        <input type="text" id="hangmanSetWord" placeholder="Word..." maxlength="12" style="width: 100%; padding: 4px; margin: 4px 0; border: 1px solid #9C27B0; border-radius: 6px; color: #9C27B0; font-size: 11px;">
+                        <button class="game-btn" style="width: 100%; margin-top: 2px;" onclick="window.startHangman()">Set</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div class="hangman-stage" id="hangmanStage">😊</div>
                         <div class="hangman-word" id="hangmanWord">_ _ _</div>
                         <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 6px; color: #9C27B0; font-size: 11px;"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 4px; color: #9C27B0; font-size: 10px;"></div>
                     </div>
                 </div>
             </div>
@@ -188,101 +180,99 @@ const html = `<!DOCTYPE html>
         const EMOJIS = ['😀','😂','😍','🥰','😎','🤗','😊','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🧋','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','💜'];
         
         const TRIVIA_QUESTIONS = [
-            {q: 'What is the capital of Australia?', a: ['Sydney','Melbourne','Canberra','Brisbane'], c: 2},
-            {q: 'Which ocean is largest?', a: ['Atlantic','Indian','Arctic','Pacific'], c: 3},
+            {q: 'Capital of Australia?', a: ['Sydney','Melbourne','Canberra','Brisbane'], c: 2},
+            {q: 'Largest ocean?', a: ['Atlantic','Indian','Arctic','Pacific'], c: 3},
             {q: 'Tallest mountain?', a: ['Kilimanjaro','Everest','Denali','Blanc'], c: 1},
-            {q: 'What is the capital of France?', a: ['Lyon','Marseille','Paris','Nice'], c: 2},
+            {q: 'Capital of France?', a: ['Lyon','Marseille','Paris','Nice'], c: 2},
             {q: 'Fastest land animal?', a: ['Lion','Gazelle','Cheetah','Pronghorn'], c: 2},
-            {q: 'Largest animal ever?', a: ['Elephant','Blue Whale','Giraffe','Hippo'], c: 1},
+            {q: 'Largest animal?', a: ['Elephant','Blue Whale','Giraffe','Hippo'], c: 1},
             {q: 'Longest river?', a: ['Amazon','Congo','Nile','Yangtze'], c: 2},
             {q: 'Capital of Japan?', a: ['Osaka','Kyoto','Tokyo','Yokohama'], c: 2},
-            {q: 'Deepest ocean trench?', a: ['Mariana','Tonga','Philippine','Kuril'], c: 0},
+            {q: 'Deepest trench?', a: ['Mariana','Tonga','Philippine','Kuril'], c: 0},
             {q: 'Capital of Egypt?', a: ['Alexandria','Cairo','Giza','Luxor'], c: 1},
-            {q: 'Which bird cannot fly?', a: ['Ostrich','Chicken','Penguin','Kiwi'], c: 0},
-            {q: 'Capital of Brazil?', a: ['Rio de Janeiro','Brasília','Salvador','Sao Paulo'], c: 1},
-            {q: 'How many legs octopus?', a: ['6','8','10','12'], c: 1},
+            {q: 'Bird cannot fly?', a: ['Ostrich','Chicken','Penguin','Kiwi'], c: 0},
+            {q: 'Capital of Brazil?', a: ['Rio','Brasília','Salvador','Sao Paulo'], c: 1},
+            {q: 'Octopus legs?', a: ['6','8','10','12'], c: 1},
             {q: 'Capital of Canada?', a: ['Toronto','Vancouver','Ottawa','Montreal'], c: 2},
             {q: 'Capital of Germany?', a: ['Munich','Hamburg','Berlin','Cologne'], c: 2},
             {q: 'Largest desert?', a: ['Sahara','Gobi','Kalahari','Antarctic'], c: 3},
             {q: 'Capital of Italy?', a: ['Milan','Rome','Venice','Florence'], c: 1},
-            {q: 'How many continents?', a: ['5','6','7','8'], c: 2},
+            {q: 'Continents total?', a: ['5','6','7','8'], c: 2},
             {q: 'Capital of Spain?', a: ['Barcelona','Madrid','Valencia','Seville'], c: 1},
-            {q: 'Smallest country?', a: ['Monaco','Vatican City','San Marino','Liechtenstein'], c: 1},
-            {q: 'Fastest animal overall?', a: ['Eagle','Falcon','Peregrine','Hawk'], c: 2},
-            {q: 'Which animal sleeps most?', a: ['Bear','Koala','Horse','Cat'], c: 1},
+            {q: 'Smallest country?', a: ['Monaco','Vatican','San Marino','Liechtenstein'], c: 1},
+            {q: 'Fastest diver?', a: ['Eagle','Falcon','Peregrine','Hawk'], c: 2},
+            {q: 'Most sleep?', a: ['Bear','Koala','Horse','Cat'], c: 1},
             {q: 'Capital of India?', a: ['Mumbai','New Delhi','Bangalore','Kolkata'], c: 1},
-            {q: 'How many strings violin?', a: ['3','4','5','6'], c: 1},
+            {q: 'Violin strings?', a: ['3','4','5','6'], c: 1},
             {q: 'Capital of Mexico?', a: ['Cancun','Guadalajara','Mexico City','Monterrey'], c: 2},
-            {q: 'Largest animal mammal?', a: ['Elephant','Whale','Giraffe','Hippo'], c: 1},
+            {q: 'Largest mammal?', a: ['Elephant','Whale','Giraffe','Hippo'], c: 1},
             {q: 'Capital of Russia?', a: ['St Petersburg','Moscow','Vladivostok','Novosibirsk'], c: 1},
-            {q: 'Which ocean Arctic?', a: ['Pacific','Atlantic','Indian','Arctic'], c: 3},
+            {q: 'Most salt ocean?', a: ['Pacific','Atlantic','Indian','Arctic'], c: 0},
             {q: 'Capital of Greece?', a: ['Thessaloniki','Athens','Patras','Larissa'], c: 1},
-            {q: 'How many bones human?', a: ['186','206','226','246'], c: 1},
+            {q: 'Human bones?', a: ['186','206','226','246'], c: 1},
             {q: 'Capital of Turkey?', a: ['Istanbul','Ankara','Izmir','Bursa'], c: 1},
-            {q: 'Biggest cat animal?', a: ['Lion','Tiger','Leopard','Jaguar'], c: 1},
+            {q: 'Biggest cat?', a: ['Lion','Tiger','Leopard','Jaguar'], c: 1},
             {q: 'Capital of Portugal?', a: ['Porto','Lisbon','Covilha','Aveiro'], c: 1},
-            {q: 'Ocean has most salt?', a: ['Atlantic','Pacific','Indian','Arctic'], c: 0},
+            {q: 'Arctic ocean?', a: ['Atlantic','Pacific','Indian','Arctic'], c: 3},
             {q: 'Capital of Poland?', a: ['Krakow','Gdansk','Warsaw','Wroclaw'], c: 2},
-            {q: 'How many hearts squid?', a: ['1','2','3','4'], c: 2},
+            {q: 'Squid hearts?', a: ['1','2','3','4'], c: 2},
             {q: 'Capital of Argentina?', a: ['Cordoba','Rosario','Buenos Aires','La Plata'], c: 2},
-            {q: 'Fastest bird dive?', a: ['150mph','200mph','250mph','300mph'], c: 2},
-            {q: 'Capital of South Korea?', a: ['Busan','Seoul','Incheon','Daegu'], c: 1},
-            {q: 'Which country pandas?', a: ['Japan','Korea','China','Vietnam'], c: 2},
+            {q: 'Peregrine speed?', a: ['150','200','250','300'], c: 2},
+            {q: 'Capital S.Korea?', a: ['Busan','Seoul','Incheon','Daegu'], c: 1},
+            {q: 'Panda country?', a: ['Japan','Korea','China','Vietnam'], c: 2},
             {q: 'Capital of Chile?', a: ['Valparaiso','Santiago','Concepcion','Temuco'], c: 1},
-            {q: 'How deep ocean avg?', a: ['2km','3km','4km','5km'], c: 2},
+            {q: 'Ocean depth avg?', a: ['2km','3km','4km','5km'], c: 2},
             {q: 'Capital of Sweden?', a: ['Gothenburg','Malmö','Stockholm','Uppsala'], c: 2},
-            {q: 'How many teeth shark?', a: ['5000','10000','20000','40000'], c: 3},
+            {q: 'Shark teeth?', a: ['5000','10000','20000','40000'], c: 3},
             {q: 'Capital of Austria?', a: ['Salzburg','Graz','Vienna','Linz'], c: 2},
-            {q: 'Tallest tree type?', a: ['Oak','Pine','Eucalyptus','Redwood'], c: 3},
+            {q: 'Tallest tree?', a: ['Oak','Pine','Eucalyptus','Redwood'], c: 3},
             {q: 'Capital of Belgium?', a: ['Antwerp','Ghent','Brussels','Liege'], c: 2},
-            {q: 'How long giraffe neck?', a: ['4ft','6ft','12ft','18ft'], c: 2},
+            {q: 'Giraffe neck?', a: ['4ft','6ft','12ft','18ft'], c: 2},
             {q: 'Capital of Thailand?', a: ['Phuket','Chiang Mai','Bangkok','Pattaya'], c: 2},
-            {q: 'Most abundant element?', a: ['Oxygen','Nitrogen','Hydrogen','Helium'], c: 2},
-            {q: 'Capital of Netherlands?', a: ['Rotterdam','Utrecht','Amsterdam','Hague'], c: 2},
-            {q: 'How old turtle live?', a: ['50','100','150','200'], c: 3},
+            {q: 'Most element?', a: ['Oxygen','Nitrogen','Hydrogen','Helium'], c: 2},
+            {q: 'Capital Netherlands?', a: ['Rotterdam','Utrecht','Amsterdam','Hague'], c: 2},
+            {q: 'Turtle lifespan?', a: ['50','100','150','200'], c: 3},
             {q: 'Capital of Denmark?', a: ['Aarhus','Odense','Copenhagen','Aalborg'], c: 2},
-            {q: 'How fast peregrine?', a: ['100mph','150mph','200mph','250mph'], c: 2},
+            {q: 'Peregrine speed?', a: ['100','150','200','250'], c: 2},
             {q: 'Capital of Norway?', a: ['Bergen','Trondheim','Oslo','Stavanger'], c: 2},
-            {q: 'How many chambers heart?', a: ['2','3','4','5'], c: 2},
+            {q: 'Heart chambers?', a: ['2','3','4','5'], c: 2},
             {q: 'Capital of Finland?', a: ['Tampere','Turku','Helsinki','Oulu'], c: 2},
-            {q: 'Deepest place ocean?', a: ['5000m','7000m','9000m','11000m'], c: 3},
+            {q: 'Ocean deepest?', a: ['5000m','7000m','9000m','11000m'], c: 3},
             {q: 'Capital of Ireland?', a: ['Cork','Galway','Dublin','Limerick'], c: 2},
-            {q: 'How many legs spider?', a: ['6','8','10','12'], c: 1},
+            {q: 'Spider legs?', a: ['6','8','10','12'], c: 1},
             {q: 'Capital of Romania?', a: ['Cluj','Timisoara','Bucharest','Constanta'], c: 2},
-            {q: 'Blue whale weight?', a: ['100 tons','150 tons','200 tons','300 tons'], c: 2},
+            {q: 'Whale weight?', a: ['100','150','200','300'], c: 2},
             {q: 'Capital of Hungary?', a: ['Debrecen','Szeged','Budapest','Miskolc'], c: 2},
-            {q: 'How many teeth human?', a: ['28','30','32','36'], c: 2},
+            {q: 'Human teeth?', a: ['28','30','32','36'], c: 2},
             {q: 'Capital of Czech?', a: ['Brno','Plzen','Prague','Olomouc'], c: 2},
-            {q: 'Largest feline cat?', a: ['Tiger','Lion','Leopard','Jaguar'], c: 0},
+            {q: 'Largest feline?', a: ['Tiger','Lion','Leopard','Jaguar'], c: 0},
             {q: 'Capital of Croatia?', a: ['Rijeka','Split','Zagreb','Osijek'], c: 2},
-            {q: 'How many eyes bee?', a: ['2','3','5','8'], c: 2},
+            {q: 'Bee eyes?', a: ['2','3','5','8'], c: 2},
             {q: 'Capital of Slovenia?', a: ['Maribor','Celje','Ljubljana','Koper'], c: 2},
-            {q: 'Fastest fish water?', a: ['Sailfish','Tuna','Marlin','Wahoo'], c: 0},
+            {q: 'Fastest fish?', a: ['Sailfish','Tuna','Marlin','Wahoo'], c: 0},
             {q: 'Capital of Serbia?', a: ['Nis','Novi Sad','Belgrade','Kragujevac'], c: 2},
-            {q: 'How big dinosaur?', a: ['20ft','40ft','80ft','120ft'], c: 3},
+            {q: 'Dinosaur size?', a: ['20ft','40ft','80ft','120ft'], c: 3},
             {q: 'Capital of Bulgaria?', a: ['Plovdiv','Varna','Sofia','Burgas'], c: 2},
-            {q: 'Smartest animal?', a: ['Dolphin','Crow','Octopus','Chimp'], c: 3},
+            {q: 'Smartest?', a: ['Dolphin','Crow','Octopus','Chimp'], c: 3},
             {q: 'Capital of Albania?', a: ['Durrës','Vlore','Tirana','Fier'], c: 2},
-            {q: 'How long whale can hold?', a: ['30 min','1 hr','2 hrs','4 hrs'], c: 2},
+            {q: 'Whale hold breath?', a: ['30m','1h','2h','4h'], c: 2},
             {q: 'Capital of Macedonia?', a: ['Bitola','Kumanovo','Skopje','Tetovo'], c: 2},
-            {q: 'How many sides pentagon?', a: ['4','5','6','7'], c: 1},
+            {q: 'Pentagon sides?', a: ['4','5','6','7'], c: 1},
             {q: 'Capital of Bosnia?', a: ['Tuzla','Banja Luka','Sarajevo','Mostar'], c: 2},
-            {q: 'Largest sea creature?', a: ['Whale Shark','Great White','Octopus','Squid'], c: 0},
+            {q: 'Biggest sea?', a: ['Whale Shark','Great White','Octopus','Squid'], c: 0},
             {q: 'Capital of Iceland?', a: ['Akureyri','Hafnarfjordur','Reykjavik','Keflavik'], c: 2},
-            {q: 'How many colors rainbow?', a: ['5','6','7','8'], c: 2},
+            {q: 'Rainbow colors?', a: ['5','6','7','8'], c: 2},
             {q: 'Capital of Luxembourg?', a: ['Differdange','Esch','Luxembourg','Dudelange'], c: 2},
-            {q: 'Tallest bird alive?', a: ['Emu','Rhea','Ostrich','Cassowary'], c: 2},
+            {q: 'Tallest bird?', a: ['Emu','Rhea','Ostrich','Cassowary'], c: 2},
             {q: 'Capital of Malta?', a: ['Sliema','Valletta','Naxxar','Paceville'], c: 1},
-            {q: 'How many bones neck?', a: ['5','7','9','12'], c: 1},
+            {q: 'Neck bones?', a: ['5','7','9','12'], c: 1},
             {q: 'Capital of Cyprus?', a: ['Limassol','Paphos','Nicosia','Larnaca'], c: 2},
-            {q: 'Strongest animal pound?', a: ['Bull','Gorilla','Rhino','Bear'], c: 2},
+            {q: 'Strongest per lb?', a: ['Bull','Gorilla','Rhino','Bear'], c: 2},
             {q: 'Capital of Lebanon?', a: ['Tripoli','Sidon','Beirut','Tyre'], c: 2},
-            {q: 'How old can human live?', a: ['100','120','140','160'], c: 1},
+            {q: 'Human max age?', a: ['100','120','140','160'], c: 1},
             {q: 'Capital of Israel?', a: ['Tel Aviv','Haifa','Jerusalem','Rishon'], c: 2},
-            {q: 'Which snake longest?', a: ['Cobra','Python','Anaconda','Mamba'], c: 2},
-            {q: 'Capital of Jordan?', a: ['Zarqa','Irbid','Amman','Aqaba'], c: 2},
-            {q: 'How many bones ribs?', a: ['10','12','14','16'], c: 1},
-            {q: 'Capital of Syria?', a: ['Aleppo','Homs','Damascus','Latakia'], c: 2}
+            {q: 'Longest snake?', a: ['Cobra','Python','Anaconda','Mamba'], c: 2},
+            {q: 'Capital of Jordan?', a: ['Zarqa','Irbid','Amman','Aqaba'], c: 2}
         ];
 
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
@@ -300,7 +290,7 @@ const html = `<!DOCTYPE html>
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
         let rpsChoice = null, rpsTimeLeft = 0, rpsTimer = null;
         let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false;
-        let triviaScore = 0, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null;
+        let triviaScore = {}, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null, triviaUsers = new Set();
 
         window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
@@ -359,6 +349,23 @@ const html = `<!DOCTYPE html>
                     messages[data.data.chatId].push(data.data);
                     localStorage.setItem('chat_' + data.data.chatId, JSON.stringify(messages[data.data.chatId]));
                     if (data.data.chatId === currentChat) window.render();
+                } else if (data.type === 'trivia_start') {
+                    if (data.chatId === currentChat) {
+                        triviaScore = {};
+                        triviaTotal = 0;
+                        triviaUsers.clear();
+                        triviaAnswered = false;
+                        document.getElementById('triviaContainer').style.display = 'block';
+                        window.nextTriviaQuestion();
+                    }
+                } else if (data.type === 'trivia_answer') {
+                    if (data.chatId === currentChat && !triviaScore[data.user]) {
+                        triviaScore[data.user] = data.correct ? 1 : 0;
+                        triviaUsers.add(data.user);
+                        if (triviaUsers.size >= 2) {
+                            window.showTriviaResult();
+                        }
+                    }
                 } else if (data.type === 'rps_choice') {
                     if (data.chatId === currentChat) {
                         document.getElementById('rpsStatus').textContent = data.user + ' chose!';
@@ -389,7 +396,7 @@ const html = `<!DOCTYPE html>
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
-                btn.textContent = chatId === 'group' ? '👥' : '💜 ' + chatId.split('-')[1].substr(0, 3);
+                btn.textContent = chatId === 'group' ? '👥 Group' : '💜 ' + chatId.split('-')[1];
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
@@ -423,7 +430,7 @@ const html = `<!DOCTYPE html>
             rpsChoice = null;
             document.getElementById('rpsContainer').style.display = 'block';
             document.getElementById('hangmanContainer').style.display = 'none';
-            document.getElementById('triviaContainer').classList.remove('show');
+            document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             rpsTimeLeft = 10;
             document.getElementById('rpsStatus').textContent = '⏱️ 10s';
@@ -442,7 +449,7 @@ const html = `<!DOCTYPE html>
             document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
             if (connected) {
                 ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 ' + currentUser + ' played RPS' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Played RPS' }));
             }
         };
 
@@ -450,7 +457,7 @@ const html = `<!DOCTYPE html>
             document.getElementById('diceContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
-            document.getElementById('triviaContainer').classList.remove('show');
+            document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceResult').textContent = '🎲';
         };
 
@@ -459,27 +466,36 @@ const html = `<!DOCTYPE html>
             const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
             document.getElementById('diceResult').textContent = emojis[result - 1];
             document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 ' + currentUser + ': ' + result }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 Rolled: ' + result }));
         };
 
         window.playTrivia = function() {
-            triviaScore = 0;
+            triviaScore = {};
             triviaTotal = 0;
+            triviaUsers.clear();
             triviaAnswered = false;
-            document.getElementById('triviaContainer').classList.add('show');
+            document.getElementById('triviaContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
+            ws.send(JSON.stringify({ type: 'trivia_start', user: currentUser, chatId: currentChat }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 Started Trivia!' }));
             window.nextTriviaQuestion();
         };
 
         window.nextTriviaQuestion = function() {
-            if (triviaTotal >= 10) {
-                document.getElementById('triviaQuestion').textContent = 'Done! Score: ' + triviaScore + '/10';
+            if (triviaTotal >= 5) {
+                let scores = 'Final Scores: ';
+                Object.entries(triviaScore).forEach(([u, s]) => { scores += u + ':' + s + ' '; });
+                document.getElementById('triviaQuestion').textContent = 'Done!';
                 document.getElementById('triviaAnswers').innerHTML = '';
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 Trivia: ' + triviaScore + '/10' }));
+                document.getElementById('triviaResult').textContent = '';
+                document.getElementById('playersScore').textContent = scores;
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 ' + scores }));
                 return;
             }
+            triviaTotal++;
+            triviaUsers.clear();
             triviaAnswered = false;
             triviaCurrentQ = TRIVIA_QUESTIONS[Math.floor(Math.random() * TRIVIA_QUESTIONS.length)];
             document.getElementById('triviaQuestion').textContent = triviaCurrentQ.q;
@@ -493,16 +509,29 @@ const html = `<!DOCTYPE html>
                 answers.appendChild(btn);
             });
             document.getElementById('triviaResult').textContent = '';
-            document.getElementById('triviaScore').textContent = (triviaTotal + 1) + '/10';
+            document.getElementById('playersScore').textContent = '';
+            document.getElementById('triviaScore').textContent = triviaTotal + '/5';
         };
 
         window.submitTriviaAnswer = function(idx) {
             if (triviaAnswered) return;
             triviaAnswered = true;
-            if (idx === triviaCurrentQ.c) triviaScore++;
-            document.getElementById('triviaResult').textContent = idx === triviaCurrentQ.c ? '✅' : '❌';
-            triviaTotal++;
-            setTimeout(window.nextTriviaQuestion, 800);
+            const isCorrect = idx === triviaCurrentQ.c;
+            if (!triviaScore[currentUser]) triviaScore[currentUser] = 0;
+            if (isCorrect) triviaScore[currentUser]++;
+            ws.send(JSON.stringify({ type: 'trivia_answer', user: currentUser, chatId: currentChat, correct: isCorrect }));
+            document.querySelectorAll('.trivia-btn').forEach((b, i) => {
+                if (i === triviaCurrentQ.c) b.classList.add('correct');
+                else if (i === idx) b.classList.add('wrong');
+            });
+            document.getElementById('triviaResult').textContent = isCorrect ? '✅ Correct!' : '❌ Wrong!';
+        };
+
+        window.showTriviaResult = function() {
+            let result = '';
+            Object.entries(triviaScore).forEach(([u, s]) => { result += u + ':' + s + '  '; });
+            document.getElementById('playersScore').textContent = result;
+            setTimeout(window.nextTriviaQuestion, 1200);
         };
 
         window.playHangman = function() {
@@ -512,7 +541,7 @@ const html = `<!DOCTYPE html>
             hangmanGameActive = false;
             document.getElementById('hangmanContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
-            document.getElementById('triviaContainer').classList.remove('show');
+            document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('hangmanSetupPhase').style.display = 'block';
             document.getElementById('hangmanGamePhase').style.display = 'none';
@@ -558,7 +587,7 @@ const html = `<!DOCTYPE html>
             const lost = hangmanWrong >= 6;
             if (won || lost) {
                 hangmanGameActive = false;
-                document.getElementById('hangmanResult').textContent = won ? '🎉 WIN: ' + hangmanWord : '💀 LOSE: ' + hangmanWord;
+                document.getElementById('hangmanResult').textContent = won ? '🎉 WIN!' : '💀 Word: ' + hangmanWord;
             }
         };
 
