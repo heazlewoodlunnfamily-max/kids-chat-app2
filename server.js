@@ -665,6 +665,8 @@ const html = `<!DOCTYPE html>
             ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 ' + currentUser + ' started Trivia!' }));
             window.nextTriviaQuestion();
         };
+
+        window.playHangman = function() {
             hangmanWord = '';
             hangmanGuessed = [];
             hangmanWrong = 0;
