@@ -577,8 +577,28 @@ const html = `<!DOCTYPE html>
             if (msgs.length === 0) { div.innerHTML = '<div class="empty">Chat ready!</div>'; return; }
             msgs.forEach(m => {
                 const d = document.createElement('div');
-                const displayName = (currentChat !== 'group' && m.user !== currentUser) ? 'esther' : m.user;
-                d.className = 'message ' + (m.user === currentUser ? 'own' : displayName);
+                let displayName = m.user;
+                let bubbleName = m.user;
+                
+                // If in a private chat (not group)
+                if (currentChat !== 'group') {
+                    // If current user is Esther, show real names
+                    if (currentUser === 'esther') {
+                        displayName = m.user === 'esther' ? 'ESTHER' : m.user;
+                        bubbleName = m.user === 'esther' ? 'ESTHER' : m.user;
+                    } else {
+                        // If current user is NOT Esther, show their own name, but bubble says ESTHER
+                        if (m.user === currentUser) {
+                            displayName = currentUser;
+                            bubbleName = 'ESTHER';
+                        } else {
+                            displayName = 'ESTHER';
+                            bubbleName = 'ESTHER';
+                        }
+                    }
+                }
+                
+                d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
                 const sender = '<div class="message-sender"><span class="heart">💕</span>' + displayName.toUpperCase() + '<span class="heart">💕</span></div>';
                 const content = '<div class="message-bubble">' + m.text + '</div>';
                 d.innerHTML = sender + content;
