@@ -470,7 +470,38 @@ const html = `<!DOCTYPE html>
                 } else if (data.type === 'game_state') {
                     // Sync game state from other player
                     const gameData = data.data;
-                    if (gameData.game === 'story') {
+                    if (gameData.game === 'hangman_start') {
+                        // Open hangman for both players
+                        document.getElementById('hangmanContainer').style.display = 'block';
+                        document.getElementById('rpsContainer').style.display = 'none';
+                        document.getElementById('triviaContainer').style.display = 'none';
+                        document.getElementById('diceContainer').style.display = 'none';
+                        document.getElementById('storyContainer').style.display = 'none';
+                        document.getElementById('hangmanSetupPhase').style.display = 'block';
+                        document.getElementById('hangmanGamePhase').style.display = 'none';
+                    } else if (gameData.game === 'hangman') {
+                        // Update hangman game state
+                        hangmanWord = gameData.word;
+                        hangmanGuessed = gameData.guessed;
+                        hangmanWrong = gameData.wrong;
+                        hangmanGameActive = gameData.active;
+                        hangmanSetter = gameData.setter;
+                        document.getElementById('hangmanContainer').style.display = 'block';
+                        document.getElementById('rpsContainer').style.display = 'none';
+                        document.getElementById('triviaContainer').style.display = 'none';
+                        document.getElementById('diceContainer').style.display = 'none';
+                        document.getElementById('storyContainer').style.display = 'none';
+                        document.getElementById('hangmanSetupPhase').style.display = 'none';
+                        document.getElementById('hangmanGamePhase').style.display = 'block';
+                        window.renderHangmanGame();
+                    } else if (gameData.game === 'story_start') {
+                        // Open story for both players
+                        document.getElementById('storyContainer').style.display = 'block';
+                        document.getElementById('rpsContainer').style.display = 'none';
+                        document.getElementById('diceContainer').style.display = 'none';
+                        document.getElementById('triviaContainer').style.display = 'none';
+                        document.getElementById('hangmanContainer').style.display = 'none';
+                    } else if (gameData.game === 'story') {
                         storyLines = gameData.storyLines;
                         document.getElementById('storyText').innerHTML = '';
                         storyLines.forEach(line => {
@@ -483,13 +514,6 @@ const html = `<!DOCTYPE html>
                             document.getElementById('storyText').appendChild(p);
                         });
                         document.getElementById('storyText').scrollTop = document.getElementById('storyText').scrollHeight;
-                    } else if (gameData.game === 'hangman') {
-                        hangmanWord = gameData.word;
-                        hangmanGuessed = gameData.guessed;
-                        hangmanWrong = gameData.wrong;
-                        hangmanGameActive = gameData.active;
-                        hangmanSetter = gameData.setter;
-                        window.renderHangmanGame();
                     }
                 } else if (data.type === 'rps_reveal') {
                     rpsChoices[data.user] = data.choice;
@@ -723,7 +747,9 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanGamePhase').style.display = 'none';
             document.getElementById('hangmanSetWord').value = '';
             if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' is setting up Hangman... (will be the WORD SETTER)' }));
+                // Broadcast that hangman game is starting
+                ws.send(JSON.stringify({ type: 'game_state', data: { game: 'hangman_start' } }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' started Hangman!' }));
             }
         };
 
@@ -740,6 +766,8 @@ const html = `<!DOCTYPE html>
             window.renderHangmanGame();
             if (connected) {
                 const display = hangmanWord.split('').map(l => '_').join(' ');
+                // Broadcast hangman game start to all players
+                ws.send(JSON.stringify({ type: 'game_state', data: { game: 'hangman', word: hangmanWord, guessed: hangmanGuessed, wrong: hangmanWrong, active: hangmanGameActive, setter: hangmanSetter, display: display } }));
                 ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 HANGMAN STARTED! Setter: ' + hangmanSetter + ' | Guessers: Everyone else | ' + HANGMAN_STAGES[0] + ' | Word: ' + display + ' | Wrong: 0/6' }));
             }
         };
@@ -800,6 +828,8 @@ const html = `<!DOCTYPE html>
             }
             document.getElementById('storyLine').value = '';
             if (connected) {
+                // Broadcast that story game is starting
+                ws.send(JSON.stringify({ type: 'game_state', data: { game: 'story_start' } }));
                 ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '📖 ' + currentUser + ' started a Story!' }));
             }
         };
