@@ -216,6 +216,87 @@ const html = `<!DOCTYPE html>
             {q: 'Bird cannot fly?', a: ['Penguin','Ostrich','Kiwi','Chicken'], c: 0},
             {q: 'Capital of Brazil?', a: ['Brasília','Rio','São Paulo','Salvador'], c: 0},
             {q: 'Octopus legs?', a: ['8','6','10','12'], c: 0},
+            {q: 'Capital of Italy?', a: ['Rome','Milan','Venice','Florence'], c: 0},
+            {q: 'Longest river?', a: ['Nile','Amazon','Yangtze','Mississippi'], c: 0},
+            {q: 'Tallest mountain?', a: ['Everest','K2','Kangchenjunga','Lhotse'], c: 0},
+            {q: 'Capital of Spain?', a: ['Madrid','Barcelona','Seville','Valencia'], c: 0},
+            {q: 'Smallest country?', a: ['Vatican','Monaco','Liechtenstein','Malta'], c: 0},
+            {q: 'How many continents?', a: ['7','5','6','8'], c: 0},
+            {q: 'Capital of Canada?', a: ['Ottawa','Toronto','Vancouver','Montreal'], c: 0},
+            {q: 'Hottest planet?', a: ['Venus','Mercury','Mars','Jupiter'], c: 0},
+            {q: 'How many bones in body?', a: ['206','186','226','196'], c: 0},
+            {q: 'Largest desert?', a: ['Antarctica','Sahara','Arabian','Gobi'], c: 0},
+            {q: 'Capital of Germany?', a: ['Berlin','Munich','Hamburg','Frankfurt'], c: 0},
+            {q: 'Speed of light?', a: ['300,000 km/s','150,000 km/s','450,000 km/s','200,000 km/s'], c: 0},
+            {q: 'How many strings violin?', a: ['4','5','6','3'], c: 0},
+            {q: 'Capital of India?', a: ['New Delhi','Mumbai','Bangalore','Kolkata'], c: 0},
+            {q: 'Largest mammal?', a: ['Blue Whale','Elephant','Giraffe','Rhino'], c: 0},
+            {q: 'How many sides pentagon?', a: ['5','6','7','4'], c: 0},
+            {q: 'Capital of Greece?', a: ['Athens','Thessaloniki','Patras','Heraklion'], c: 0},
+            {q: 'Smallest bone in body?', a: ['Stapes','Malleus','Incus','Vomer'], c: 0},
+            {q: 'How many colors rainbow?', a: ['7','5','6','8'], c: 0},
+            {q: 'Capital of Mexico?', a: ['Mexico City','Cancun','Guadalajara','Monterrey'], c: 0},
+            {q: 'Largest feline?', a: ['Tiger','Lion','Jaguar','Cougar'], c: 0},
+            {q: 'Capital of Russia?', a: ['Moscow','St. Petersburg','Novosibirsk','Yekaterinburg'], c: 0},
+            {q: 'How many wheels bike?', a: ['2','3','4','1'], c: 0},
+            {q: 'Capital of Turkey?', a: ['Ankara','Istanbul','Izmir','Bursa'], c: 0},
+            {q: 'Fastest fish?', a: ['Sailfish','Tuna','Marlin','Barracuda'], c: 0},
+            {q: 'How many minutes hour?', a: ['60','50','70','80'], c: 0},
+            {q: 'Capital of Sweden?', a: ['Stockholm','Gothenburg','Malmo','Uppsala'], c: 0},
+            {q: 'Smallest bird?', a: ['Hummingbird','Sparrow','Wren','Finch'], c: 0},
+            {q: 'How many planets?', a: ['8','9','7','10'], c: 0},
+            {q: 'Capital of Poland?', a: ['Warsaw','Krakow','Gdansk','Wroclaw'], c: 0},
+            {q: 'Largest reptile?', a: ['Saltwater Croc','Anaconda','Komodo Dragon','Python'], c: 0},
+            {q: 'How many teeth human?', a: ['32','28','30','36'], c: 0},
+            {q: 'Capital of Norway?', a: ['Oslo','Bergen','Stavanger','Trondheim'], c: 0},
+            {q: 'Strongest animal?', a: ['Dung Beetle','Ant','Ox','Elephant'], c: 0},
+            {q: 'How many letters alphabet?', a: ['26','24','28','25'], c: 0},
+            {q: 'Capital of Netherlands?', a: ['Amsterdam','Rotterdam','The Hague','Utrecht'], c: 0},
+            {q: 'Loudest animal?', a: ['Sperm Whale','Elephant','Lion','Howler Monkey'], c: 0},
+            {q: 'How many legs spider?', a: ['8','6','10','4'], c: 0},
+            {q: 'Capital of Portugal?', a: ['Lisbon','Porto','Braga','Covilha'], c: 0},
+            {q: 'Best sense eagle?', a: ['Vision','Hearing','Smell','Touch'], c: 0},
+            {q: 'How many chambers heart?', a: ['4','3','5','6'], c: 0},
+            {q: 'Capital of Belgium?', a: ['Brussels','Antwerp','Ghent','Bruges'], c: 0},
+            {q: 'Fastest bird?', a: ['Peregrine Falcon','Ostrich','Cheetah','Roadrunner'], c: 0},
+            {q: 'How many bones ear?', a: ['3','2','4','5'], c: 0},
+            {q: 'Capital of Austria?', a: ['Vienna','Salzburg','Innsbruck','Graz'], c: 0},
+            {q: 'Largest snake?', a: ['Anaconda','Python','Cobra','Mamba'], c: 0},
+            {q: 'How many muscles tongue?', a: ['16','12','20','8'], c: 0},
+            {q: 'Capital of Hungary?', a: ['Budapest','Debrecen','Szeged','Pécs'], c: 0},
+            {q: 'Smartest ape?', a: ['Chimpanzee','Gorilla','Orangutan','Baboon'], c: 0},
+            {q: 'How many taste buds?', a: ['10,000','5,000','15,000','20,000'], c: 0},
+            {q: 'Capital of Czech?', a: ['Prague','Brno','Ostrava','Pilsen'], c: 0},
+            {q: 'Most intelligent mammal?', a: ['Dolphin','Whale','Elephant','Ape'], c: 0},
+            {q: 'How many chambers stomach?', a: ['1','2','3','4'], c: 0},
+            {q: 'Capital of Romania?', a: ['Bucharest','Cluj','Iasi','Timisoara'], c: 0},
+            {q: 'Rarest big cat?', a: ['Amur Leopard','Snow Leopard','Sumatran Tiger','Javan Rhino'], c: 0},
+            {q: 'How many pairs ribs?', a: ['12','10','14','11'], c: 0},
+            {q: 'Capital of Bulgaria?', a: ['Sofia','Plovdiv','Varna','Burgas'], c: 0},
+            {q: 'Best dancer animal?', a: ['Porcupine','Deer','Flamingo','Swan'], c: 0},
+            {q: 'How many lobes brain?', a: ['4','2','3','5'], c: 0},
+            {q: 'Capital of Ireland?', a: ['Dublin','Cork','Galway','Limerick'], c: 0},
+            {q: 'Deadliest snake?', a: ['Inland Taipan','Black Mamba','King Cobra','Viper'], c: 0},
+            {q: 'How many eyelids camel?', a: ['3','2','4','1'], c: 0},
+            {q: 'Capital of Serbia?', a: ['Belgrade','Nis','Novi Sad','Ub'], c: 0},
+            {q: 'Highest jumping animal?', a: ['Flea','Grasshopper','Rabbit','Antelope'], c: 0},
+            {q: 'How many chambers squid?', a: ['3','2','4','5'], c: 0},
+            {q: 'Capital of Croatia?', a: ['Zagreb','Split','Rijeka','Zadar'], c: 0},
+            {q: 'Best sense bear?', a: ['Smell','Sight','Hearing','Touch'], c: 0},
+            {q: 'How many arms octopus?', a: ['8','6','10','7'], c: 0},
+            {q: 'Capital of Ukraine?', a: ['Kyiv','Kharkiv','Odesa','Lviv'], c: 0},
+            {q: 'Largest bird alive?', a: ['Ostrich','Emu','Cassowary','Rhea'], c: 0},
+            {q: 'How many eyes spider?', a: ['8','6','10','4'], c: 0},
+            {q: 'Capital of Greece?', a: ['Athens','Thessaloniki','Patras','Heraklion'], c: 0},
+            {q: 'Animal sleeps upright?', a: ['Giraffe','Elephant','Horse','Cow'], c: 0},
+            {q: 'How many wheels car?', a: ['4','3','5','6'], c: 0},
+            {q: 'Capital of Israel?', a: ['Jerusalem','Tel Aviv','Haifa','Be\'er Sheva'], c: 0},
+            {q: 'Largest insect?', a: ['Goliath Beetle','Dragonfly','Cicada','Grasshopper'], c: 0},
+            {q: 'How many fingers hand?', a: ['5','4','6','3'], c: 0},
+            {q: 'Capital of Thailand?', a: ['Bangkok','Chiang Mai','Phuket','Pattaya'], c: 0},
+            {q: 'Best climber animal?', a: ['Monkey','Squirrel','Lizard','Cat'], c: 0},
+            {q: 'How many toes foot?', a: ['5','4','6','3'], c: 0},
+            {q: 'Capital of Singapore?', a: ['Singapore City','Sentosa','Changi','Bukit'], c: 0},
         ];
 
         const STORY_IDEAS = [
@@ -242,9 +323,74 @@ const html = `<!DOCTYPE html>
         let rpsTimeLeft = 0, rpsTimer = null;
         let hangmanWord = '', hangmanGuessed = [], hangmanWrong = 0, hangmanGameActive = false;
         let triviaScore = {}, triviaTotal = 0, triviaAnswered = false, triviaCurrentQ = null, triviaUsers = new Set();
-        let storyLines = [];
+        let usedTriviaQuestions = [];
+        let playerTriviaQuestions = {};
 
-        window.login = function(user) {
+        window.playTrivia = function() {
+            triviaScore = {};
+            triviaTotal = 0;
+            triviaUsers.clear();
+            triviaAnswered = false;
+            usedTriviaQuestions = [];
+            playerTriviaQuestions[currentUser] = [];
+            document.getElementById('rpsContainer').style.display = 'none';
+            document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'block';
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Trivia!' }));
+            window.nextTriviaQuestion();
+        };
+
+        window.nextTriviaQuestion = function() {
+            if (triviaTotal >= 5) {
+                let scores = 'Final: ';
+                Object.entries(triviaScore).forEach(([u, s]) => { scores += u + ':' + s + ' '; });
+                document.getElementById('triviaQuestion').textContent = 'Done!';
+                document.getElementById('triviaAnswers').innerHTML = '';
+                document.getElementById('triviaResult').textContent = '';
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: scores }));
+                return;
+            }
+            triviaTotal++;
+            triviaUsers.clear();
+            triviaAnswered = false;
+            
+            let triviaCurrentQ;
+            do {
+                triviaCurrentQ = TRIVIA_QUESTIONS[Math.floor(Math.random() * TRIVIA_QUESTIONS.length)];
+            } while (playerTriviaQuestions[currentUser].includes(triviaCurrentQ.q));
+            
+            playerTriviaQuestions[currentUser].push(triviaCurrentQ.q);
+            
+            document.getElementById('triviaQuestion').textContent = triviaCurrentQ.q;
+            const answers = document.getElementById('triviaAnswers');
+            answers.innerHTML = '';
+            triviaCurrentQ.a.forEach((ans, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'trivia-btn';
+                btn.textContent = ans;
+                btn.onclick = () => window.submitTriviaAnswer(idx, triviaCurrentQ);
+                answers.appendChild(btn);
+            });
+            document.getElementById('triviaResult').textContent = '';
+            document.getElementById('triviaScore').textContent = triviaTotal + '/5';
+        };
+
+        window.submitTriviaAnswer = function(idx, question) {
+            if (triviaAnswered) return;
+            triviaAnswered = true;
+            const isCorrect = idx === question.c;
+            if (!triviaScore[currentUser]) triviaScore[currentUser] = 0;
+            if (isCorrect) triviaScore[currentUser]++;
+            document.querySelectorAll('.trivia-btn').forEach((b, i) => {
+                if (i === question.c) b.classList.add('correct');
+                else if (i === idx) b.classList.add('wrong');
+            });
+            document.getElementById('triviaResult').textContent = isCorrect ? '✓' : '✗';
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: (isCorrect ? '✓ Correct!' : '✗ Wrong!') }));
+            setTimeout(window.nextTriviaQuestion, 1500);
+        };
             if (!user) return;
             currentUser = user;
             localStorage.setItem('user', user);
@@ -378,6 +524,9 @@ const html = `<!DOCTYPE html>
                     b.disabled = false;
                 }
             });
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started RPS game!' }));
+            }
             rpsTimer = setInterval(() => {
                 rpsTimeLeft--;
                 document.getElementById('rpsStatus').textContent = rpsTimeLeft + 's left!';
@@ -400,7 +549,7 @@ const html = `<!DOCTYPE html>
                     b.disabled = true;
                 }
             });
-            document.getElementById('rpsStatus').textContent = 'Waiting for others...';
+            document.getElementById('rpsStatus').textContent = 'Waiting for others... (' + emoji + ')';
         };
 
         window.playDice = function() {
@@ -413,11 +562,11 @@ const html = `<!DOCTYPE html>
 
         window.rollDice = function() {
             const result = Math.floor(Math.random() * 6) + 1;
-            const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
             const diceEmojis = ['🎲', '🎲', '🎲', '🎲', '🎲', '🎲'];
             document.getElementById('diceResult').innerHTML = '<div class="dice-emoji">' + diceEmojis[result-1] + '</div><div class="dice-number">Number: ' + result + '</div>';
-            document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 rolled ' + result }));
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 rolled ' + result }));
+            }
         };
 
         window.playTrivia = function() {
@@ -425,6 +574,7 @@ const html = `<!DOCTYPE html>
             triviaTotal = 0;
             triviaUsers.clear();
             triviaAnswered = false;
+            usedTriviaQuestions = [];
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
@@ -432,48 +582,6 @@ const html = `<!DOCTYPE html>
             document.getElementById('triviaContainer').style.display = 'block';
             ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Trivia!' }));
             window.nextTriviaQuestion();
-        };
-
-        window.nextTriviaQuestion = function() {
-            if (triviaTotal >= 5) {
-                let scores = 'Final: ';
-                Object.entries(triviaScore).forEach(([u, s]) => { scores += u + ':' + s + ' '; });
-                document.getElementById('triviaQuestion').textContent = 'Done!';
-                document.getElementById('triviaAnswers').innerHTML = '';
-                document.getElementById('triviaResult').textContent = '';
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: scores }));
-                return;
-            }
-            triviaTotal++;
-            triviaUsers.clear();
-            triviaAnswered = false;
-            triviaCurrentQ = TRIVIA_QUESTIONS[Math.floor(Math.random() * TRIVIA_QUESTIONS.length)];
-            document.getElementById('triviaQuestion').textContent = triviaCurrentQ.q;
-            const answers = document.getElementById('triviaAnswers');
-            answers.innerHTML = '';
-            triviaCurrentQ.a.forEach((ans, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'trivia-btn';
-                btn.textContent = ans;
-                btn.onclick = () => window.submitTriviaAnswer(idx);
-                answers.appendChild(btn);
-            });
-            document.getElementById('triviaResult').textContent = '';
-            document.getElementById('triviaScore').textContent = triviaTotal + '/5';
-        };
-
-        window.submitTriviaAnswer = function(idx) {
-            if (triviaAnswered) return;
-            triviaAnswered = true;
-            const isCorrect = idx === triviaCurrentQ.c;
-            if (!triviaScore[currentUser]) triviaScore[currentUser] = 0;
-            if (isCorrect) triviaScore[currentUser]++;
-            document.querySelectorAll('.trivia-btn').forEach((b, i) => {
-                if (i === triviaCurrentQ.c) b.classList.add('correct');
-                else if (i === idx) b.classList.add('wrong');
-            });
-            document.getElementById('triviaResult').textContent = isCorrect ? '✓' : '✗';
-            setTimeout(window.nextTriviaQuestion, 1000);
         };
 
         window.playHangman = function() {
@@ -546,8 +654,10 @@ const html = `<!DOCTYPE html>
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
-            storyLines = [];
-            document.getElementById('storyText').innerHTML = '';
+            if (storyLines.length === 0) {
+                storyLines = [];
+                document.getElementById('storyText').innerHTML = '';
+            }
             document.getElementById('storyLine').value = '';
         };
 
