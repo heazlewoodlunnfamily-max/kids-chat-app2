@@ -321,10 +321,15 @@ const html = `<!DOCTYPE html>
                 if (chatId === 'group') {
                     btn.textContent = '👥 Group';
                 } else {
-                    // Extract the other person's name from the chat ID
-                    const parts = chatId.split('-');
-                    const otherName = parts[0] === 'esther' ? parts[1] : parts[0];
-                    btn.textContent = '💬 ' + otherName.toUpperCase();
+                    // If current user is Esther, show the other person's name
+                    if (currentUser === 'esther') {
+                        const parts = chatId.split('-');
+                        const otherName = parts[0] === 'esther' ? parts[1] : parts[0];
+                        btn.textContent = '💬 ' + otherName.toUpperCase();
+                    } else {
+                        // If current user is NOT Esther, always show ESTHER
+                        btn.textContent = '💬 ESTHER';
+                    }
                 }
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
