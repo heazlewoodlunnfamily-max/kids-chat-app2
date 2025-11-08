@@ -33,7 +33,7 @@ const html = `<!DOCTYPE html>
         .tabs { display: flex; gap: 6px; padding: 10px; background: #f8f9fb; border-bottom: 2px solid #e8eaf6; overflow-x: auto; flex-shrink: 0; }
         .tab { padding: 8px 14px; background: white; border: 2px solid #e0e0e0; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap; color: #9C27B0; flex-shrink: 0; }
         .tab.active { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; }
-        .chat-display { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 12px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; }
         .message.own { align-items: flex-end; }
         .message-content { display: flex; gap: 8px; align-items: flex-end; }
@@ -97,17 +97,17 @@ const html = `<!DOCTYPE html>
         <h1>💜 Chat Games</h1>
         <p>Select Your Name 💜</p>
         <div class="login-buttons">
-            <button class="login-btn" onclick="window.login('esther')">Esther</button>
-            <button class="login-btn" onclick="window.login('valley')">Valley</button>
-            <button class="login-btn" onclick="window.login('amaaya')">Amaaya</button>
-            <button class="login-btn" onclick="window.login('mama')">Mama</button>
-            <button class="login-btn" onclick="window.login('mummy')">Mummy</button>
-            <button class="login-btn" onclick="window.login('hilary')">Hilary</button>
-            <button class="login-btn" onclick="window.login('nan')">Nan</button>
-            <button class="login-btn" onclick="window.login('rishy')">Rishy</button>
-            <button class="login-btn" onclick="window.login('poppy')">Poppy</button>
-            <button class="login-btn" onclick="window.login('sienna')">Sienna</button>
-            <button class="login-btn" onclick="window.login('penelope')">Penelope</button>
+            <button class="login-btn" onclick="window.login('esther')">ESTHER</button>
+            <button class="login-btn" onclick="window.login('valley')">VALLEY</button>
+            <button class="login-btn" onclick="window.login('amaaya')">AMAAYA</button>
+            <button class="login-btn" onclick="window.login('mama')">MAMA</button>
+            <button class="login-btn" onclick="window.login('mummy')">MUMMY</button>
+            <button class="login-btn" onclick="window.login('hilary')">HILARY</button>
+            <button class="login-btn" onclick="window.login('nan')">NAN</button>
+            <button class="login-btn" onclick="window.login('rishy')">RISHY</button>
+            <button class="login-btn" onclick="window.login('poppy')">POPPY</button>
+            <button class="login-btn" onclick="window.login('sienna')">SIENNA</button>
+            <button class="login-btn" onclick="window.login('penelope')">PENELOPE</button>
         </div>
     </div>
 
@@ -278,8 +278,8 @@ const html = `<!DOCTYPE html>
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
 
         const USERS = {
-            esther: 'Esther', valley: 'Valley', amaaya: 'Amaaya', mama: 'Mama', mummy: 'Mummy',
-            hilary: 'Hilary', nan: 'Nan', rishy: 'Rishy', poppy: 'Poppy', sienna: 'Sienna', penelope: 'Penelope'
+            esther: 'ESTHER', valley: 'VALLEY', amaaya: 'AMAAYA', mama: 'MAMA', mummy: 'MUMMY',
+            hilary: 'HILARY', nan: 'NAN', rishy: 'RISHY', poppy: 'POPPY', sienna: 'SIENNA', penelope: 'PENELOPE'
         };
 
         const AVATARS = {
