@@ -34,10 +34,10 @@ const html = `<!DOCTYPE html>
         .tab { padding: 8px 14px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: #FF1493; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
         .tab.active { background: #FFB6E1; color: white; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.65); position: relative; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 16px; background: rgba(255,255,255,0.65); position: relative; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
-        .message-sender { font-size: 11px; color: #666; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
+        .message-sender { font-size: 14px; color: #666; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
         .message-sender .heart { font-size: 12px; margin: 0 4px; }
         .message.own .message-sender .heart { color: #FF1493; }
         .message.esther .message-sender .heart { color: #00C8FF; }
@@ -51,7 +51,7 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-sender .heart { color: #00BFFF; }
         .message.sienna .message-sender .heart { color: #F08080; }
         .message.penelope .message-sender .heart { color: #FFB6C1; }
-        .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 14px; word-wrap: break-word; font-size: 13px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.3); }
+        .message-bubble { max-width: 70%; padding: 12px 16px; border-radius: 14px; word-wrap: break-word; font-size: 15px; font-weight: 500; line-height: 1.5; border: 1px solid rgba(255,255,255,0.3); }
         .message.own .message-bubble { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; }
         .message.esther .message-bubble { background: rgba(0,200,255,0.8); color: white; }
         .message.valley .message-bubble { background: rgba(255,20,147,0.8); color: white; }
@@ -251,10 +251,12 @@ const html = `<!DOCTYPE html>
             allChats = ['group'];
             if (user === 'esther') {
                 allChats = ['group', 'esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna', 'esther-penelope'];
-            } else if (['mama', 'mummy'].includes(user)) {
-                allChats = ['group', 'esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna', 'esther-penelope'];
+            } else if (user === 'mama') {
+                allChats = ['group', 'esther-mama'];
+            } else if (user === 'mummy') {
+                allChats = ['group', 'esther-mummy'];
             } else if (['valley', 'amaaya', 'hilary'].includes(user)) {
-                allChats.push('esther-' + user);
+                allChats = ['group', 'esther-' + user];
             } else if (['nan', 'rishy', 'poppy', 'sienna', 'penelope'].includes(user)) {
                 allChats = ['esther-' + user];
             }
