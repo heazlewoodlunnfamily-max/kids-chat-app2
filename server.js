@@ -37,7 +37,7 @@ const html = `<!DOCTYPE html>
         
         .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; padding: 16px; border-radius: 28px 28px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
         .header-title { flex-grow: 1; }
-        #myname { color: #5B3A8E; font-weight: 900; }
+        #myname { color: #9C27B0; font-weight: 900; }
         .logout-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; transition: opacity 0.15s; }
         .logout-btn:hover { background: rgba(255,255,255,0.35); }
         .dark-mode-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: opacity 0.15s; }
@@ -146,17 +146,17 @@ const html = `<!DOCTYPE html>
         <h1>💬 Chat</h1>
         <p>Select your name</p>
         <div class="login-buttons">
-            <button type="button" class="login-btn" onclick="login('esther')">🐱 Esther</button>
-            <button type="button" class="login-btn" onclick="login('valley')">😺 Valley</button>
-            <button type="button" class="login-btn" onclick="login('amaaya')">😸 Amaaya</button>
-            <button type="button" class="login-btn" onclick="login('mama')">😻 Mama</button>
-            <button type="button" class="login-btn" onclick="login('mummy')">😼 Mummy</button>
-            <button type="button" class="login-btn" onclick="login('hilary')">😽 Hilary</button>
-            <button type="button" class="login-btn" onclick="login('nan')">🐱 Nan</button>
-            <button type="button" class="login-btn" onclick="login('rishy')">😺 Rishy</button>
-            <button type="button" class="login-btn" onclick="login('poppy')">😸 Poppy</button>
-            <button type="button" class="login-btn" onclick="login('sienna')">😻 Sienna</button>
-            <button type="button" class="login-btn" onclick="login('penelope')">😼 Penelope</button>
+            <button type="button" class="login-btn" onclick="window.login('esther')">🐱 Esther</button>
+            <button type="button" class="login-btn" onclick="window.login('valley')">😺 Valley</button>
+            <button type="button" class="login-btn" onclick="window.login('amaaya')">😸 Amaaya</button>
+            <button type="button" class="login-btn" onclick="window.login('mama')">😻 Mama</button>
+            <button type="button" class="login-btn" onclick="window.login('mummy')">😼 Mummy</button>
+            <button type="button" class="login-btn" onclick="window.login('hilary')">😽 Hilary</button>
+            <button type="button" class="login-btn" onclick="window.login('nan')">🐱 Nan</button>
+            <button type="button" class="login-btn" onclick="window.login('rishy')">😺 Rishy</button>
+            <button type="button" class="login-btn" onclick="window.login('poppy')">😸 Poppy</button>
+            <button type="button" class="login-btn" onclick="window.login('sienna')">😻 Sienna</button>
+            <button type="button" class="login-btn" onclick="window.login('penelope')">😼 Penelope</button>
         </div>
     </div>
 
@@ -164,8 +164,8 @@ const html = `<!DOCTYPE html>
         <div class="header">
             <div class="header-title">💬 <span id="myname"></span></div>
             <div id="timeLock" style="display: none; background: rgba(255,0,0,0.3); padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; color: #fff;">⏰ Locked</div>
-            <button class="dark-mode-btn" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button class="dark-mode-btn" onclick="window.toggleDarkMode()" title="Dark Mode">🌙</button>
+            <button class="logout-btn" onclick="window.logout()">Logout</button>
         </div>
         <div class="tabs" id="tabs"></div>
         <div class="chat-display" id="chat"><div class="empty">Loading...</div></div>
@@ -174,22 +174,22 @@ const html = `<!DOCTYPE html>
             <div id="emojiPicker" class="emoji-picker" style="display: none;"></div>
             <div id="gamesPanel" class="games-panel">
                 <div class="game-buttons">
-                    <button class="game-btn" onclick="playRPS()">🎮 Rock Paper</button>
-                    <button class="game-btn" onclick="playDice()">🎲 Dice Roll</button>
+                    <button class="game-btn" onclick="window.playRPS()">🎮 Rock Paper</button>
+                    <button class="game-btn" onclick="window.playDice()">🎲 Dice Roll</button>
                 </div>
                 <div id="rpsContainer" style="display: none;">
                     <div id="rpsStatus" class="rps-waiting">Waiting for other player...</div>
                     <div class="rps-options">
-                        <button class="rps-btn" onclick="selectRPS('rock')">✊ Rock</button>
-                        <button class="rps-btn" onclick="selectRPS('paper')">✋ Paper</button>
-                        <button class="rps-btn" onclick="selectRPS('scissors')">✌️ Scissors</button>
+                        <button class="rps-btn" onclick="window.selectRPS('rock')">✊ Rock</button>
+                        <button class="rps-btn" onclick="window.selectRPS('paper')">✋ Paper</button>
+                        <button class="rps-btn" onclick="window.selectRPS('scissors')">✌️ Scissors</button>
                     </div>
                 </div>
                 <div id="diceContainer" style="display: none; text-align: center; padding: 12px;">
                     <div style="font-weight: 600; margin-bottom: 12px;">🎲 CLOSEST TO 6 WINS!</div>
                     <div id="diceResult" style="font-size: 48px; margin-bottom: 12px;">🎲</div>
                     <div id="diceScores" style="margin-bottom: 12px; font-size: 14px; color: #666;"></div>
-                    <button class="game-btn" id="diceRollBtn" onclick="rollDice()" style="grid-column: 1/-1; margin: 0;">Roll Now!</button>
+                    <button class="game-btn" id="diceRollBtn" onclick="window.rollDice()" style="grid-column: 1/-1; margin: 0;">Roll Now!</button>
                     <div id="diceWinner" style="margin-top: 12px; font-weight: 700; font-size: 16px;"></div>
                 </div>
                 <div id="drawContainer" style="display: none;">
@@ -197,21 +197,21 @@ const html = `<!DOCTYPE html>
                         <canvas id="drawCanvas" width="300" height="150"></canvas>
                     </div>
                     <div class="canvas-controls">
-                        <button class="canvas-btn" onclick="clearCanvas()">Clear</button>
-                        <button class="canvas-btn send" onclick="sendDrawing()">Send</button>
+                        <button class="canvas-btn" onclick="window.clearCanvas()">Clear</button>
+                        <button class="canvas-btn send" onclick="window.sendDrawing()">Send</button>
                     </div>
                 </div>
                 <div id="wordleContainer" style="display: none;">
                     <div id="wordleSetupPhase" style="text-align: center;">
                         <div style="margin-bottom: 12px; font-weight: 600;">Set a 5-letter word for others to guess!</div>
                         <input type="text" id="wordleSetWord" placeholder="Type 5-letter word..." maxlength="5" style="width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
-                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="startWordle()">Set Word!</button>
+                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="window.startWordle()">Set Word!</button>
                     </div>
                     <div id="wordleGamePhase" style="display: none;">
                         <div style="text-align: center; margin-bottom: 10px; font-weight: 600; color: #333;">Guess the 5-letter word! (Set by: <span id="wordleSetBy"></span>)</div>
                         <div id="wordleGuesses" style="display: grid; gap: 6px; margin-bottom: 10px;"></div>
                         <input type="text" id="wordleInput" placeholder="Type 5 letters..." maxlength="5" style="width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
-                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="submitWordleGuess()">Guess!</button>
+                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="window.submitWordleGuess()">Guess!</button>
                         <div id="wordleResult" style="text-align: center; margin-top: 10px; font-weight: 700;"></div>
                     </div>
                 </div>
@@ -219,7 +219,7 @@ const html = `<!DOCTYPE html>
                     <div id="hangmanSetupPhase" style="text-align: center;">
                         <div style="margin-bottom: 12px; font-weight: 600;">Set a word for others to guess!</div>
                         <input type="text" id="hangmanSetWord" placeholder="Type a word..." style="width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
-                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="startHangman()">Set Word!</button>
+                        <button class="game-btn" style="grid-column: 1/-1; margin: 0;" onclick="window.startHangman()">Set Word!</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div style="text-align: center; margin-bottom: 10px;">
@@ -238,17 +238,17 @@ const html = `<!DOCTYPE html>
                     <div id="triviaScore" style="text-align: center; margin-top: 8px; font-size: 12px; color: #666;"></div>
                 </div>
                 <div class="game-buttons" style="margin-bottom: 12px;">
-                    <button class="game-btn" onclick="playWordle()">🎮 Wordle</button>
-                    <button class="game-btn" onclick="playHangman()">🎯 Hangman</button>
-                    <button class="game-btn" onclick="playTrivia()">🧠 Trivia</button>
+                    <button class="game-btn" onclick="window.playWordle()">🎮 Wordle</button>
+                    <button class="game-btn" onclick="window.playHangman()">🎯 Hangman</button>
+                    <button class="game-btn" onclick="window.playTrivia()">🧠 Trivia</button>
                 </div>
-                <button class="game-btn" style="grid-column: 1/-1;" onclick="playDraw()">🎨 Draw</button>
+                <button class="game-btn" style="grid-column: 1/-1;" onclick="window.playDraw()">🎨 Draw</button>
             </div>
             <div class="input-container">
-                <button class="btn-emoji" onclick="toggleEmoji()" title="Emoji">😀</button>
-                <button class="btn-games" onclick="toggleGames()" title="Games">🎮</button>
+                <button class="btn-emoji" onclick="window.toggleEmoji()" title="Emoji">😀</button>
+                <button class="btn-games" onclick="window.toggleGames()" title="Games">🎮</button>
                 <input type="text" class="input-field" id="msg" placeholder="Type message..." disabled>
-                <button class="send-btn" id="sendBtn" onclick="send()" disabled>Send</button>
+                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>Send</button>
             </div>
         </div>
     </div>
@@ -300,7 +300,7 @@ const html = `<!DOCTYPE html>
             { q: 'What is the driest place on Earth?', a: ['Sahara', 'Atacama Desert', 'Gobi Desert', 'Antarctic Dry Valleys'], correct: 3 },
             { q: 'How many legs does an octopus have?', a: ['6', '8', '10', '12'], correct: 1 },
             { q: 'Which country has the most time zones?', a: ['Russia', 'France', 'USA', 'China'], correct: 1 },
-            { q: 'What is the Amazon rainforest often called?', a: ['The World's Heart', 'The Planet's Lungs', 'The Green Gold', 'The Earth's Crown'], correct: 1 },
+            { q: 'What is the Amazon rainforest often called?', a: ['The World\'s Heart', 'The Planet\'s Lungs', 'The Green Gold', 'The Earth\'s Crown'], correct: 1 },
             { q: 'Which animal is the fastest swimmer?', a: ['Dolphin', 'Sailfish', 'Tuna', 'Marlin'], correct: 1 },
             { q: 'What is the capital of Egypt?', a: ['Alexandria', 'Cairo', 'Giza', 'Luxor'], correct: 1 },
             { q: 'Which bird cannot fly?', a: ['Ostrich', 'Chicken', 'Penguin', 'Kiwi'], correct: 0 },
@@ -311,76 +311,11 @@ const html = `<!DOCTYPE html>
             { q: 'Which animal has the longest neck?', a: ['Ostrich', 'Llama', 'Giraffe', 'Alpaca'], correct: 2 },
             { q: 'What is the capital of Canada?', a: ['Toronto', 'Vancouver', 'Ottawa', 'Montreal'], correct: 2 },
             { q: 'Which country is known as the Land Down Under?', a: ['New Zealand', 'Australia', 'Fiji', 'Samoa'], correct: 1 },
-            { q: 'What is the hottest planet in our solar system?', a: ['Mars', 'Mercury', 'Venus', 'Jupiter'], correct: 2 },
-            { q: 'How many continents are there?', a: ['5', '6', '7', '8'], correct: 2 },
-            { q: 'Which animal sleeps standing up?', a: ['Cow', 'Horse', 'Sheep', 'All of them'], correct: 3 },
-            { q: 'What is the capital of India?', a: ['Mumbai', 'New Delhi', 'Bangalore', 'Kolkata'], correct: 1 },
-            { q: 'Which country has the most mountains?', a: ['Nepal', 'Switzerland', 'China', 'Pakistan'], correct: 2 },
-            { q: 'What is the smallest ocean?', a: ['Arctic', 'Indian', 'Atlantic', 'Southern'], correct: 0 },
-            { q: 'How many eyes does a bee have?', a: ['2', '3', '5', '6'], correct: 2 },
-            { q: 'What is the capital of South Africa?', a: ['Johannesburg', 'Cape Town', 'Pretoria', 'Durban'], correct: 2 },
-            { q: 'Which animal produces the loudest sound?', a: ['Elephant', 'Lion', 'Blue Whale', 'Humpback Whale'], correct: 2 },
-            { q: 'How many bones does an adult human have?', a: ['186', '206', '226', '246'], correct: 1 },
-            { q: 'What is the capital of Germany?', a: ['Munich', 'Hamburg', 'Berlin', 'Cologne'], correct: 2 },
-            { q: 'Which country is the most populous?', a: ['India', 'USA', 'China', 'Indonesia'], correct: 0 },
-            { q: 'What is the largest desert in the world?', a: ['Sahara', 'Gobi', 'Kalahari', 'Antarctic'], correct: 3 },
-            { q: 'How many hearts does an octopus have?', a: ['1', '2', '3', '4'], correct: 2 },
-            { q: 'What is the capital of Mexico?', a: ['Cancún', 'Guadalajara', 'Mexico City', 'Monterrey'], correct: 2 },
-            { q: 'Which country produces the most coffee?', a: ['Colombia', 'Vietnam', 'Brazil', 'Indonesia'], correct: 2 },
-            { q: 'What is the Great Wall of China made of?', a: ['Wood', 'Brick', 'Stone', 'All of them'], correct: 3 },
-            { q: 'How many legs does a millipede have?', a: ['100', '1000', 'Up to 750', 'Depends on species'], correct: 2 },
-            { q: 'What is the capital of France?', a: ['Lyon', 'Marseille', 'Paris', 'Nice'], correct: 2 },
-            { q: 'Which animal has the most powerful bite?', a: ['Great White', 'Crocodile', 'Hippopotamus', 'Saltwater Crocodile'], correct: 3 },
-            { q: 'How long is a giraffe's tongue?', a: ['10 inches', '18 inches', '24 inches', '36 inches'], correct: 2 },
-            { q: 'What is the capital of Spain?', a: ['Barcelona', 'Madrid', 'Valencia', 'Seville'], correct: 1 },
-            { q: 'Which country has the most UNESCO World Heritage Sites?', a: ['Greece', 'Italy', 'France', 'China'], correct: 3 },
-            { q: 'How many chambers does a whale's heart have?', a: ['2', '3', '4', '5'], correct: 2 },
-            { q: 'What is the capital of Italy?', a: ['Milan', 'Rome', 'Venice', 'Florence'], correct: 1 },
-            { q: 'Which animal can rotate its head 270 degrees?', a: ['Parrot', 'Owl', 'Ostrich', 'Flamingo'], correct: 1 },
-            { q: 'What percentage of Earth is covered by ocean?', a: ['60%', '71%', '85%', '90%'], correct: 1 },
-            { q: 'What is the capital of Portugal?', a: ['Porto', 'Lisbon', 'Covilhã', 'Aveiro'], correct: 1 },
-            { q: 'Which country is the largest in Africa?', a: ['Egypt', 'Nigeria', 'South Africa', 'Algeria'], correct: 3 },
-            { q: 'How many teeth does a shark have throughout its lifetime?', a: ['1000', '5000', '20000', '40000'], correct: 3 },
-            { q: 'What is the capital of Greece?', a: ['Thessaloniki', 'Athens', 'Patras', 'Larissa'], correct: 1 },
-            { q: 'Which animal has the strongest immune system?', a: ['Lion', 'Polar Bear', 'Cockroach', 'Elephant'], correct: 2 },
-            { q: 'How many muscles does a caterpillar have?', a: ['200', '1000', '4000', '8000'], correct: 2 },
-            { q: 'What is the capital of Russia?', a: ['St. Petersburg', 'Moscow', 'Vladivostok', 'Novosibirsk'], correct: 1 },
-            { q: 'Which country produces the most chocolate?', a: ['Belgium', 'Switzerland', 'Ghana', 'Netherlands'], correct: 3 },
-            { q: 'How deep can a sperm whale dive?', a: ['1000m', '2000m', '3000m', '7000m'], correct: 3 },
-            { q: 'What is the capital of Turkey?', a: ['Istanbul', 'Ankara', 'Izmir', 'Bursa'], correct: 1 },
-            { q: 'Which animal can sleep for 3 years?', a: ['Bear', 'Snail', 'Crocodile', 'Whale'], correct: 1 },
-            { q: 'How many times does a hummingbird beat its wings per second?', a: ['20', '50', '80', '200'], correct: 2 },
-            { q: 'What is the capital of South Korea?', a: ['Busan', 'Seoul', 'Incheon', 'Daegu'], correct: 1 },
-            { q: 'Which country has the most active volcanoes?', a: ['Iceland', 'Philippines', 'Japan', 'Indonesia'], correct: 3 },
-            { q: 'How many bones does a bird have in its skeleton?', a: ['100', '150', 'Fewer than mammals', 'More than humans'], correct: 2 },
-            { q: 'What is the capital of Thailand?', a: ['Phuket', 'Chiang Mai', 'Bangkok', 'Pattaya'], correct: 2 },
-            { q: 'Which animal has the longest migration?', a: ['Whale', 'Wildebeest', 'Butterfly', 'Arctic Tern'], correct: 3 },
-            { q: 'How many stomachs does a cow have?', a: ['1', '2', '3', '4'], correct: 3 },
-            { q: 'What is the capital of Vietnam?', a: ['Ho Chi Minh City', 'Hanoi', 'Da Nang', 'Hai Phong'], correct: 1 },
-            { q: 'Which ocean is saltiest?', a: ['Atlantic', 'Pacific', 'Indian', 'Arctic'], correct: 0 },
-            { q: 'How many teeth does a human baby have?', a: ['0', '10', '20', '32'], correct: 0 },
-            { q: 'What is the capital of Indonesia?', a: ['Surabaya', 'Bandung', 'Jakarta', 'Medan'], correct: 2 },
-            { q: 'Which animal has the best eyesight?', a: ['Eagle', 'Hawk', 'Owl', 'Falcon'], correct: 0 },
-            { q: 'How fast can a peregrine falcon dive?', a: ['150 mph', '200 mph', '250 mph', '300 mph'], correct: 2 },
-            { q: 'What is the capital of the Philippines?', a: ['Cebu', 'Davao', 'Manila', 'Quezon City'], correct: 2 },
-            { q: 'Which country produces the most oil?', a: ['Saudi Arabia', 'Russia', 'USA', 'Iraq'], correct: 2 },
-            { q: 'How many species of sharks exist?', a: ['500', '1000', '1500', '2000'], correct: 1 },
-            { q: 'What is the capital of Malaysia?', a: ['Penang', 'Kuala Lumpur', 'Johor Bahru', 'Klang'], correct: 1 },
-            { q: 'Which animal has the largest brain?', a: ['Elephant', 'Whale', 'Dolphin', 'Human'], correct: 1 },
-            { q: 'How many bones does a snake have?', a: ['50', '100', 'Over 300', 'Over 500'], correct: 3 },
-            { q: 'What is the capital of Argentina?', a: ['Córdoba', 'Rosario', 'Buenos Aires', 'La Plata'], correct: 2 },
-            { q: 'Which country has the most forests?', a: ['USA', 'Canada', 'Russia', 'Brazil'], correct: 2 },
-            { q: 'How many days does it take Earth to orbit the Sun?', a: ['300', '365', '400', '425'], correct: 1 },
-            { q: 'What is the capital of Chile?', a: ['Valparaíso', 'Santiago', 'Concepción', 'Temuco'], correct: 1 },
-            { q: 'Which animal can drink saltwater?', a: ['Camel', 'Polar Bear', 'Crocodile', 'All of them'], correct: 3 },
-            { q: 'How long is a blue whale?', a: ['60 feet', '80 feet', '100 feet', '120 feet'], correct: 2 },
-            { q: 'What is the capital of Colombia?', a: ['Medellín', 'Cali', 'Bogotá', 'Cartagena'], correct: 2 },
-            { q: 'Which country has the most bears?', a: ['Canada', 'Russia', 'USA', 'Finland'], correct: 1 },
-            { q: 'How many years can a tortoise live?', a: ['50', '100', '200', 'Over 300'], correct: 3 }
+            { q: 'What is the hottest planet in our solar system?', a: ['Mars', 'Mercury', 'Venus', 'Jupiter'], correct: 2 }
         ];
         let triviaScore = 0, triviaTotal = 0, triviaCurrentQ = null, triviaAnswered = false;
 
-        function playWordle() {
+        window.playWordle = function() {
             document.getElementById('wordleContainer').style.display = 'block';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
@@ -390,9 +325,9 @@ const html = `<!DOCTYPE html>
             document.getElementById('wordleSetupPhase').style.display = 'block';
             document.getElementById('wordleGamePhase').style.display = 'none';
             document.getElementById('wordleSetWord').value = '';
-        }
+        };
 
-        function startWordle() {
+        window.startWordle = function() {
             const input = document.getElementById('wordleSetWord').value.toUpperCase().trim();
             if (input.length !== 5 || !/^[A-Z]+$/.test(input)) {
                 alert('Please enter exactly 5 letters!');
@@ -407,21 +342,21 @@ const html = `<!DOCTYPE html>
             document.getElementById('wordleSetBy').textContent = wordleSetBy;
             document.getElementById('wordleInput').value = '';
             document.getElementById('wordleResult').textContent = '';
-            renderWordleBoard();
+            window.renderWordleBoard();
             const text = '🎮 ' + USERS[currentUser] + ' started a Wordle game! Everyone guess the 5-letter word!';
             if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
-        }
+        };
 
-        function submitWordleGuess() {
+        window.submitWordleGuess = function() {
             const input = document.getElementById('wordleInput').value.toUpperCase().trim();
             if (!wordleGameOver && input.length === 5) {
                 wordleGuesses.push(input);
                 document.getElementById('wordleInput').value = '';
-                renderWordleBoard();
+                window.renderWordleBoard();
             }
-        }
+        };
 
-        function renderWordleBoard() {
+        window.renderWordleBoard = function() {
             const div = document.getElementById('wordleGuesses');
             div.innerHTML = '';
             wordleGuesses.forEach((guess, idx) => {
@@ -450,9 +385,9 @@ const html = `<!DOCTYPE html>
                 if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
                 document.getElementById('gamesPanel').classList.remove('show');
             }
-        }
+        };
 
-        function playHangman() {
+        window.playHangman = function() {
             document.getElementById('hangmanContainer').style.display = 'block';
             document.getElementById('wordleContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'none';
@@ -462,9 +397,9 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanSetupPhase').style.display = 'block';
             document.getElementById('hangmanGamePhase').style.display = 'none';
             document.getElementById('hangmanSetWord').value = '';
-        }
+        };
 
-        function startHangman() {
+        window.startHangman = function() {
             const input = document.getElementById('hangmanSetWord').value.toUpperCase().trim();
             if (input.length < 3 || !/^[A-Z]+$/.test(input)) {
                 alert('Please enter at least 3 letters!');
@@ -477,16 +412,16 @@ const html = `<!DOCTYPE html>
             hangmanSetBy = USERS[currentUser];
             document.getElementById('hangmanSetupPhase').style.display = 'none';
             document.getElementById('hangmanGamePhase').style.display = 'block';
-            renderHangmanLetters();
-            renderHangman();
+            window.renderHangmanLetters();
+            window.renderHangman();
             const text = '🎮 ' + USERS[currentUser] + ' started a Hangman game! Everyone guess the word!';
             if (connected) {
                 ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
                 ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat, wordLength: hangmanWord.length }));
             }
-        }
+        };
 
-        function renderHangmanLetters() {
+        window.renderHangmanLetters = function() {
             const grid = document.getElementById('hangmanLetterGrid');
             grid.innerHTML = '';
             for (let i = 65; i <= 90; i++) {
@@ -496,23 +431,22 @@ const html = `<!DOCTYPE html>
                 btn.style.padding = '6px';
                 btn.style.fontSize = '14px';
                 btn.textContent = letter;
-                btn.onclick = () => guessHangmanLetter(letter);
+                btn.onclick = () => window.guessHangmanLetter(letter);
                 grid.appendChild(btn);
             }
-        }
+        };
 
-        function guessHangmanLetter(letter) {
+        window.guessHangmanLetter = function(letter) {
             if (hangmanGameOver || hangmanGuessed.includes(letter)) return;
             hangmanGuessed.push(letter);
             if (!hangmanWord.includes(letter)) hangmanWrong++;
             if (connected) {
                 ws.send(JSON.stringify({ type: 'hangman_guess', user: currentUser, chatId: currentChat, letter: letter, isCorrect: hangmanWord.includes(letter) }));
             }
-            renderHangman();
-        }
+            window.renderHangman();
+        };
 
-
-        function renderHangman() {
+        window.renderHangman = function() {
             const word = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
             document.getElementById('hangmanWord').textContent = word;
             document.getElementById('hangmanDrawing').textContent = HANGMAN_STAGES[hangmanWrong];
@@ -539,23 +473,9 @@ const html = `<!DOCTYPE html>
                 if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
                 document.getElementById('gamesPanel').classList.remove('show');
             }
-        }
+        };
 
-        function renderHangmanOther() {
-            const word = Array(hangmanWordLength).fill('_').map((_, i) => hangmanOtherGuessed.includes(hangmanWord[i]) ? hangmanWord[i] : '_').join(' ');
-            document.getElementById('hangmanWord').textContent = word;
-            document.getElementById('hangmanDrawing').textContent = HANGMAN_STAGES[hangmanOtherWrong];
-            document.getElementById('hangmanGuesses').textContent = 'Wrong: ' + hangmanOtherWrong + '/6 | Guessed: ' + hangmanOtherGuessed.join(', ');
-
-            document.querySelectorAll('#hangmanContainer .rps-btn').forEach(btn => {
-                if (hangmanOtherGuessed.includes(btn.textContent)) {
-                    btn.disabled = true;
-                    btn.style.opacity = '0.5';
-                }
-            });
-        }
-
-        function playTrivia() {
+        window.playTrivia = function() {
             triviaScore = 0;
             triviaTotal = 0;
             triviaAnswered = false;
@@ -565,10 +485,10 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('drawContainer').style.display = 'none';
-            nextTriviaQuestion();
-        }
+            window.nextTriviaQuestion();
+        };
 
-        function nextTriviaQuestion() {
+        window.nextTriviaQuestion = function() {
             if (triviaTotal >= 10) {
                 document.getElementById('triviaQuestion').textContent = '🎉 Quiz Complete!';
                 document.getElementById('triviaAnswers').innerHTML = '';
@@ -591,14 +511,14 @@ const html = `<!DOCTYPE html>
                 btn.style.paddingRight = '16px';
                 btn.style.paddingLeft = '16px';
                 btn.textContent = ans;
-                btn.onclick = () => submitTriviaAnswer(idx);
+                btn.onclick = () => window.submitTriviaAnswer(idx);
                 answers.appendChild(btn);
             });
             document.getElementById('triviaResult').textContent = '';
             document.getElementById('triviaScore').textContent = 'Question ' + (triviaTotal + 1) + '/10';
-        }
+        };
 
-        function submitTriviaAnswer(idx) {
+        window.submitTriviaAnswer = function(idx) {
             if (triviaAnswered) return;
             triviaAnswered = true;
             triviaTotal++;
@@ -608,13 +528,13 @@ const html = `<!DOCTYPE html>
             } else {
                 document.getElementById('triviaResult').textContent = '❌ Wrong! Answer: ' + triviaCurrentQ.a[triviaCurrentQ.correct];
             }
-            setTimeout(nextTriviaQuestion, 1500);
-        }
+            setTimeout(window.nextTriviaQuestion, 1500);
+        };
 
-        function toggleDarkMode() {
+        window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
+        };
 
         function playNotificationSound() {
             try {
@@ -680,23 +600,21 @@ const html = `<!DOCTYPE html>
             }
         }
 
-        function toggleEmoji() {
+        window.toggleEmoji = function() {
             const picker = document.getElementById('emojiPicker');
             const panel = document.getElementById('gamesPanel');
-            const gifs = document.getElementById('gifPicker');
             panel.classList.remove('show');
-            gifs.style.display = 'none';
             picker.style.display = picker.style.display === 'none' ? 'grid' : 'none';
-        }
+        };
 
-        function toggleGames() {
+        window.toggleGames = function() {
             const panel = document.getElementById('gamesPanel');
             const picker = document.getElementById('emojiPicker');
             picker.style.display = 'none';
             panel.classList.toggle('show');
-        }
+        };
 
-        function playRPS() {
+        window.playRPS = function() {
             rpsChoice = null;
             rpsOtherChoice = null;
             rpsOtherUser = null;
@@ -724,7 +642,7 @@ const html = `<!DOCTYPE html>
                     
                     if (rpsChoice) {
                         document.getElementById('rpsStatus').textContent = '⏳ Revealing choices...';
-                        setTimeout(announceRPSResult, 1000);
+                        setTimeout(window.announceRPSResult, 1000);
                     } else {
                         document.getElementById('rpsStatus').textContent = '⏰ TIME UP! You did not choose!';
                         setTimeout(() => {
@@ -736,10 +654,10 @@ const html = `<!DOCTYPE html>
             
             const text = '🎮 ' + USERS[currentUser] + ' started Rock Paper Scissors! Everyone choose in 10 seconds!';
             if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
-        }
+        };
 
-        function selectRPS(choice) {
-            if (rpsChoice) return; // Already selected
+        window.selectRPS = function(choice) {
+            if (rpsChoice) return;
             rpsChoice = choice;
             document.querySelectorAll('#rpsContainer .rps-btn').forEach(btn => btn.disabled = true);
             
@@ -749,9 +667,9 @@ const html = `<!DOCTYPE html>
             if (connected) {
                 ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
             }
-        }
+        };
 
-        function playDice() {
+        window.playDice = function() {
             diceRolls = {};
             diceGameActive = true;
             document.getElementById('diceContainer').style.display = 'block';
@@ -768,9 +686,9 @@ const html = `<!DOCTYPE html>
             
             const text = '🎲 ' + USERS[currentUser] + ' started a Dice Game! Closest to 6 wins! Everyone roll!';
             if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
-        }
+        };
 
-        function rollDice() {
+        window.rollDice = function() {
             const result = Math.floor(Math.random() * 6) + 1;
             const diceEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
             
@@ -779,7 +697,6 @@ const html = `<!DOCTYPE html>
             document.getElementById('diceRollBtn').disabled = true;
             document.getElementById('diceRollBtn').textContent = '✅ Rolled ' + result + '!';
             
-            // Send roll to others
             if (connected) {
                 ws.send(JSON.stringify({ 
                     type: 'dice_roll', 
@@ -789,29 +706,26 @@ const html = `<!DOCTYPE html>
                 }));
             }
             
-            // Update scores display
-            updateDiceScores();
+            window.updateDiceScores();
             
-            // Auto-determine winner after 3 seconds if multiple people rolled
             setTimeout(() => {
                 if (Object.keys(diceRolls).length > 1) {
-                    determineDiceWinner();
+                    window.determineDiceWinner();
                 }
             }, 3000);
-        }
+        };
 
-        function updateDiceScores() {
+        window.updateDiceScores = function() {
             let scores = '';
             Object.entries(diceRolls).forEach(([user, roll]) => {
                 scores += USERS[user] + ': ' + roll + '  ';
             });
             document.getElementById('diceScores').textContent = scores || 'Waiting for rolls...';
-        }
+        };
 
-        function determineDiceWinner() {
+        window.determineDiceWinner = function() {
             if (Object.keys(diceRolls).length === 0) return;
             
-            // Find closest to 6
             let winner = null;
             let minDiff = 6;
             let winningRoll = 0;
@@ -835,16 +749,16 @@ const html = `<!DOCTYPE html>
             
             diceGameActive = false;
             setTimeout(() => document.getElementById('gamesPanel').classList.remove('show'), 2000);
-        }
+        };
 
-        function playDraw() {
+        window.playDraw = function() {
             document.getElementById('drawContainer').style.display = 'block';
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
-            setTimeout(initCanvas, 100);
-        }
+            setTimeout(window.initCanvas, 100);
+        };
 
-        function initCanvas() {
+        window.initCanvas = function() {
             const canvas = document.getElementById('drawCanvas');
             if (!canvas) return;
             
@@ -895,22 +809,22 @@ const html = `<!DOCTYPE html>
             canvas.addEventListener('touchstart', startDrawing, false);
             canvas.addEventListener('touchmove', draw, false);
             canvas.addEventListener('touchend', stopDrawing, false);
-        }
+        };
 
-        function clearCanvas() {
+        window.clearCanvas = function() {
             const canvas = document.getElementById('drawCanvas');
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        };
 
-        function sendDrawing() {
+        window.sendDrawing = function() {
             const canvas = document.getElementById('drawCanvas');
             const text = canvas.toDataURL();
             if (connected) ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text, isDrawing: true }));
-            clearCanvas();
+            window.clearCanvas();
             document.getElementById('gamesPanel').classList.remove('show');
-        }
+        };
 
         function addReaction(msgId, emoji) {
             if (connected) ws.send(JSON.stringify({ type: 'reaction', user: currentUser, msgId: msgId, emoji: emoji }));
@@ -939,7 +853,7 @@ const html = `<!DOCTYPE html>
             return USERS[other];
         }
 
-        function login(user) {
+        window.login = function(user) {
             if (!user) {
                 return;
             }
@@ -957,23 +871,23 @@ const html = `<!DOCTYPE html>
             document.getElementById('login').style.display = 'none';
             document.getElementById('app').classList.add('show');
             document.getElementById('myname').textContent = USERS[user];
-            renderTabs();
-            connect();
+            window.renderTabs();
+            window.connect();
             updateTimeLock();
             setInterval(updateTimeLock, 60000);
-            render();
+            window.render();
             
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark-mode');
             }
-        }
+        };
 
-        function logout() {
+        window.logout = function() {
             localStorage.removeItem('user');
             location.reload();
-        }
+        };
 
-        function connect() {
+        window.connect = function() {
             const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
             const wsUrl = proto + '//' + location.host;
             
@@ -994,14 +908,14 @@ const html = `<!DOCTYPE html>
                     Object.keys(messages).forEach(chat => {
                         localStorage.setItem('chat_' + chat, JSON.stringify(messages[chat]));
                     });
-                    render();
+                    window.render();
                 } else if (data.type === 'rps_choice') {
                     if (data.chatId === currentChat) {
                         rpsOtherChoice = data.choice;
                         rpsOtherUser = data.user;
                         document.getElementById('rpsStatus').textContent = USERS[data.user] + ' played ' + data.choice + '!';
                         if (rpsChoice) {
-                            setTimeout(announceRPSResult, 500);
+                            setTimeout(window.announceRPSResult, 500);
                         }
                     }
                 } else if (data.type === 'hangman_start') {
@@ -1013,21 +927,19 @@ const html = `<!DOCTYPE html>
                         hangmanOtherWrong = 0;
                         document.getElementById('hangmanSetupPhase').style.display = 'none';
                         document.getElementById('hangmanGamePhase').style.display = 'block';
-                        renderHangmanLetters();
-                        renderHangmanOther();
+                        window.renderHangmanLetters();
                     }
                 } else if (data.type === 'hangman_guess') {
                     if (data.chatId === currentChat && hangmanGameActive) {
                         if (!hangmanOtherGuessed.includes(data.letter)) {
                             hangmanOtherGuessed.push(data.letter);
                             if (!data.isCorrect) hangmanOtherWrong++;
-                            renderHangmanOther();
                         }
                     }
                 } else if (data.type === 'dice_roll') {
                     if (data.chatId === currentChat && diceGameActive) {
                         diceRolls[data.user] = data.result;
-                        updateDiceScores();
+                        window.updateDiceScores();
                         playNotificationSound();
                     }
                 } else if (data.type === 'message') {
@@ -1036,7 +948,7 @@ const html = `<!DOCTYPE html>
                     messages[chatId].push(data.data);
                     localStorage.setItem('chat_' + chatId, JSON.stringify(messages[chatId]));
                     if (data.data.user !== currentUser) playNotificationSound();
-                    if (chatId === currentChat) render();
+                    if (chatId === currentChat) window.render();
                 } else if (data.type === 'reaction') {
                     const msgId = data.msgId;
                     const msg = messages[currentChat]?.find(m => m.id === msgId);
@@ -1044,7 +956,7 @@ const html = `<!DOCTYPE html>
                         if (!msg.reactions) msg.reactions = [];
                         msg.reactions.push({ user: data.user, emoji: data.emoji });
                         localStorage.setItem('chat_' + currentChat, JSON.stringify(messages[currentChat]));
-                        render();
+                        window.render();
                     }
                 }
             };
@@ -1054,11 +966,11 @@ const html = `<!DOCTYPE html>
             
             ws.onclose = () => {
                 connected = false;
-                setTimeout(connect, 3000);
+                setTimeout(window.connect, 3000);
             };
-        }
+        };
 
-        function announceRPSResult() {
+        window.announceRPSResult = function() {
             if (!rpsChoice) {
                 document.getElementById('rpsStatus').textContent = '❌ No choice made!';
                 setTimeout(() => document.getElementById('gamesPanel').classList.remove('show'), 1500);
@@ -1068,7 +980,6 @@ const html = `<!DOCTYPE html>
             clearInterval(rpsTimer);
             const emojis = { 'rock': '✊', 'paper': '✋', 'scissors': '✌️' };
             
-            // Display result message
             const text = '🎮 ' + USERS[currentUser] + ' ' + emojis[rpsChoice] + ' - RESULT REVEALED!';
             if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
             
@@ -1077,9 +988,9 @@ const html = `<!DOCTYPE html>
             
             rpsChoice = null;
             rpsOtherChoice = null;
-        }
+        };
 
-        function renderTabs() {
+        window.renderTabs = function() {
             const div = document.getElementById('tabs');
             if (!div) {
                 return;
@@ -1089,10 +1000,10 @@ const html = `<!DOCTYPE html>
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
                 btn.textContent = getChatName(chatId);
-                btn.onclick = () => { currentChat = chatId; renderTabs(); render(); };
+                btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
-        }
+        };
 
         function renderEmojiPicker() {
             const picker = document.getElementById('emojiPicker');
@@ -1106,7 +1017,7 @@ const html = `<!DOCTYPE html>
             });
         }
 
-        function send() {
+        window.send = function() {
             if (isAppLocked()) {
                 alert('⏰ Chat is locked between 9pm-7am');
                 return;
@@ -1117,9 +1028,9 @@ const html = `<!DOCTYPE html>
             ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text }));
             
             inp.value = '';
-        }
+        };
 
-        function render() {
+        window.render = function() {
             const div = document.getElementById('chat');
             if (!div) {
                 return;
@@ -1159,14 +1070,13 @@ const html = `<!DOCTYPE html>
                 div.appendChild(d);
             });
             div.scrollTop = div.scrollHeight;
-        }
+        };
 
         renderEmojiPicker();
         
-        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
-                document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+                document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') window.send(); });
                 
                 document.addEventListener('click', () => {
                     if ('Notification' in window && Notification.permission === 'default') {
@@ -1175,10 +1085,10 @@ const html = `<!DOCTYPE html>
                 }, { once: true });
                 
                 const savedUser = localStorage.getItem('user');
-                if (savedUser) login(savedUser);
+                if (savedUser) window.login(savedUser);
             });
         } else {
-            document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+            document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') window.send(); });
             
             document.addEventListener('click', () => {
                 if ('Notification' in window && Notification.permission === 'default') {
@@ -1187,7 +1097,7 @@ const html = `<!DOCTYPE html>
             }, { once: true });
             
             const savedUser = localStorage.getItem('user');
-            if (savedUser) login(savedUser);
+            if (savedUser) window.login(savedUser);
         }
     </script>
 </body>
