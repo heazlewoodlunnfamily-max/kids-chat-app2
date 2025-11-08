@@ -35,11 +35,23 @@ const html = `<!DOCTYPE html>
         .tab { padding: 8px 14px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: #FF1493; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
         .tab.active { background: #FFB6E1; color: white; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.3); position: relative; }
-        .chat-display::before { content: ''; position: fixed; bottom: -30px; right: -30px; width: 350px; height: 350px; background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="150" rx="50" ry="70" fill="rgba(0,0,0,0.08)"/><ellipse cx="150" cy="100" rx="45" ry="60" fill="rgba(0,0,0,0.08)"/><ellipse cx="220" cy="160" rx="40" ry="55" fill="rgba(0,0,0,0.08)"/></svg>'); background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; z-index: 0; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 13px; background: rgba(255,255,255,0.5); position: relative; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
         .message-sender { font-size: 11px; color: #666; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
+        .message-sender .heart { font-size: 12px; margin: 0 4px; }
+        .message.own .message-sender .heart { color: #FF1493; }
+        .message.esther .message-sender .heart { color: #00C8FF; }
+        .message.valley .message-sender .heart { color: #FF1493; }
+        .message.amaaya .message-sender .heart { color: #32CD32; }
+        .message.mama .message-sender .heart { color: #FFD700; }
+        .message.mummy .message-sender .heart { color: #FF69B4; }
+        .message.hilary .message-sender .heart { color: #9370DB; }
+        .message.nan .message-sender .heart { color: #DC143C; }
+        .message.rishy .message-sender .heart { color: #FFA500; }
+        .message.poppy .message-sender .heart { color: #00BFFF; }
+        .message.sienna .message-sender .heart { color: #F08080; }
+        .message.penelope .message-sender .heart { color: #FFB6C1; }
         .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 14px; word-wrap: break-word; font-size: 13px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.3); }
         .message.own .message-bubble { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; }
         .message.esther .message-bubble { background: rgba(0,200,255,0.8); color: white; }
@@ -524,8 +536,7 @@ const html = `<!DOCTYPE html>
             msgs.forEach(m => {
                 const d = document.createElement('div');
                 d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
-                const heartEmoji = getRandomHeartEmoji();
-                const sender = '<div class="message-sender">' + heartEmoji + ' ' + m.user + ' ' + heartEmoji + '</div>';
+                const sender = '<div class="message-sender"><span class="heart">💕</span>' + m.user + '<span class="heart">💕</span></div>';
                 const content = '<div class="message-bubble">' + m.text + '</div>';
                 d.innerHTML = sender + content;
                 div.appendChild(d);
