@@ -345,7 +345,7 @@ const html = `<!DOCTYPE html>
                     let color = '#ccc';
                     if (letter === wordleWord[i]) color = '#4CAF50';
                     else if (wordleWord.includes(letter)) color = '#FFC107';
-                    row += `<div style="width: 32px; height: 32px; background: ${color}; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">${letter}</div>`;
+                    row += '<div style="width: 32px; height: 32px; background: ' + color + '; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">' + letter + '</div>';
                 }
                 row += '</div>';
                 div.innerHTML += row;
