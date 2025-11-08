@@ -51,11 +51,12 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-sender .heart { color: #0ea5e9; }
         .message.sienna .message-sender .heart { color: #f472b6; }
         .message.penelope .message-sender .heart { color: #d8b4fe; }
+        .message.lola .message-sender .heart { color: #ec4899; }
         .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 14px; word-wrap: break-word; font-size: 18px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.3); width: fit-content; display: inline-block; }
         .message.own .message-bubble { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .message.esther .message-bubble { background: #e0f2fe; color: #0c4a6e; }
-        .message.valley .message-bubble { background: #fce7f3; color: #831843; }
-        .message.amaaya .message-bubble { background: #dcfce7; color: #166534; }
+        .message.esther .message-bubble { background: #a5f3fc; color: #0c4a6e; }
+        .message.valley .message-bubble { background: #e9d5ff; color: #5b21b6; }
+        .message.amaaya .message-bubble { background: #bbf7d0; color: #166534; }
         .message.mama .message-bubble { background: #fef3c7; color: #92400e; }
         .message.mummy .message-bubble { background: #fce7f3; color: #831843; }
         .message.hilary .message-bubble { background: #ede9fe; color: #5b21b6; }
@@ -64,6 +65,7 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-bubble { background: #cffafe; color: #0c4a6e; }
         .message.sienna .message-bubble { background: #fbcfe8; color: #831843; }
         .message.penelope .message-bubble { background: #f3e8ff; color: #6b21a8; }
+        .message.lola .message-bubble { background: #fbcfe8; color: #831843; }
         .input-area { background: linear-gradient(90deg, rgba(255,154,158,0.2), rgba(250,208,196,0.2)); border-top: 2px solid rgba(102,126,234,0.3); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; }
         .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: linear-gradient(135deg, #ffecd2, #fcb69f); border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid rgba(102,126,234,0.3); }
         .emoji-picker.show { display: grid; }
@@ -97,6 +99,7 @@ const html = `<!DOCTYPE html>
             <button class="login-btn" onclick="window.login('poppy')">🌷 Poppy</button>
             <button class="login-btn" onclick="window.login('sienna')">🦖 Sienna</button>
             <button class="login-btn" onclick="window.login('penelope')">💝 Penelope</button>
+            <button class="login-btn" onclick="window.login('lola')">💖 Lola</button>
         </div>
     </div>
 
@@ -119,11 +122,12 @@ const html = `<!DOCTYPE html>
     </div>
 
     <script>
-        const EMOJIS = ['😊','😂','😍','🥰','😎','🤗','🎉','🎊','🎈','🎁','🍰','🍕','🍔','☕','🧋','🐱','😺','😸','👍','💕','💖','⭐','✨','🌟','💫','🌈','🦄','🎀','💝','🌸','🌺','🌻','🌷','🐶','🐱','🐰'];
+        const EMOJIS = ['😊','😂','😍','🥰','😎','🤗','😜','😝','🤪','😏','😒','😡','🤬','😤','😠','😈','👿','💀','☠️','🎉','🎊','🎈','🎁','🍰','🍕','🍔','🍟','🌭','🥪','🥙','🌮','🌯','🥗','🍜','🍝','🍱','🍛','🍲','🍥','🥘','🍚','🍙','🥟','🍢','🍣','🍤','🍙','🥠','🥮','🍢','🍡','🍧','🍨','🍦','🥧','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','🌰','🥜','🍯','☕','🧋','🥤','🧃','🥛','🍼','🍵','🍶','🍾','🍷','🍸','🍹','🍺','🍻','🥂','🥃','🥤','🧉','🧊','⭐','✨','🌟','💫','🌠','🌌','🌃','🌆','🌇','🌉','🌁','⛅','🌤️','🌥️','☁️','🌦️','🌧️','⛈️','🌩️','🌨️','❄️','☃️','⛄','🌬️','💨','💧','💦','☔','🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍞','🥐','🥖','🥨','🥯','🧀','🥓','🥚','🍳','🧈','🥞','🧇','🥓','🥞','🍗','🍖','🌭','🍔','🍟','🍕','🥪','🥙','🧆','🌮','🌯','🥗','🥘','🍝','🍜','🍲','🍛','🍣','🍱','🥟','🦪','🍤','🍙','🍚','🍘','🍥','🥠','🥮','🍢','🍡','🍧','🍨','🍦','🥧','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','🌰','🥜','🍯','🥛','🍼','☕','🍵','🍶','🍾','🍷','🍸','🍹','🍺','🍻','🥂','🥃','🥤','🧉','🧊','🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐽','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🪱','🐛','🦋','🐌','🐞','🐜','🪰','🕷️','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🧒','👶','👧','🧑','👦','👨','👩','👴','👵','🥰','💕','💖','💗','💓','💞','💝','💟','❣️','💔','❤️','🧡','💛','💚','💙','💜','🖤','🖤','🤍','🤎','💯','💢','💥','💫','💦','💨','🕳️','💬','👁️‍🗨️','🗨️','🗯️','💭','💤'];
+
         
         const AVATARS = {
             esther: '🐱', valley: '🎀', amaaya: '✨', mama: '👑', mummy: '💎',
-            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🦖', penelope: '💝'
+            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🦖', penelope: '💝', lola: '💖'
         };
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
@@ -143,6 +147,8 @@ const html = `<!DOCTYPE html>
                 allChats = ['group', 'esther-' + user];
             } else if (['nan', 'rishy', 'poppy', 'sienna', 'penelope'].includes(user)) {
                 allChats = ['esther-' + user];
+            } else if (user === 'lola') {
+                allChats = ['group', 'lola-nan', 'lola-mummy', 'lola-mama', 'lola-poppy'];
             }
             currentChat = allChats[0];
             allChats.forEach(chat => {
@@ -285,7 +291,11 @@ let messages = {
   'esther-rishy': [],
   'esther-poppy': [],
   'esther-sienna': [],
-  'esther-penelope': []
+  'esther-penelope': [],
+  'lola-nan': [],
+  'lola-mummy': [],
+  'lola-mama': [],
+  'lola-poppy': []
 };
 
 wss.on('connection', (ws) => {
