@@ -16,15 +16,15 @@ const html = `<!DOCTYPE html>
     <title>💬 Chat Games</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #FFC4DB; display: flex; justify-content: center; }
+        html { height: 100%; }
+        body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-user-select: none; user-select: none; }
         .login-screen { width: 100vw; height: 100vh; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; }
         .login-screen h1 { font-size: 42px; margin-bottom: 8px; color: #9C27B0; font-weight: 800; }
         .login-screen p { font-size: 16px; color: #9C27B0; margin-bottom: 20px; font-weight: 600; }
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 380px; }
         .login-btn { padding: 14px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; }
         .login-btn:active { transform: scale(0.98); }
-        .container { width: 100vw; height: 100vh; background: white; display: none; flex-direction: column; }
+        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: none; flex-direction: column; }
         .container.show { display: flex; }
         .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; padding: 12px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; flex-shrink: 0; gap: 8px; }
         #myname { color: #9C27B0; font-weight: 900; }
@@ -54,12 +54,12 @@ const html = `<!DOCTYPE html>
         .message.penelope .message-bubble { background: #FF1493; color: white; }
         .message-sender { font-size: 11px; color: #9C27B0; margin: 0 0 4px 0; font-weight: 600; }
         .message.own .message-sender { text-align: right; }
-        .input-area { padding: 10px; background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; min-height: 60px; }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: #fff9e6; border-radius: 12px; max-height: 140px; overflow-y: auto; border: 2px solid #ffc107; margin-bottom: 0px; }
+        .input-area { background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: #fff9e6; border-radius: 12px; max-height: 140px; overflow-y: auto; border: 2px solid #ffc107; }
         .emoji-picker.show { display: grid; }
         .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; }
         .emoji-option:active { transform: scale(1.15); }
-        .games-panel { display: none; background: #f5f5f5; border-radius: 12px; padding: 10px; border: 2px solid #e0e0e0; margin-bottom: 0px; }
+        .games-panel { display: none; background: #f5f5f5; border-radius: 12px; padding: 10px; border: 2px solid #e0e0e0; max-height: 200px; overflow-y: auto; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .game-btn { padding: 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
@@ -68,8 +68,8 @@ const html = `<!DOCTYPE html>
         .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 12px 0; }
         .letter-btn { padding: 8px; background: white; border: 2px solid #9C27B0; border-radius: 8px; cursor: pointer; font-weight: 700; color: #9C27B0; font-size: 12px; }
         .letter-btn:disabled { opacity: 0.3; }
-        .hangman-word { font-size: 32px; font-weight: 700; letter-spacing: 8px; text-align: center; margin: 12px 0; font-family: monospace; color: #9C27B0; }
-        .hangman-stage { font-size: 64px; text-align: center; margin: 8px 0; }
+        .hangman-word { font-size: 28px; font-weight: 700; letter-spacing: 6px; text-align: center; margin: 8px 0; font-family: monospace; color: #9C27B0; }
+        .hangman-stage { font-size: 48px; text-align: center; margin: 4px 0; }
         .input-container { display: flex; gap: 8px; align-items: center; width: 100%; }
         .input-field { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; font-family: inherit; height: 44px; }
         .input-field:focus { outline: none; border-color: #667eea; }
@@ -156,14 +156,14 @@ const html = `<!DOCTYPE html>
                 <div id="hangmanContainer" style="display: none;">
                     <div class="game-status" id="hangmanStatus">🎯 Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Word..." maxlength="12" style="width: 100%; padding: 4px; margin: 4px 0; border: 1px solid #9C27B0; border-radius: 6px; color: #9C27B0; font-size: 11px;">
-                        <button class="game-btn" style="width: 100%; margin-top: 2px;" onclick="window.startHangman()">Set</button>
+                        <input type="text" id="hangmanSetWord" placeholder="Word..." maxlength="12" style="width: 100%; padding: 8px; margin: 4px 0; border: 2px solid #9C27B0; border-radius: 6px; color: #9C27B0; font-size: 13px;">
+                        <button class="game-btn" style="width: 100%; margin-top: 4px;" onclick="window.startHangman()">Set</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div class="hangman-stage" id="hangmanStage">😊</div>
                         <div class="hangman-word" id="hangmanWord">_ _ _</div>
                         <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 4px; color: #9C27B0; font-size: 10px;"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 4px; color: #9C27B0; font-size: 12px;"></div>
                     </div>
                 </div>
             </div>
@@ -220,59 +220,7 @@ const html = `<!DOCTYPE html>
             {q: 'Peregrine speed?', a: ['150','200','250','300'], c: 2},
             {q: 'Capital S.Korea?', a: ['Busan','Seoul','Incheon','Daegu'], c: 1},
             {q: 'Panda country?', a: ['Japan','Korea','China','Vietnam'], c: 2},
-            {q: 'Capital of Chile?', a: ['Valparaiso','Santiago','Concepcion','Temuco'], c: 1},
-            {q: 'Ocean depth avg?', a: ['2km','3km','4km','5km'], c: 2},
-            {q: 'Capital of Sweden?', a: ['Gothenburg','Malmö','Stockholm','Uppsala'], c: 2},
-            {q: 'Shark teeth?', a: ['5000','10000','20000','40000'], c: 3},
-            {q: 'Capital of Austria?', a: ['Salzburg','Graz','Vienna','Linz'], c: 2},
-            {q: 'Tallest tree?', a: ['Oak','Pine','Eucalyptus','Redwood'], c: 3},
-            {q: 'Capital of Belgium?', a: ['Antwerp','Ghent','Brussels','Liege'], c: 2},
-            {q: 'Giraffe neck?', a: ['4ft','6ft','12ft','18ft'], c: 2},
-            {q: 'Capital of Thailand?', a: ['Phuket','Chiang Mai','Bangkok','Pattaya'], c: 2},
-            {q: 'Most element?', a: ['Oxygen','Nitrogen','Hydrogen','Helium'], c: 2},
-            {q: 'Capital Netherlands?', a: ['Rotterdam','Utrecht','Amsterdam','Hague'], c: 2},
-            {q: 'Turtle lifespan?', a: ['50','100','150','200'], c: 3},
-            {q: 'Capital of Denmark?', a: ['Aarhus','Odense','Copenhagen','Aalborg'], c: 2},
-            {q: 'Peregrine speed?', a: ['100','150','200','250'], c: 2},
-            {q: 'Capital of Norway?', a: ['Bergen','Trondheim','Oslo','Stavanger'], c: 2},
-            {q: 'Heart chambers?', a: ['2','3','4','5'], c: 2},
-            {q: 'Capital of Finland?', a: ['Tampere','Turku','Helsinki','Oulu'], c: 2},
-            {q: 'Ocean deepest?', a: ['5000m','7000m','9000m','11000m'], c: 3},
-            {q: 'Capital of Ireland?', a: ['Cork','Galway','Dublin','Limerick'], c: 2},
-            {q: 'Spider legs?', a: ['6','8','10','12'], c: 1},
-            {q: 'Capital of Romania?', a: ['Cluj','Timisoara','Bucharest','Constanta'], c: 2},
-            {q: 'Whale weight?', a: ['100','150','200','300'], c: 2},
-            {q: 'Capital of Hungary?', a: ['Debrecen','Szeged','Budapest','Miskolc'], c: 2},
-            {q: 'Human teeth?', a: ['28','30','32','36'], c: 2},
-            {q: 'Capital of Czech?', a: ['Brno','Plzen','Prague','Olomouc'], c: 2},
-            {q: 'Largest feline?', a: ['Tiger','Lion','Leopard','Jaguar'], c: 0},
-            {q: 'Capital of Croatia?', a: ['Rijeka','Split','Zagreb','Osijek'], c: 2},
-            {q: 'Bee eyes?', a: ['2','3','5','8'], c: 2},
-            {q: 'Capital of Slovenia?', a: ['Maribor','Celje','Ljubljana','Koper'], c: 2},
-            {q: 'Fastest fish?', a: ['Sailfish','Tuna','Marlin','Wahoo'], c: 0},
-            {q: 'Capital of Serbia?', a: ['Nis','Novi Sad','Belgrade','Kragujevac'], c: 2},
-            {q: 'Dinosaur size?', a: ['20ft','40ft','80ft','120ft'], c: 3},
-            {q: 'Capital of Bulgaria?', a: ['Plovdiv','Varna','Sofia','Burgas'], c: 2},
-            {q: 'Smartest?', a: ['Dolphin','Crow','Octopus','Chimp'], c: 3},
-            {q: 'Capital of Albania?', a: ['Durrës','Vlore','Tirana','Fier'], c: 2},
-            {q: 'Whale hold breath?', a: ['30m','1h','2h','4h'], c: 2},
-            {q: 'Capital of Macedonia?', a: ['Bitola','Kumanovo','Skopje','Tetovo'], c: 2},
-            {q: 'Pentagon sides?', a: ['4','5','6','7'], c: 1},
-            {q: 'Capital of Bosnia?', a: ['Tuzla','Banja Luka','Sarajevo','Mostar'], c: 2},
-            {q: 'Biggest sea?', a: ['Whale Shark','Great White','Octopus','Squid'], c: 0},
-            {q: 'Capital of Iceland?', a: ['Akureyri','Hafnarfjordur','Reykjavik','Keflavik'], c: 2},
-            {q: 'Rainbow colors?', a: ['5','6','7','8'], c: 2},
-            {q: 'Capital of Luxembourg?', a: ['Differdange','Esch','Luxembourg','Dudelange'], c: 2},
-            {q: 'Tallest bird?', a: ['Emu','Rhea','Ostrich','Cassowary'], c: 2},
-            {q: 'Capital of Malta?', a: ['Sliema','Valletta','Naxxar','Paceville'], c: 1},
-            {q: 'Neck bones?', a: ['5','7','9','12'], c: 1},
-            {q: 'Capital of Cyprus?', a: ['Limassol','Paphos','Nicosia','Larnaca'], c: 2},
-            {q: 'Strongest per lb?', a: ['Bull','Gorilla','Rhino','Bear'], c: 2},
-            {q: 'Capital of Lebanon?', a: ['Tripoli','Sidon','Beirut','Tyre'], c: 2},
-            {q: 'Human max age?', a: ['100','120','140','160'], c: 1},
-            {q: 'Capital of Israel?', a: ['Tel Aviv','Haifa','Jerusalem','Rishon'], c: 2},
-            {q: 'Longest snake?', a: ['Cobra','Python','Anaconda','Mamba'], c: 2},
-            {q: 'Capital of Jordan?', a: ['Zarqa','Irbid','Amman','Aqaba'], c: 2}
+            {q: 'Capital of Chile?', a: ['Valparaiso','Santiago','Concepcion','Temuco'], c: 1}
         ];
 
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
@@ -320,7 +268,7 @@ const html = `<!DOCTYPE html>
             });
             document.getElementById('login').style.display = 'none';
             document.getElementById('app').classList.add('show');
-            document.getElementById('myname').textContent = user;
+            document.getElementById('myname').textContent = user.toUpperCase();
             window.renderTabs();
             window.connect();
             window.render();
@@ -396,7 +344,7 @@ const html = `<!DOCTYPE html>
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
-                btn.textContent = chatId === 'group' ? '👥 Group' : '💜 ' + chatId.split('-')[1];
+                btn.textContent = chatId === 'group' ? '👥 GROUP' : '💜 ' + chatId.split('-')[1].toUpperCase();
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
