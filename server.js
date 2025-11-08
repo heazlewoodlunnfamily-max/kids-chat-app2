@@ -110,6 +110,9 @@ const html = `<!DOCTYPE html>
         .dice-display { text-align: center; margin: 12px 0; }
         .dice-emoji { font-size: 36px; }
         .dice-number { font-size: 24px; font-weight: bold; color: #a0e7e5; margin-top: 8px; }
+        .hangman-game-display { background: linear-gradient(135deg, #2d4a7f, #5a3d7f); padding: 15px; border-radius: 12px; border: 2px solid #7c8fff; margin: 10px 0; color: #d4dcff; }
+        .hangman-display-word { font-size: 32px; font-weight: bold; letter-spacing: 8px; text-align: center; margin: 10px 0; font-family: monospace; color: #a0e7e5; }
+        .hangman-display-stage { font-size: 48px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -613,10 +616,11 @@ const html = `<!DOCTYPE html>
             hangmanGameActive = true;
             document.getElementById('hangmanSetupPhase').style.display = 'none';
             document.getElementById('hangmanGamePhase').style.display = 'block';
-            window.renderHangmanGame();
             if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 Hangman started! ' + currentUser + ' set the word. Others, start guessing!' }));
+                const display = hangmanWord.split('').map(l => '_').join(' ');
+                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman Game Started!\n' + HANGMAN_STAGES[0] + '\nWord: ' + display + '\nWrong: 0/6' }));
             }
+            window.renderHangmanGame();
         };
 
         window.renderHangmanGame = function() {
@@ -624,7 +628,7 @@ const html = `<!DOCTYPE html>
             const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
             document.getElementById('hangmanWord').textContent = display;
             document.getElementById('hangmanStage').textContent = HANGMAN_STAGES[Math.min(hangmanWrong, 6)];
-            document.getElementById('hangmanStatus').textContent = hangmanWrong + '/6';
+            document.getElementById('hangmanStatus').textContent = 'Wrong: ' + hangmanWrong + '/6';
             const grid = document.getElementById('hangmanLetterGrid');
             if (grid.children.length === 0) {
                 for (let i = 65; i <= 90; i++) {
@@ -642,7 +646,11 @@ const html = `<!DOCTYPE html>
             const lost = hangmanWrong >= 6;
             if (won || lost) {
                 hangmanGameActive = false;
-                document.getElementById('hangmanResult').textContent = won ? 'Won!' : 'Lost: ' + hangmanWord;
+                const result = won ? 'Won! The word was: ' + hangmanWord : 'Lost! The word was: ' + hangmanWord;
+                document.getElementById('hangmanResult').textContent = result;
+                if (connected) {
+                    ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman ' + result }));
+                }
             }
         };
 
@@ -650,10 +658,24 @@ const html = `<!DOCTYPE html>
             if (!hangmanGameActive || hangmanGuessed.includes(letter)) return;
             hangmanGuessed.push(letter);
             if (!hangmanWord.includes(letter)) hangmanWrong++;
-            window.renderHangmanGame();
+            
+            const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
+            const won = hangmanWord.split('').every(l => hangmanGuessed.includes(l));
+            const lost = hangmanWrong >= 6;
+            
             if (connected) {
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' guessed: ' + letter }));
+                let status = '🎯 ' + currentUser + ' guessed: ' + letter + ' | ' + HANGMAN_STAGES[Math.min(hangmanWrong, 6)] + ' | ' + display + ' | Wrong: ' + hangmanWrong + '/6';
+                if (won) {
+                    status = '🎯 Won! The word was: ' + hangmanWord + ' ✓';
+                    hangmanGameActive = false;
+                } else if (lost) {
+                    status = '🎯 Lost! The word was: ' + hangmanWord + ' ✗';
+                    hangmanGameActive = false;
+                }
+                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: status }));
             }
+            
+            window.renderHangmanGame();
         };
 
         window.playStory = function() {
