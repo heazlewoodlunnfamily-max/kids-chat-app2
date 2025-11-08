@@ -28,7 +28,7 @@ const html = `<!DOCTYPE html>
         .dark-mode .login-screen p { color: #aaa; }
         
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .login-btn { padding: 16px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .login-btn { padding: 16px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
         .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
         
         .container { width: 100%; max-width: 480px; background: white; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: none; flex-direction: column; height: 90vh; max-height: 750px; overflow: hidden; }
@@ -146,17 +146,17 @@ const html = `<!DOCTYPE html>
         <h1>💬 Chat</h1>
         <p>Select your name</p>
         <div class="login-buttons">
-            <button type="button" class="login-btn" onclick="window.login('esther')">🐱 Esther</button>
-            <button type="button" class="login-btn" onclick="window.login('valley')">😺 Valley</button>
-            <button type="button" class="login-btn" onclick="window.login('amaaya')">😸 Amaaya</button>
-            <button type="button" class="login-btn" onclick="window.login('mama')">😻 Mama</button>
-            <button type="button" class="login-btn" onclick="window.login('mummy')">😼 Mummy</button>
-            <button type="button" class="login-btn" onclick="window.login('hilary')">😽 Hilary</button>
-            <button type="button" class="login-btn" onclick="window.login('nan')">🐱 Nan</button>
-            <button type="button" class="login-btn" onclick="window.login('rishy')">😺 Rishy</button>
-            <button type="button" class="login-btn" onclick="window.login('poppy')">😸 Poppy</button>
-            <button type="button" class="login-btn" onclick="window.login('sienna')">😻 Sienna</button>
-            <button type="button" class="login-btn" onclick="window.login('penelope')">😼 Penelope</button>
+            <button type="button" class="login-btn" onclick="try { window.login('esther'); } catch(e) { console.error(e); }">🐱 Esther</button>
+            <button type="button" class="login-btn" onclick="try { window.login('valley'); } catch(e) { console.error(e); }">😺 Valley</button>
+            <button type="button" class="login-btn" onclick="try { window.login('amaaya'); } catch(e) { console.error(e); }">😸 Amaaya</button>
+            <button type="button" class="login-btn" onclick="try { window.login('mama'); } catch(e) { console.error(e); }">😻 Mama</button>
+            <button type="button" class="login-btn" onclick="try { window.login('mummy'); } catch(e) { console.error(e); }">😼 Mummy</button>
+            <button type="button" class="login-btn" onclick="try { window.login('hilary'); } catch(e) { console.error(e); }">😽 Hilary</button>
+            <button type="button" class="login-btn" onclick="try { window.login('nan'); } catch(e) { console.error(e); }">🐱 Nan</button>
+            <button type="button" class="login-btn" onclick="try { window.login('rishy'); } catch(e) { console.error(e); }">😺 Rishy</button>
+            <button type="button" class="login-btn" onclick="try { window.login('poppy'); } catch(e) { console.error(e); }">😸 Poppy</button>
+            <button type="button" class="login-btn" onclick="try { window.login('sienna'); } catch(e) { console.error(e); }">😻 Sienna</button>
+            <button type="button" class="login-btn" onclick="try { window.login('penelope'); } catch(e) { console.error(e); }">😼 Penelope</button>
         </div>
     </div>
 
@@ -1005,7 +1005,7 @@ const html = `<!DOCTYPE html>
             });
         };
 
-        function renderEmojiPicker() {
+        window.renderEmojiPicker = function() {
             const picker = document.getElementById('emojiPicker');
             picker.innerHTML = '';
             EMOJIS.forEach(emoji => {
@@ -1015,7 +1015,7 @@ const html = `<!DOCTYPE html>
                 btn.onclick = () => { document.getElementById('msg').value += emoji; document.getElementById('msg').focus(); };
                 picker.appendChild(btn);
             });
-        }
+        };
 
         window.send = function() {
             if (isAppLocked()) {
@@ -1072,7 +1072,7 @@ const html = `<!DOCTYPE html>
             div.scrollTop = div.scrollHeight;
         };
 
-        renderEmojiPicker();
+        window.renderEmojiPicker();
         
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
