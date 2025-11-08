@@ -324,9 +324,26 @@ const html = `<!DOCTYPE html>
         }
 
         function addGif(url) {
-            const inp = document.getElementById('msg');
-            inp.value = url;
+            if (isAppLocked()) {
+                alert('⏰ Chat is locked between 9pm-7am');
+                return;
+            }
+            if (!connected) return;
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: url }));
+            
+            const newMsg = {
+                id: Date.now(),
+                user: currentUser,
+                text: url,
+                chatId: currentChat,
+                reactions: []
+            };
+            if (!messages[currentChat]) messages[currentChat] = [];
+            messages[currentChat].push(newMsg);
+            localStorage.setItem('chat_' + currentChat, JSON.stringify(messages[currentChat]));
+            
             document.getElementById('gifPicker').style.display = 'none';
+            render();
         }
 
         function toggleGames() {
