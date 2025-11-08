@@ -859,31 +859,35 @@ const html = `<!DOCTYPE html>
 
         window.send = function() {
             const inp = document.getElementById('msg');
-            const text = inp.value.trim().toUpperCase();
+            const text = inp.value.trim();
             if (!text || !connected) return;
             
             // Check if hangman is active and input is a single letter
-            if (hangmanGameActive && text.length === 1 && /[A-Z]/.test(text)) {
-                if (hangmanGuessed.includes(text)) {
+            if (hangmanGameActive && text.length === 1 && /[A-Za-z]/.test(text)) {
+                const letter = text.toUpperCase();
+                if (hangmanGuessed.includes(letter)) {
                     inp.value = '';
                     return; // Already guessed
                 }
-                hangmanGuessed.push(text);
-                if (!hangmanWord.includes(text)) hangmanWrong++;
+                hangmanGuessed.push(letter);
+                if (!hangmanWord.includes(letter)) hangmanWrong++;
                 
                 const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
                 const won = hangmanWord.split('').every(l => hangmanGuessed.includes(l));
                 const lost = hangmanWrong >= 6;
                 
-                let status = '🎯 ' + currentUser + ' guessed: ' + text + ' | ' + HANGMAN_STAGES[Math.min(hangmanWrong, 6)] + ' | ' + display + ' | Wrong: ' + hangmanWrong + '/6';
+                window.renderHangmanGame();
+                
+                // Broadcast hangman state to all players
+                ws.send(JSON.stringify({ type: 'game_state', data: { game: 'hangman', word: hangmanWord, guessed: hangmanGuessed, wrong: hangmanWrong, active: hangmanGameActive, setter: hangmanSetter } }));
+                
+                let status = '🎯 ' + currentUser + ' guessed: ' + letter + ' | ' + HANGMAN_STAGES[Math.min(hangmanWrong, 6)] + ' | ' + display + ' | Wrong: ' + hangmanWrong + '/6';
                 if (won) {
-                    status = '🎯 Won! The word was: ' + hangmanWord + ' ✓';
+                    status = '🎯 WON! The word was: ' + hangmanWord + ' ✓ (Guessers win!)';
                     hangmanGameActive = false;
-                    document.getElementById('msg').placeholder = 'Say something...';
                 } else if (lost) {
-                    status = '🎯 Lost! The word was: ' + hangmanWord + ' ✗';
+                    status = '🎯 LOST! The word was: ' + hangmanWord + ' ✗ (Setter ' + hangmanSetter + ' wins!)';
                     hangmanGameActive = false;
-                    document.getElementById('msg').placeholder = 'Say something...';
                 }
                 ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: status }));
                 inp.value = '';
