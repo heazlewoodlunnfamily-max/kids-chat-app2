@@ -90,9 +90,10 @@ const html = `<!DOCTYPE html>
         .send-btn:disabled { background: #4b5563; cursor: not-allowed; }
         .empty { text-align: center; color: #a0aec0; padding: 40px 15px; font-size: 16px; font-weight: bold; }
         .game-status { text-align: center; padding: 10px; background: linear-gradient(135deg, rgba(45, 74, 127, 0.4), rgba(154, 90, 255, 0.3)); border-radius: 8px; color: #b8d4ff; font-weight: bold; margin-bottom: 8px; font-size: 12px; }
-        .trivia-q { font-weight: bold; margin-bottom: 10px; color: #c7d2fe; font-size: 13px; }
+        #triviaContainer { max-width: 600px; margin: auto; }
+        .trivia-q { font-weight: bold; margin-bottom: 15px; color: #d4dcff; font-size: 18px; }
         .trivia-answers { display: grid; gap: 8px; margin-bottom: 10px; }
-        .trivia-btn { padding: 10px; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border: 2px solid #5a5fdf; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; color: #d4dcff; transition: all 0.3s; }
+        .trivia-btn { padding: 12px; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border: 2px solid #5a5fdf; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; color: #d4dcff; transition: all 0.3s; }
         .trivia-btn:hover { background: rgba(90, 95, 223, 0.4); }
         .trivia-btn.correct { background: #10b981; color: white; border-color: #059669; }
         .trivia-btn.wrong { background: #ef4444; color: white; border-color: #dc2626; }
@@ -181,10 +182,7 @@ const html = `<!DOCTYPE html>
                         <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">Set Word</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
-                        <div class="hangman-stage" id="hangmanStage">😊</div>
-                        <div class="hangman-word" id="hangmanWord">_ _ _</div>
-                        <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: bold; margin-top: 8px; color: #a0e7e5; font-size: 13px;"></div>
+                        <div class="game-status">Hangman is active! Type a letter to guess.</div>
                     </div>
                 </div>
 
@@ -352,7 +350,7 @@ const html = `<!DOCTYPE html>
                 document.getElementById('triviaQuestion').textContent = 'Done!';
                 document.getElementById('triviaAnswers').innerHTML = '';
                 document.getElementById('triviaResult').textContent = '';
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: scores }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 Trivia finished! ' + scores }));
                 return;
             }
             triviaTotal++;
@@ -361,9 +359,11 @@ const html = `<!DOCTYPE html>
             
             let triviaCurrentQ;
             do {
-                triviaCurrentQ = TRIVIA_QUESTIONS[Math.floor(Math.random() * TRIVIA_QUESTIONS.length)];
-            } while (playerTriviaQuestions[currentUser].includes(triviaCurrentQ.q));
+                const randomIdx = Math.floor(Math.random() * TRIVIA_QUESTIONS.length);
+                triviaCurrentQ = TRIVIA_QUESTIONS[randomIdx];
+            } while (playerTriviaQuestions[currentUser] && playerTriviaQuestions[currentUser].includes(triviaCurrentQ.q));
             
+            if (!playerTriviaQuestions[currentUser]) playerTriviaQuestions[currentUser] = [];
             playerTriviaQuestions[currentUser].push(triviaCurrentQ.q);
             
             document.getElementById('triviaQuestion').textContent = triviaCurrentQ.q;
@@ -390,9 +390,9 @@ const html = `<!DOCTYPE html>
                 if (i === question.c) b.classList.add('correct');
                 else if (i === idx) b.classList.add('wrong');
             });
-            document.getElementById('triviaResult').textContent = isCorrect ? '✓' : '✗';
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: (isCorrect ? '✓ Correct!' : '✗ Wrong!') }));
-            setTimeout(window.nextTriviaQuestion, 1500);
+            document.getElementById('triviaResult').textContent = isCorrect ? '✓ Correct!' : '✗ Wrong!';
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 ' + currentUser + ': ' + (isCorrect ? '✓ Correct!' : '✗ Wrong!') }));
+            setTimeout(window.nextTriviaQuestion, 2000);
         };
 
         window.login = function(user) {
@@ -574,22 +574,97 @@ const html = `<!DOCTYPE html>
             }
         };
 
+        window.playRPS = function() {
+            document.getElementById('rpsContainer').style.display = 'block';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('diceContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
+            rpsChoice = null;
+            rpsChoices = {};
+            rpsPlayers = {};
+            rpsTimeLeft = 10;
+            document.getElementById('rpsStatus').textContent = 'Choose in 10s!';
+            document.querySelectorAll('#rpsContainer .game-btn').forEach(b => {
+                if (b.textContent.includes('Rock') || b.textContent.includes('Paper') || b.textContent.includes('Scissors')) {
+                    b.disabled = false;
+                }
+            });
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '✊ ' + currentUser + ' started RPS game!' }));
+            }
+            rpsTimer = setInterval(() => {
+                rpsTimeLeft--;
+                document.getElementById('rpsStatus').textContent = rpsTimeLeft + 's left!';
+                if (rpsTimeLeft <= 0) {
+                    clearInterval(rpsTimer);
+                    document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
+                    if (rpsChoice) {
+                        if (connected) {
+                            ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: rpsChoice }));
+                        }
+                    }
+                }
+            }, 1000);
+        };
+
+        window.selectRPS = function(choice, emoji) {
+            rpsChoice = { choice: choice, emoji: emoji };
+            document.querySelectorAll('#rpsContainer .game-btn').forEach(b => {
+                if (b.textContent.includes('Rock') || b.textContent.includes('Paper') || b.textContent.includes('Scissors')) {
+                    b.disabled = true;
+                }
+            });
+            document.getElementById('rpsStatus').textContent = 'Your choice: ' + emoji + ' (Waiting for opponent...)';
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '✊ ' + currentUser + ' chose: ' + emoji }));
+            }
+        };
+
+        window.playDice = function() {
+            document.getElementById('diceContainer').style.display = 'block';
+            document.getElementById('rpsContainer').style.display = 'none';
+            document.getElementById('hangmanContainer').style.display = 'none';
+            document.getElementById('triviaContainer').style.display = 'none';
+            document.getElementById('storyContainer').style.display = 'none';
+        };
+
+        window.rollDice = function() {
+            const result = Math.floor(Math.random() * 6) + 1;
+            const diceEmojis = ['🎲', '🎲', '🎲', '🎲', '🎲', '🎲'];
+            document.getElementById('diceResult').innerHTML = '<div class="dice-emoji">' + diceEmojis[result-1] + '</div><div class="dice-number">Number: ' + result + '</div>';
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 rolled ' + result }));
+            }
+        };
+
         window.playTrivia = function() {
             triviaScore = {};
             triviaTotal = 0;
             triviaUsers.clear();
             triviaAnswered = false;
             usedTriviaQuestions = [];
+            playerTriviaQuestions[currentUser] = [];
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('storyContainer').style.display = 'none';
             document.getElementById('triviaContainer').style.display = 'block';
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: 'Started Trivia!' }));
+            document.getElementById('triviaContainer').style.position = 'fixed';
+            document.getElementById('triviaContainer').style.top = '50%';
+            document.getElementById('triviaContainer').style.left = '50%';
+            document.getElementById('triviaContainer').style.transform = 'translate(-50%, -50%)';
+            document.getElementById('triviaContainer').style.zIndex = '9999';
+            document.getElementById('triviaContainer').style.maxHeight = '90vh';
+            document.getElementById('triviaContainer').style.maxWidth = '90vw';
+            document.getElementById('triviaContainer').style.background = 'linear-gradient(135deg, #2d4a7f, #5a3d7f)';
+            document.getElementById('triviaContainer').style.border = '3px solid #7c8fff';
+            document.getElementById('triviaContainer').style.borderRadius = '20px';
+            document.getElementById('triviaContainer').style.padding = '30px';
+            document.getElementById('triviaContainer').style.boxShadow = '0 0 30px rgba(124, 143, 255, 0.6)';
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 ' + currentUser + ' started Trivia!' }));
             window.nextTriviaQuestion();
         };
-
-        window.playHangman = function() {
             hangmanWord = '';
             hangmanGuessed = [];
             hangmanWrong = 0;
@@ -615,12 +690,13 @@ const html = `<!DOCTYPE html>
             hangmanWrong = 0;
             hangmanGameActive = true;
             document.getElementById('hangmanSetupPhase').style.display = 'none';
-            document.getElementById('hangmanGamePhase').style.display = 'block';
+            document.getElementById('hangmanGamePhase').style.display = 'none';
+            document.getElementById('msg').disabled = false;
+            document.getElementById('msg').placeholder = 'Guess a letter...';
             if (connected) {
                 const display = hangmanWord.split('').map(l => '_').join(' ');
                 ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman Game Started! ' + HANGMAN_STAGES[0] + ' Word: ' + display + ' | Wrong: 0/6' }));
             }
-            window.renderHangmanGame();
         };
 
         window.renderHangmanGame = function() {
@@ -714,10 +790,39 @@ const html = `<!DOCTYPE html>
 
         window.send = function() {
             const inp = document.getElementById('msg');
-            const text = inp.value.trim();
+            const text = inp.value.trim().toUpperCase();
             if (!text || !connected) return;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text }));
-            inp.value = '';
+            
+            // Check if hangman is active and input is a single letter
+            if (hangmanGameActive && text.length === 1 && /[A-Z]/.test(text)) {
+                if (hangmanGuessed.includes(text)) {
+                    inp.value = '';
+                    return; // Already guessed
+                }
+                hangmanGuessed.push(text);
+                if (!hangmanWord.includes(text)) hangmanWrong++;
+                
+                const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
+                const won = hangmanWord.split('').every(l => hangmanGuessed.includes(l));
+                const lost = hangmanWrong >= 6;
+                
+                let status = '🎯 ' + currentUser + ' guessed: ' + text + ' | ' + HANGMAN_STAGES[Math.min(hangmanWrong, 6)] + ' | ' + display + ' | Wrong: ' + hangmanWrong + '/6';
+                if (won) {
+                    status = '🎯 Won! The word was: ' + hangmanWord + ' ✓';
+                    hangmanGameActive = false;
+                    document.getElementById('msg').placeholder = 'Say something...';
+                } else if (lost) {
+                    status = '🎯 Lost! The word was: ' + hangmanWord + ' ✗';
+                    hangmanGameActive = false;
+                    document.getElementById('msg').placeholder = 'Say something...';
+                }
+                ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: status }));
+                inp.value = '';
+            } else {
+                // Normal message
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: text }));
+                inp.value = '';
+            }
         };
 
         window.render = function() {
