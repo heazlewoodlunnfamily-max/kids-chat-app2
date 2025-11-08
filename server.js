@@ -19,11 +19,11 @@ const html = `<!DOCTYPE html>
         @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         html { height: 100%; }
         body { height: 100%; overflow: hidden; font-family: 'Arial', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); }
-        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
-        .login-screen p { font-size: 16px; color: white; margin-bottom: 30px; font-weight: bold; }
-        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 360px; }
-        .login-btn { padding: 14px; background: white; color: #FF1493; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s; }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #FF99CC 0%, #FFCCDD 25%, #CCEEFF 50%, #E6D9FF 75%, #FFCCEE 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
+        .login-screen p { font-size: 28px; color: white; margin-bottom: 40px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 420px; }
+        .login-btn { padding: 20px; background: white; color: #FF1493; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .login-btn:active { transform: scale(0.95); }
         .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #FFB6E1 0%, #FFE4E1 25%, #E1F5FF 50%, #F0E6FF 75%, #FFE4F0 100%); display: none; flex-direction: column; z-index: 50; }
         .container.show { display: flex; }
@@ -34,7 +34,7 @@ const html = `<!DOCTYPE html>
         .tab { padding: 8px 14px; background: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; color: #FF1493; flex-shrink: 0; text-transform: uppercase; transition: all 0.3s; }
         .tab:hover { opacity: 0.8; }
         .tab.active { background: #FFB6E1; color: white; }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 16px; background: rgba(255,255,255,0.65); position: relative; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 15px; -webkit-overflow-scrolling: touch; font-size: 18px; background: rgba(255,255,255,0.65); position: relative; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; position: relative; z-index: 2; animation: fadeIn 0.3s; }
         .message.own { align-items: flex-end; }
         .message-sender { font-size: 14px; color: #666; margin: 0 0 4px 0; font-weight: bold; letter-spacing: 1px; }
@@ -51,7 +51,7 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-sender .heart { color: #00BFFF; }
         .message.sienna .message-sender .heart { color: #F08080; }
         .message.penelope .message-sender .heart { color: #FFB6C1; }
-        .message-bubble { max-width: 70%; padding: 12px 16px; border-radius: 14px; word-wrap: break-word; font-size: 15px; font-weight: 500; line-height: 1.5; border: 1px solid rgba(255,255,255,0.3); }
+        .message-bubble { max-width: 70%; padding: 14px 18px; border-radius: 14px; word-wrap: break-word; font-size: 18px; font-weight: 500; line-height: 1.6; border: 1px solid rgba(255,255,255,0.3); }
         .message.own .message-bubble { background: linear-gradient(135deg, #FF1493, #FFD700); color: white; }
         .message.esther .message-bubble { background: rgba(0,200,255,0.8); color: white; }
         .message.valley .message-bubble { background: rgba(255,20,147,0.8); color: white; }
