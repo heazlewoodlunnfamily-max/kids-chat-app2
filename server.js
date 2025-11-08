@@ -192,11 +192,15 @@ const html = `<!DOCTYPE html>
                 <div id="hangmanContainer" style="display: none;">
                     <div class="game-status" id="hangmanStatus">Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 8px; margin: 6px 0; border: 2px solid #7c8fff; border-radius: 8px; color: #1a1f3a; font-size: 12px; font-weight: bold; background: #f0f2f7;">
-                        <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">Set Word</button>
+                        <div style="text-align: center; margin-bottom: 20px; font-size: 18px; color: #d4dcff;"><strong>Set a Word for Others to Guess!</strong></div>
+                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #7c8fff; border-radius: 8px; color: #1a1f3a; font-size: 14px; font-weight: bold; background: #f0f2f7;">
+                        <button class="game-btn" style="width: 100%; margin-top: 10px; padding: 14px;" onclick="window.startHangman()">Start Game!</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
-                        <div class="game-status">Hangman is active! Type a letter to guess.</div>
+                        <div class="hangman-stage" id="hangmanStage" style="font-size: 64px; text-align: center; margin: 15px 0;">😊</div>
+                        <div class="hangman-word" id="hangmanWord" style="font-size: 48px; letter-spacing: 12px; text-align: center; margin: 20px 0; font-family: monospace; color: #a0e7e5; font-weight: bold;">_ _ _</div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: bold; margin: 15px 0; color: #d4dcff; font-size: 16px;"></div>
+                        <input type="text" id="hangmanGuessInput" maxlength="1" placeholder="Type a letter & press Enter" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #7c8fff; border-radius: 8px; color: #1a1f3a; font-size: 16px; font-weight: bold; background: #f0f2f7; text-align: center; text-transform: uppercase;" onkeypress="if(event.key==='Enter') { window.guessHangmanLetter(document.getElementById('hangmanGuessInput').value.toUpperCase()); document.getElementById('hangmanGuessInput').value=''; }">
                     </div>
                 </div>
 
@@ -708,9 +712,8 @@ const html = `<!DOCTYPE html>
             hangmanWrong = 0;
             hangmanGameActive = true;
             document.getElementById('hangmanSetupPhase').style.display = 'none';
-            document.getElementById('hangmanGamePhase').style.display = 'none';
-            document.getElementById('msg').disabled = false;
-            document.getElementById('msg').placeholder = 'Guess a letter...';
+            document.getElementById('hangmanGamePhase').style.display = 'block';
+            window.renderHangmanGame();
             if (connected) {
                 const display = hangmanWord.split('').map(l => '_').join(' ');
                 ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 HANGMAN STARTED! Setter: ' + hangmanSetter + ' | Guessers: Everyone else | ' + HANGMAN_STAGES[0] + ' | Word: ' + display + ' | Wrong: 0/6' }));
@@ -722,28 +725,16 @@ const html = `<!DOCTYPE html>
             const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
             document.getElementById('hangmanWord').textContent = display;
             document.getElementById('hangmanStage').textContent = HANGMAN_STAGES[Math.min(hangmanWrong, 6)];
-            document.getElementById('hangmanStatus').textContent = 'Wrong: ' + hangmanWrong + '/6';
-            const grid = document.getElementById('hangmanLetterGrid');
-            if (grid.children.length === 0) {
-                for (let i = 65; i <= 90; i++) {
-                    const btn = document.createElement('button');
-                    btn.textContent = String.fromCharCode(i);
-                    btn.className = 'letter-btn';
-                    btn.onclick = () => window.guessHangmanLetter(String.fromCharCode(i));
-                    grid.appendChild(btn);
-                }
-            }
-            document.querySelectorAll('.letter-btn').forEach(btn => {
-                if (hangmanGuessed.includes(btn.textContent)) btn.disabled = true;
-            });
+            document.getElementById('hangmanStatus').textContent = 'Word Setter: ' + hangmanSetter + ' | Wrong: ' + hangmanWrong + '/6 | Guessed: ' + hangmanGuessed.join(' ');
+            
             const won = hangmanWord.split('').every(l => hangmanGuessed.includes(l));
             const lost = hangmanWrong >= 6;
             if (won || lost) {
                 hangmanGameActive = false;
-                const result = won ? 'Won! The word was: ' + hangmanWord : 'Lost! The word was: ' + hangmanWord;
+                const result = won ? '✓ WON! Word was: ' + hangmanWord + ' (Guessers win!)' : '✗ LOST! Word was: ' + hangmanWord + ' (Setter wins!)';
                 document.getElementById('hangmanResult').textContent = result;
                 if (connected) {
-                    ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 Hangman ' + result }));
+                    ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: '🎯 ' + result }));
                 }
             }
         };
@@ -757,19 +748,17 @@ const html = `<!DOCTYPE html>
             const won = hangmanWord.split('').every(l => hangmanGuessed.includes(l));
             const lost = hangmanWrong >= 6;
             
+            window.renderHangmanGame();
+            
             if (connected) {
                 let status = '🎯 ' + currentUser + ' guessed: ' + letter + ' | ' + HANGMAN_STAGES[Math.min(hangmanWrong, 6)] + ' | ' + display + ' | Wrong: ' + hangmanWrong + '/6';
                 if (won) {
-                    status = '🎯 Won! The word was: ' + hangmanWord + ' ✓';
-                    hangmanGameActive = false;
+                    status = '🎯 WON! The word was: ' + hangmanWord + ' ✓ (Guessers win!)';
                 } else if (lost) {
-                    status = '🎯 Lost! The word was: ' + hangmanWord + ' ✗';
-                    hangmanGameActive = false;
+                    status = '🎯 LOST! The word was: ' + hangmanWord + ' ✗ (Setter ' + hangmanSetter + ' wins!)';
                 }
                 ws.send(JSON.stringify({ type: 'new_message', user: 'Game', chatId: currentChat, text: status }));
             }
-            
-            window.renderHangmanGame();
         };
 
         window.playStory = function() {
