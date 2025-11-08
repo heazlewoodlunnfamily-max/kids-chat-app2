@@ -77,8 +77,8 @@ const html = `<!DOCTYPE html>
         .game-btn:active { transform: scale(0.95); }
         .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .input-container { display: flex; gap: 6px; align-items: center; width: 100%; }
-        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #5a5fdf; border-radius: 10px; font-size: 13px; font-family: inherit; height: 40px; background: rgba(45, 74, 127, 0.6); color: #e8ecff; font-weight: 500; }
-        .input-field:focus { outline: none; border-color: #9a5fff; background: rgba(45, 74, 127, 0.9); }
+        .input-field { flex: 1; padding: 10px 12px; border: 2px solid #7c8fff; border-radius: 10px; font-size: 13px; font-family: inherit; height: auto; min-height: 40px; background: #f0f2f7; color: #1a1f3a; font-weight: 500; }
+        .input-field:focus { outline: none; border-color: #5a5fdf; background: #f9fafc; }
         .input-field::placeholder { color: #9ca3af; }
         .emoji-btn { background: linear-gradient(135deg, #2d4a7f, #5a5fdf); border: 2px solid #9a5fff; color: white; padding: 8px 10px; border-radius: 8px; font-size: 16px; cursor: pointer; height: 40px; min-width: 40px; flex-shrink: 0; font-weight: bold; transition: all 0.3s; }
         .emoji-btn:hover { background: linear-gradient(135deg, #5a5fdf, #9a5fff); }
@@ -103,7 +103,7 @@ const html = `<!DOCTYPE html>
         .letter-btn:disabled { opacity: 0.2; cursor: not-allowed; }
         .hangman-word { font-size: 28px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 12px 0; font-family: monospace; color: #a0e7e5; }
         .hangman-stage { font-size: 48px; text-align: center; margin: 8px 0; }
-        .story-input { width: 100%; padding: 10px; border: 2px solid #5a5fdf; border-radius: 8px; font-size: 13px; margin-bottom: 8px; background: rgba(45, 74, 127, 0.6); color: #e8ecff; }
+        .story-input { width: 100%; padding: 10px; border: 2px solid #7c8fff; border-radius: 8px; font-size: 13px; margin-bottom: 8px; background: #f0f2f7; color: #1a1f3a; resize: vertical; min-height: 40px; }
         .story-line { background: rgba(90, 95, 223, 0.2); padding: 8px; border-radius: 8px; margin: 6px 0; border-left: 3px solid #9a5fff; color: #d4dcff; }
         .generator-btn { width: 100%; padding: 8px; background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 8px 0; }
         .rps-display { font-size: 48px; text-align: center; margin: 12px 0; }
@@ -174,7 +174,7 @@ const html = `<!DOCTYPE html>
                 <div id="hangmanContainer" style="display: none;">
                     <div class="game-status" id="hangmanStatus">Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 8px; margin: 6px 0; border: 2px solid #5a5fdf; border-radius: 8px; color: #e8ecff; font-size: 12px; font-weight: bold; background: rgba(45, 74, 127, 0.6);">
+                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 8px; margin: 6px 0; border: 2px solid #7c8fff; border-radius: 8px; color: #1a1f3a; font-size: 12px; font-weight: bold; background: #f0f2f7;">
                         <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">Set Word</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
