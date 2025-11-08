@@ -146,17 +146,17 @@ const html = `<!DOCTYPE html>
         <h1>💬 Chat</h1>
         <p>Select your name</p>
         <div class="login-buttons">
-            <button class="login-btn" onclick="login('esther')">🐱 Esther</button>
-            <button class="login-btn" onclick="login('valley')">😺 Valley</button>
-            <button class="login-btn" onclick="login('amaaya')">😸 Amaaya</button>
-            <button class="login-btn" onclick="login('mama')">😻 Mama</button>
-            <button class="login-btn" onclick="login('mummy')">😼 Mummy</button>
-            <button class="login-btn" onclick="login('hilary')">😽 Hilary</button>
-            <button class="login-btn" onclick="login('nan')">🐱 Nan</button>
-            <button class="login-btn" onclick="login('rishy')">😺 Rishy</button>
-            <button class="login-btn" onclick="login('poppy')">😸 Poppy</button>
-            <button class="login-btn" onclick="login('sienna')">😻 Sienna</button>
-            <button class="login-btn" onclick="login('penelope')">😼 Penelope</button>
+            <button type="button" class="login-btn" onclick="login('esther')">🐱 Esther</button>
+            <button type="button" class="login-btn" onclick="login('valley')">😺 Valley</button>
+            <button type="button" class="login-btn" onclick="login('amaaya')">😸 Amaaya</button>
+            <button type="button" class="login-btn" onclick="login('mama')">😻 Mama</button>
+            <button type="button" class="login-btn" onclick="login('mummy')">😼 Mummy</button>
+            <button type="button" class="login-btn" onclick="login('hilary')">😽 Hilary</button>
+            <button type="button" class="login-btn" onclick="login('nan')">🐱 Nan</button>
+            <button type="button" class="login-btn" onclick="login('rishy')">😺 Rishy</button>
+            <button type="button" class="login-btn" onclick="login('poppy')">😸 Poppy</button>
+            <button type="button" class="login-btn" onclick="login('sienna')">😻 Sienna</button>
+            <button type="button" class="login-btn" onclick="login('penelope')">😼 Penelope</button>
         </div>
     </div>
 
@@ -254,7 +254,9 @@ const html = `<!DOCTYPE html>
     </div>
 
     <script>
+        console.log('Script starting!');
         const EMOJIS = ['🌈','🌈','🌈','😀','😂','😍','🥰','😎','🤗','😊','🙂','🤓','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🍵','🧋','🥤','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🐱','😺','😸','🐯','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','🌈','🌈','🌈'];
+        console.log('EMOJIS loaded');
 
         const USERS = {
             'esther': 'Esther', 'valley': 'Valley', 'amaaya': 'Amaaya', 'mama': 'Mama', 'mummy': 'Mummy',
@@ -834,6 +836,13 @@ const html = `<!DOCTYPE html>
 
         function login(user) {
             console.log('Login clicked:', user);
+            if (!user) {
+                console.error('No user provided to login!');
+                return;
+            }
+            console.log('USERS object:', USERS);
+            console.log('User in USERS?', user in USERS);
+            
             currentUser = user;
             localStorage.setItem('user', user);
             allChats = getAvailableChats(user);
@@ -845,6 +854,7 @@ const html = `<!DOCTYPE html>
                     messages[chat] = saved ? JSON.parse(saved) : [];
                 }
             });
+            console.log('About to hide login and show app');
             document.getElementById('login').style.display = 'none';
             document.getElementById('app').classList.add('show');
             document.getElementById('myname').textContent = USERS[user];
@@ -857,6 +867,7 @@ const html = `<!DOCTYPE html>
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark-mode');
             }
+            console.log('Login complete!');
         }
 
         function logout() {
