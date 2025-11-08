@@ -254,9 +254,7 @@ const html = `<!DOCTYPE html>
     </div>
 
     <script>
-        console.log('Script starting!');
         const EMOJIS = ['🌈','🌈','🌈','😀','😂','😍','🥰','😎','🤗','😊','🙂','🤓','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🍵','🧋','🥤','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🐱','😺','😸','🐯','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','🌈','🌈','🌈'];
-        console.log('EMOJIS loaded');
 
         const USERS = {
             'esther': 'Esther', 'valley': 'Valley', 'amaaya': 'Amaaya', 'mama': 'Mama', 'mummy': 'Mummy',
@@ -621,7 +619,7 @@ const html = `<!DOCTYPE html>
                         document.getElementById('rpsStatus').textContent = '⏳ Revealing choices...';
                         setTimeout(announceRPSResult, 1000);
                     } else {
-                        document.getElementById('rpsStatus').textContent = '⏰ TIME UP! You didn\'t choose!';
+                        document.getElementById('rpsStatus').textContent = '⏰ TIME UP! You did not choose!';
                         setTimeout(() => {
                             document.getElementById('gamesPanel').classList.remove('show');
                         }, 2000);
@@ -835,26 +833,20 @@ const html = `<!DOCTYPE html>
         }
 
         function login(user) {
-            console.log('Login clicked:', user);
             if (!user) {
-                console.error('No user provided to login!');
                 return;
             }
-            console.log('USERS object:', USERS);
-            console.log('User in USERS?', user in USERS);
             
             currentUser = user;
             localStorage.setItem('user', user);
             allChats = getAvailableChats(user);
             currentChat = allChats[0];
-            console.log('Available chats:', allChats);
             allChats.forEach(chat => { 
                 if (!messages[chat]) {
                     const saved = localStorage.getItem('chat_' + chat);
                     messages[chat] = saved ? JSON.parse(saved) : [];
                 }
             });
-            console.log('About to hide login and show app');
             document.getElementById('login').style.display = 'none';
             document.getElementById('app').classList.add('show');
             document.getElementById('myname').textContent = USERS[user];
@@ -867,7 +859,6 @@ const html = `<!DOCTYPE html>
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark-mode');
             }
-            console.log('Login complete!');
         }
 
         function logout() {
@@ -877,12 +868,18 @@ const html = `<!DOCTYPE html>
 
         function connect() {
             const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(proto + '//' + location.host);
+            const wsUrl = proto + '//' + location.host;
+            
+            ws = new WebSocket(wsUrl);
+            
             ws.onopen = () => {
                 connected = true;
-                document.getElementById('msg').disabled = false;
-                document.getElementById('sendBtn').disabled = false;
+                const msgInput = document.getElementById('msg');
+                const sendBtn = document.getElementById('sendBtn');
+                if (msgInput) msgInput.disabled = false;
+                if (sendBtn) sendBtn.disabled = false;
             };
+            
             ws.onmessage = (e) => {
                 const data = JSON.parse(e.data);
                 if (data.type === 'load_messages') {
@@ -924,7 +921,14 @@ const html = `<!DOCTYPE html>
                     }
                 }
             };
-            ws.onclose = () => { connected = false; setTimeout(connect, 3000); };
+            
+            ws.onerror = (error) => {
+            };
+            
+            ws.onclose = () => {
+                connected = false;
+                setTimeout(connect, 3000);
+            };
         }
 
         function announceRPSResult() {
@@ -950,6 +954,9 @@ const html = `<!DOCTYPE html>
 
         function renderTabs() {
             const div = document.getElementById('tabs');
+            if (!div) {
+                return;
+            }
             div.innerHTML = '';
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
@@ -999,6 +1006,9 @@ const html = `<!DOCTYPE html>
 
         function render() {
             const div = document.getElementById('chat');
+            if (!div) {
+                return;
+            }
             div.innerHTML = '';
             const msgs = messages[currentChat] || [];
             if (msgs.length === 0) { div.innerHTML = '<div class="empty">No messages yet. Start chatting! 💬</div>'; return; }
@@ -1129,12 +1139,10 @@ wss.on('connection', (ws) => {
         });
       }
     } catch (error) {
-      console.error('Error:', error);
     }
   });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
 });
