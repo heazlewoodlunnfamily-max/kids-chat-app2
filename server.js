@@ -51,19 +51,19 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-sender .heart { color: #0ea5e9; }
         .message.sienna .message-sender .heart { color: #f472b6; }
         .message.penelope .message-sender .heart { color: #d8b4fe; }
-        .message-bubble { max-width: 70%; padding: 14px 18px; border-radius: 14px; word-wrap: break-word; font-size: 18px; font-weight: 500; line-height: 1.6; border: 1px solid rgba(255,255,255,0.1); }
-        .message.own .message-bubble { background: linear-gradient(135deg, #2d4a7f, #9a5fff); color: white; }
-        .message.esther .message-bubble { background: rgba(6, 182, 212, 0.7); color: white; }
-        .message.valley .message-bubble { background: rgba(168, 85, 247, 0.7); color: white; }
-        .message.amaaya .message-bubble { background: rgba(16, 185, 129, 0.7); color: white; }
-        .message.mama .message-bubble { background: rgba(245, 158, 11, 0.7); color: white; }
-        .message.mummy .message-bubble { background: rgba(236, 72, 153, 0.7); color: white; }
-        .message.hilary .message-bubble { background: rgba(139, 92, 246, 0.7); color: white; }
-        .message.nan .message-bubble { background: rgba(239, 68, 68, 0.7); color: white; }
-        .message.rishy .message-bubble { background: rgba(249, 115, 22, 0.7); color: white; }
-        .message.poppy .message-bubble { background: rgba(14, 165, 233, 0.7); color: white; }
-        .message.sienna .message-bubble { background: rgba(244, 114, 182, 0.7); color: white; }
-        .message.penelope .message-bubble { background: rgba(216, 180, 254, 0.7); color: #1a1a2e; }
+        .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 14px; word-wrap: break-word; font-size: 15px; font-weight: 500; line-height: 1.4; border: 1px solid rgba(255,255,255,0.1); width: fit-content; display: inline-block; }
+        .message.own .message-bubble { background: linear-gradient(135deg, #6a5adf, #a47fff); color: white; }
+        .message.esther .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.valley .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.amaaya .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.mama .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.mummy .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.hilary .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.nan .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.rishy .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.poppy .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.sienna .message-bubble { background: #d4d9e8; color: #0f1218; }
+        .message.penelope .message-bubble { background: #d4d9e8; color: #0f1218; }
         .input-area { background: linear-gradient(135deg, rgba(45, 74, 127, 0.35), rgba(154, 90, 255, 0.25)); border-top: 2px solid rgba(90, 95, 223, 0.6); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; }
         .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: linear-gradient(135deg, #2d4a7f, #5a3d7f); border-radius: 10px; max-height: 120px; overflow-y: auto; border: 1px solid rgba(90, 95, 223, 0.7); }
         .emoji-picker.show { display: grid; }
