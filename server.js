@@ -37,6 +37,7 @@ const html = `<!DOCTYPE html>
         
         .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; padding: 16px; border-radius: 28px 28px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
         .header-title { flex-grow: 1; }
+        #myname { color: #5B3A8E; font-weight: 900; }
         .logout-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; transition: opacity 0.15s; }
         .logout-btn:hover { background: rgba(255,255,255,0.35); }
         .dark-mode-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: opacity 0.15s; }
@@ -299,7 +300,7 @@ const html = `<!DOCTYPE html>
             { q: 'What is the driest place on Earth?', a: ['Sahara', 'Atacama Desert', 'Gobi Desert', 'Antarctic Dry Valleys'], correct: 3 },
             { q: 'How many legs does an octopus have?', a: ['6', '8', '10', '12'], correct: 1 },
             { q: 'Which country has the most time zones?', a: ['Russia', 'France', 'USA', 'China'], correct: 1 },
-            { q: 'What is the Amazon rainforest often called?', a: ['The World\'s Heart', 'The Planet\'s Lungs', 'The Green Gold', 'The Earth\'s Crown'], correct: 1 },
+            { q: 'What is the Amazon rainforest often called?', a: ['The World's Heart', 'The Planet's Lungs', 'The Green Gold', 'The Earth's Crown'], correct: 1 },
             { q: 'Which animal is the fastest swimmer?', a: ['Dolphin', 'Sailfish', 'Tuna', 'Marlin'], correct: 1 },
             { q: 'What is the capital of Egypt?', a: ['Alexandria', 'Cairo', 'Giza', 'Luxor'], correct: 1 },
             { q: 'Which bird cannot fly?', a: ['Ostrich', 'Chicken', 'Penguin', 'Kiwi'], correct: 0 },
@@ -330,10 +331,10 @@ const html = `<!DOCTYPE html>
             { q: 'How many legs does a millipede have?', a: ['100', '1000', 'Up to 750', 'Depends on species'], correct: 2 },
             { q: 'What is the capital of France?', a: ['Lyon', 'Marseille', 'Paris', 'Nice'], correct: 2 },
             { q: 'Which animal has the most powerful bite?', a: ['Great White', 'Crocodile', 'Hippopotamus', 'Saltwater Crocodile'], correct: 3 },
-            { q: 'How long is a giraffe\'s tongue?', a: ['10 inches', '18 inches', '24 inches', '36 inches'], correct: 2 },
+            { q: 'How long is a giraffe's tongue?', a: ['10 inches', '18 inches', '24 inches', '36 inches'], correct: 2 },
             { q: 'What is the capital of Spain?', a: ['Barcelona', 'Madrid', 'Valencia', 'Seville'], correct: 1 },
             { q: 'Which country has the most UNESCO World Heritage Sites?', a: ['Greece', 'Italy', 'France', 'China'], correct: 3 },
-            { q: 'How many chambers does a whale\'s heart have?', a: ['2', '3', '4', '5'], correct: 2 },
+            { q: 'How many chambers does a whale's heart have?', a: ['2', '3', '4', '5'], correct: 2 },
             { q: 'What is the capital of Italy?', a: ['Milan', 'Rome', 'Venice', 'Florence'], correct: 1 },
             { q: 'Which animal can rotate its head 270 degrees?', a: ['Parrot', 'Owl', 'Ostrich', 'Flamingo'], correct: 1 },
             { q: 'What percentage of Earth is covered by ocean?', a: ['60%', '71%', '85%', '90%'], correct: 1 },
