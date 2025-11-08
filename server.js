@@ -54,12 +54,12 @@ const html = `<!DOCTYPE html>
         .message.penelope .message-bubble { background: #FF1493; color: white; }
         .message-sender { font-size: 11px; color: #9C27B0; margin: 0 0 4px 0; font-weight: 600; }
         .message.own .message-sender { text-align: right; }
-        .input-area { padding: 10px; background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: #fff9e6; border-radius: 12px; max-height: 140px; overflow-y: auto; border: 2px solid #ffc107; margin-bottom: 8px; }
+        .input-area { padding: 10px; background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; min-height: 60px; }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; background: #fff9e6; border-radius: 12px; max-height: 140px; overflow-y: auto; border: 2px solid #ffc107; margin-bottom: 0px; }
         .emoji-picker.show { display: grid; }
         .emoji-option { font-size: 20px; cursor: pointer; text-align: center; padding: 6px; }
         .emoji-option:active { transform: scale(1.15); }
-        .games-panel { display: none; background: #f5f5f5; border-radius: 12px; padding: 10px; border: 2px solid #e0e0e0; margin-bottom: 8px; }
+        .games-panel { display: none; background: #f5f5f5; border-radius: 12px; padding: 10px; border: 2px solid #e0e0e0; margin-bottom: 0px; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .game-btn { padding: 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
@@ -70,13 +70,13 @@ const html = `<!DOCTYPE html>
         .letter-btn:disabled { opacity: 0.3; }
         .hangman-word { font-size: 32px; font-weight: 700; letter-spacing: 8px; text-align: center; margin: 12px 0; font-family: monospace; color: #9C27B0; }
         .hangman-stage { font-size: 64px; text-align: center; margin: 8px 0; }
-        .input-container { display: flex; gap: 8px; align-items: center; }
+        .input-container { display: flex; gap: 8px; align-items: center; width: 100%; }
         .input-field { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; font-family: inherit; height: 44px; }
         .input-field:focus { outline: none; border-color: #667eea; }
         .input-field::placeholder { color: #999; }
-        .emoji-btn { background: white; border: 2px solid #ffc107; color: #333; padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; height: 44px; }
-        .games-btn { background: white; border: 2px solid #9C27B0; color: #9C27B0; padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; height: 44px; font-weight: 700; }
-        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; height: 44px; min-width: 50px; }
+        .emoji-btn { background: white; border: 2px solid #ffc107; color: #333; padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; height: 44px; min-width: 44px; flex-shrink: 0; }
+        .games-btn { background: white; border: 2px solid #9C27B0; color: #9C27B0; padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; height: 44px; font-weight: 700; min-width: 44px; flex-shrink: 0; }
+        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; height: 44px; min-width: 60px; flex-shrink: 0; }
         .send-btn:active { transform: scale(0.96); }
         .send-btn:disabled { background: #ccc; }
         .empty { text-align: center; color: #9C27B0; padding: 40px 15px; font-size: 16px; font-weight: 600; }
