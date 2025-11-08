@@ -125,7 +125,7 @@ const html = `<!DOCTYPE html>
             <button class="login-btn" onclick="window.login('nan')">💜 Nan</button>
             <button class="login-btn" onclick="window.login('rishy')">⭐ Rishy</button>
             <button class="login-btn" onclick="window.login('poppy')">🌷 Poppy</button>
-            <button class="login-btn" onclick="window.login('sienna')">🌺 Sienna</button>
+            <button class="login-btn" onclick="window.login('sienna')">🦖 Sienna</button>
             <button class="login-btn" onclick="window.login('penelope')">💝 Penelope</button>
         </div>
     </div>
@@ -316,7 +316,7 @@ const html = `<!DOCTYPE html>
 
         const AVATARS = {
             esther: '🐱', valley: '🎀', amaaya: '✨', mama: '👑', mummy: '💎',
-            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🌺', penelope: '💝'
+            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🦖', penelope: '💝'
         };
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
@@ -391,6 +391,8 @@ const html = `<!DOCTYPE html>
             ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: (isCorrect ? '✓ Correct!' : '✗ Wrong!') }));
             setTimeout(window.nextTriviaQuestion, 1500);
         };
+
+        window.login = function(user) {
             if (!user) return;
             currentUser = user;
             localStorage.setItem('user', user);
