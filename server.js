@@ -16,8 +16,7 @@ const html = `<!DOCTYPE html>
     <title>💬 Friend Chat</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #FF6B9D 0%, #FFA06B 16%, #FFE66D 32%, #95E1D3 48%, #667eea 64%, #764ba2 80%, #FF6B9D 100%); background-size: 200% 200%; animation: gradientShift 8s ease infinite; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #FFC4DB 0%, #FFE5B4 16%, #FFFFCC 32%, #D4F1ED 48%, #C9D9F4 64%, #E0D4F7 80%, #FFC4DB 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
         
         body.dark-mode { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
         
@@ -29,32 +28,32 @@ const html = `<!DOCTYPE html>
         .dark-mode .login-screen p { color: #aaa; }
         
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .login-btn { padding: 16px; background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .login-btn { padding: 16px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
         .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
         
         .container { width: 100%; max-width: 480px; background: white; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: none; flex-direction: column; height: 90vh; max-height: 750px; overflow: hidden; }
         .dark-mode .container { background: #2a2a3e; }
         .container.show { display: flex; }
         
-        .header { background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; padding: 16px; border-radius: 28px 28px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
+        .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; padding: 16px; border-radius: 28px 28px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
         .header-title { flex-grow: 1; }
-        .logout-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.3s; }
+        .logout-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; transition: opacity 0.15s; }
         .logout-btn:hover { background: rgba(255,255,255,0.35); }
-        .dark-mode-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; }
+        .dark-mode-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: opacity 0.15s; }
         .dark-mode-btn:hover { background: rgba(255,255,255,0.35); }
         
         .tabs { display: flex; gap: 6px; padding: 10px; background: #f8f9fb; border-bottom: 2px solid #e8eaf6; overflow-x: auto; }
         .dark-mode .tabs { background: #1a1a2e; border-color: #444; }
-        .tab { padding: 10px 14px; background: white; border: 2px solid #e0e0e0; border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap; transition: all 0.3s; color: #666; }
+        .tab { padding: 10px 14px; background: white; border: 2px solid #e0e0e0; border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap; transition: opacity 0.15s; color: #666; }
         .dark-mode .tab { background: #3a3a4e; border-color: #555; color: #aaa; }
         .tab:hover { background: #f5f5f5; }
         .dark-mode .tab:hover { background: #4a4a5e; }
-        .tab.active { background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; border-color: #667eea; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); }
+        .tab.active { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border-color: #667eea; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); }
         
         .chat-display { flex: 1; overflow-y: auto; padding: 20px 16px; background: linear-gradient(135deg, #fff9f0 0%, #fef5e7 50%, #fff9f0 100%), radial-gradient(circle at 20% 80%, rgba(255, 107, 157, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(167, 230, 207, 0.05) 0%, transparent 50%); }
         .dark-mode .chat-display { background: #1a1a2e; }
-        .message { margin-bottom: 12px; display: flex; flex-direction: column; animation: slideIn 0.25s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .message { margin-bottom: 12px; display: flex; flex-direction: column; animation: slideIn 0.1s ease-out; }
+        @keyframes slideIn { from { opacity: 0; } to { opacity: 1; } }
         .message.own { align-items: flex-end; }
         
         .message-content { display: flex; gap: 8px; align-items: flex-end; }
@@ -81,7 +80,7 @@ const html = `<!DOCTYPE html>
         .message.own .message-sender { text-align: right; }
         
         .message-reactions { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-        .reaction { background: rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .reaction { background: rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 12px; font-size: 12px; cursor: pointer; transition: transform 0.1s; }
         .reaction:hover { background: rgba(255,255,255,0.5); }
         
         .input-area { padding: 12px; background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; }
@@ -89,7 +88,7 @@ const html = `<!DOCTYPE html>
         
         .emoji-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 12px; background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%); border-radius: 14px; max-height: 200px; overflow-y: auto; border: 2px solid #ffc107; }
         .dark-mode .emoji-picker { background: #3a3a4e; border-color: #666; }
-        .emoji-option { font-size: 24px; cursor: pointer; text-align: center; padding: 8px; border-radius: 10px; transition: all 0.2s; user-select: none; background: white; border: 1px solid transparent; }
+        .emoji-option { font-size: 24px; cursor: pointer; text-align: center; padding: 8px; border-radius: 10px; transition: transform 0.1s; user-select: none; background: white; border: 1px solid transparent; }
         .dark-mode .emoji-option { background: #2a2a3e; }
         .emoji-option:hover { background: #fff9c4; transform: scale(1.2); }
         .dark-mode .emoji-option:hover { background: #4a4a5e; }
@@ -98,11 +97,11 @@ const html = `<!DOCTYPE html>
         .dark-mode .games-panel { background: #3a3a4e; border-color: #555; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .game-btn { padding: 10px; background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 12px; transition: all 0.3s; }
-        .game-btn:hover { transform: scale(1.05); }
+        .game-btn { padding: 16px 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; transition: transform 0.15s; }
+        .game-btn:hover { transform: scale(1.02); }
         .game-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .rps-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .rps-btn { padding: 12px; background: white; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; font-size: 20px; transition: all 0.3s; font-weight: 700; }
+        .rps-btn { padding: 12px; background: white; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; font-size: 20px; transition: opacity 0.15s; font-weight: 700; }
         .dark-mode .rps-btn { background: #2a2a3e; border-color: #555; }
         .rps-btn:hover { border-color: #667eea; }
         .rps-btn.selected { border-color: #667eea; background: #f0f0ff; }
@@ -111,26 +110,26 @@ const html = `<!DOCTYPE html>
         .dark-mode .canvas-container { border-color: #555; background: #1a1a2e; }
         canvas { display: block; width: 100%; cursor: crosshair; }
         .canvas-controls { display: flex; gap: 8px; }
-        .canvas-btn { flex: 1; padding: 8px; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; }
+        .canvas-btn { flex: 1; padding: 8px; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; transition: opacity 0.15s; }
         .dark-mode .canvas-btn { background: #3a3a4e; border-color: #555; color: white; }
         .canvas-btn:hover { border-color: #667eea; }
-        .canvas-btn.send { background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; border: none; }
+        .canvas-btn.send { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; }
         
         .input-container { display: flex; gap: 10px; align-items: center; }
-        .input-field { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; font-family: inherit; font-weight: 500; transition: all 0.3s; height: 40px; min-width: 100px; }
+        .input-field { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; font-family: inherit; font-weight: 500; transition: opacity 0.15s; height: 40px; min-width: 100px; }
         .dark-mode .input-field { background: #3a3a4e; border-color: #555; color: white; }
         .input-field:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
         .input-field::placeholder { color: #999; }
         .dark-mode .input-field::placeholder { color: #666; }
         
-        .btn-emoji { border: none; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: all 0.3s; font-weight: 600; height: 40px; display: flex; align-items: center; background: white; border: 2px solid #ffc107; color: #333; }
+        .btn-emoji { border: none; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: opacity 0.15s; font-weight: 600; height: 40px; display: flex; align-items: center; background: white; border: 2px solid #ffc107; color: #333; }
         .dark-mode .btn-emoji { background: #3a3a4e; border-color: #666; color: white; }
         .btn-emoji:hover { background: #ffc107; }
         
-        .btn-games { border: none; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: all 0.3s; font-weight: 600; height: 40px; display: flex; align-items: center; background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); }
+        .btn-games { border: none; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: opacity 0.15s; font-weight: 600; height: 40px; display: flex; align-items: center; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); }
         .btn-games:hover { transform: scale(1.08); }
         
-        .send-btn { background: linear-gradient(90deg, #FF6B9D 0%, #FFA06B 25%, #FFE66D 50%, #95E1D3 75%, #667eea 100%); color: white; border: none; padding: 8px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); text-transform: uppercase; letter-spacing: 0.1px; white-space: nowrap; flex-shrink: 0; height: 40px; display: flex; align-items: center; min-width: 50px; justify-content: center; }
+        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; padding: 8px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); text-transform: uppercase; letter-spacing: 0.1px; white-space: nowrap; flex-shrink: 0; height: 40px; display: flex; align-items: center; min-width: 50px; justify-content: center; }
         .send-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
         .send-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
         
@@ -269,6 +268,7 @@ const html = `<!DOCTYPE html>
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
         let rpsChoice = null, rpsOtherChoice = null, rpsOtherUser = null, rpsTimer = null, rpsTimeLeft = 0;
         let diceRolls = {}, diceGameActive = false;
+        let hangmanGameActive = false, hangmanSetByUser = '', hangmanWordLength = 0, hangmanOtherGuessed = [], hangmanOtherWrong = 0;
 
         // WORDLE GAME STATE
         const WORDLE_WORDS = ['HAPPY', 'SMILE', 'DANCE', 'PIZZA', 'BEACH', 'MUSIC', 'DREAM', 'MAGIC', 'SUNNY', 'HEART', 'FRIEND', 'LAUGH', 'PARTY', 'CANDY', 'KITTY', 'PUPPY', 'FLOWER', 'RAINBOW'];
@@ -281,16 +281,101 @@ const html = `<!DOCTYPE html>
 
         // TRIVIA GAME STATE
         const TRIVIA_QUESTIONS = [
-            { q: 'What color is the sky?', a: ['Blue', 'Green', 'Red', 'Purple'], correct: 0 },
-            { q: 'How many legs does a dog have?', a: ['2', '4', '6', '8'], correct: 1 },
-            { q: 'What animal says "moo"?', a: ['Sheep', 'Cow', 'Pig', 'Horse'], correct: 1 },
-            { q: 'How many fingers do you have?', a: ['8', '10', '12', '20'], correct: 1 },
-            { q: 'What is the opposite of hot?', a: ['Warm', 'Cold', 'Cool', 'Sunny'], correct: 1 },
-            { q: 'Which fruit is yellow?', a: ['Apple', 'Banana', 'Grape', 'Blueberry'], correct: 1 },
-            { q: 'What do we wear on our feet?', a: ['Hat', 'Shirt', 'Shoes', 'Socks'], correct: 2 },
-            { q: 'What sound does a cat make?', a: ['Woof', 'Moo', 'Meow', 'Quack'], correct: 2 },
-            { q: 'How many wheels does a bike have?', a: ['1', '2', '3', '4'], correct: 1 },
-            { q: 'What do we use to write?', a: ['Fork', 'Pencil', 'Spoon', 'Knife'], correct: 1 }
+            { q: 'What is the capital of Australia?', a: ['Sydney', 'Melbourne', 'Canberra', 'Brisbane'], correct: 2 },
+            { q: 'Which ocean is the largest?', a: ['Atlantic', 'Indian', 'Arctic', 'Pacific'], correct: 3 },
+            { q: 'What is the tallest mountain in the world?', a: ['Kilimanjaro', 'Mount Everest', 'Denali', 'Mont Blanc'], correct: 1 },
+            { q: 'Which country has the most islands?', a: ['Indonesia', 'Philippines', 'Sweden', 'Norway'], correct: 0 },
+            { q: 'What is the only mammal that lays eggs?', a: ['Platypus', 'Koala', 'Emu', 'Echidna'], correct: 0 },
+            { q: 'What is the deepest ocean trench?', a: ['Mariana Trench', 'Tonga Trench', 'Philippine Trench', 'Kuril Trench'], correct: 0 },
+            { q: 'Which animal is the fastest land runner?', a: ['Lion', 'Gazelle', 'Cheetah', 'Pronghorn'], correct: 2 },
+            { q: 'What is the largest animal ever to exist?', a: ['African Elephant', 'Blue Whale', 'Giraffe', 'Hippopotamus'], correct: 1 },
+            { q: 'Which country is home to the Great Barrier Reef?', a: ['Fiji', 'Australia', 'Philippines', 'Thailand'], correct: 1 },
+            { q: 'What is the only continent without active volcanoes?', a: ['South America', 'Africa', 'Australia', 'Europe'], correct: 2 },
+            { q: 'How many species of penguin exist?', a: ['12', '17', '22', '28'], correct: 1 },
+            { q: 'What is the capital of Brazil?', a: ['Rio de Janeiro', 'Brasília', 'Salvador', 'São Paulo'], correct: 1 },
+            { q: 'Which ocean borders 4 continents?', a: ['Pacific', 'Atlantic', 'Indian', 'Arctic'], correct: 2 },
+            { q: 'What is the smallest country in the world?', a: ['Monaco', 'Vatican City', 'San Marino', 'Liechtenstein'], correct: 1 },
+            { q: 'Which animal can hold its breath the longest?', a: ['Dolphin', 'Sea Turtle', 'Sperm Whale', 'Manatee'], correct: 2 },
+            { q: 'What is the driest place on Earth?', a: ['Sahara', 'Atacama Desert', 'Gobi Desert', 'Antarctic Dry Valleys'], correct: 3 },
+            { q: 'How many legs does an octopus have?', a: ['6', '8', '10', '12'], correct: 1 },
+            { q: 'Which country has the most time zones?', a: ['Russia', 'France', 'USA', 'China'], correct: 1 },
+            { q: 'What is the Amazon rainforest often called?', a: ['The World\'s Heart', 'The Planet\'s Lungs', 'The Green Gold', 'The Earth\'s Crown'], correct: 1 },
+            { q: 'Which animal is the fastest swimmer?', a: ['Dolphin', 'Sailfish', 'Tuna', 'Marlin'], correct: 1 },
+            { q: 'What is the capital of Egypt?', a: ['Alexandria', 'Cairo', 'Giza', 'Luxor'], correct: 1 },
+            { q: 'Which bird cannot fly?', a: ['Ostrich', 'Chicken', 'Penguin', 'Kiwi'], correct: 0 },
+            { q: 'What is the longest river in the world?', a: ['Amazon', 'Congo', 'Nile', 'Yangtze'], correct: 2 },
+            { q: 'Which country is the largest by area?', a: ['Canada', 'USA', 'Russia', 'China'], correct: 2 },
+            { q: 'What is the capital of Japan?', a: ['Osaka', 'Kyoto', 'Tokyo', 'Yokohama'], correct: 2 },
+            { q: 'How many strings does a violin have?', a: ['4', '5', '6', '8'], correct: 0 },
+            { q: 'Which animal has the longest neck?', a: ['Ostrich', 'Llama', 'Giraffe', 'Alpaca'], correct: 2 },
+            { q: 'What is the capital of Canada?', a: ['Toronto', 'Vancouver', 'Ottawa', 'Montreal'], correct: 2 },
+            { q: 'Which country is known as the Land Down Under?', a: ['New Zealand', 'Australia', 'Fiji', 'Samoa'], correct: 1 },
+            { q: 'What is the hottest planet in our solar system?', a: ['Mars', 'Mercury', 'Venus', 'Jupiter'], correct: 2 },
+            { q: 'How many continents are there?', a: ['5', '6', '7', '8'], correct: 2 },
+            { q: 'Which animal sleeps standing up?', a: ['Cow', 'Horse', 'Sheep', 'All of them'], correct: 3 },
+            { q: 'What is the capital of India?', a: ['Mumbai', 'New Delhi', 'Bangalore', 'Kolkata'], correct: 1 },
+            { q: 'Which country has the most mountains?', a: ['Nepal', 'Switzerland', 'China', 'Pakistan'], correct: 2 },
+            { q: 'What is the smallest ocean?', a: ['Arctic', 'Indian', 'Atlantic', 'Southern'], correct: 0 },
+            { q: 'How many eyes does a bee have?', a: ['2', '3', '5', '6'], correct: 2 },
+            { q: 'What is the capital of South Africa?', a: ['Johannesburg', 'Cape Town', 'Pretoria', 'Durban'], correct: 2 },
+            { q: 'Which animal produces the loudest sound?', a: ['Elephant', 'Lion', 'Blue Whale', 'Humpback Whale'], correct: 2 },
+            { q: 'How many bones does an adult human have?', a: ['186', '206', '226', '246'], correct: 1 },
+            { q: 'What is the capital of Germany?', a: ['Munich', 'Hamburg', 'Berlin', 'Cologne'], correct: 2 },
+            { q: 'Which country is the most populous?', a: ['India', 'USA', 'China', 'Indonesia'], correct: 0 },
+            { q: 'What is the largest desert in the world?', a: ['Sahara', 'Gobi', 'Kalahari', 'Antarctic'], correct: 3 },
+            { q: 'How many hearts does an octopus have?', a: ['1', '2', '3', '4'], correct: 2 },
+            { q: 'What is the capital of Mexico?', a: ['Cancún', 'Guadalajara', 'Mexico City', 'Monterrey'], correct: 2 },
+            { q: 'Which country produces the most coffee?', a: ['Colombia', 'Vietnam', 'Brazil', 'Indonesia'], correct: 2 },
+            { q: 'What is the Great Wall of China made of?', a: ['Wood', 'Brick', 'Stone', 'All of them'], correct: 3 },
+            { q: 'How many legs does a millipede have?', a: ['100', '1000', 'Up to 750', 'Depends on species'], correct: 2 },
+            { q: 'What is the capital of France?', a: ['Lyon', 'Marseille', 'Paris', 'Nice'], correct: 2 },
+            { q: 'Which animal has the most powerful bite?', a: ['Great White', 'Crocodile', 'Hippopotamus', 'Saltwater Crocodile'], correct: 3 },
+            { q: 'How long is a giraffe\'s tongue?', a: ['10 inches', '18 inches', '24 inches', '36 inches'], correct: 2 },
+            { q: 'What is the capital of Spain?', a: ['Barcelona', 'Madrid', 'Valencia', 'Seville'], correct: 1 },
+            { q: 'Which country has the most UNESCO World Heritage Sites?', a: ['Greece', 'Italy', 'France', 'China'], correct: 3 },
+            { q: 'How many chambers does a whale\'s heart have?', a: ['2', '3', '4', '5'], correct: 2 },
+            { q: 'What is the capital of Italy?', a: ['Milan', 'Rome', 'Venice', 'Florence'], correct: 1 },
+            { q: 'Which animal can rotate its head 270 degrees?', a: ['Parrot', 'Owl', 'Ostrich', 'Flamingo'], correct: 1 },
+            { q: 'What percentage of Earth is covered by ocean?', a: ['60%', '71%', '85%', '90%'], correct: 1 },
+            { q: 'What is the capital of Portugal?', a: ['Porto', 'Lisbon', 'Covilhã', 'Aveiro'], correct: 1 },
+            { q: 'Which country is the largest in Africa?', a: ['Egypt', 'Nigeria', 'South Africa', 'Algeria'], correct: 3 },
+            { q: 'How many teeth does a shark have throughout its lifetime?', a: ['1000', '5000', '20000', '40000'], correct: 3 },
+            { q: 'What is the capital of Greece?', a: ['Thessaloniki', 'Athens', 'Patras', 'Larissa'], correct: 1 },
+            { q: 'Which animal has the strongest immune system?', a: ['Lion', 'Polar Bear', 'Cockroach', 'Elephant'], correct: 2 },
+            { q: 'How many muscles does a caterpillar have?', a: ['200', '1000', '4000', '8000'], correct: 2 },
+            { q: 'What is the capital of Russia?', a: ['St. Petersburg', 'Moscow', 'Vladivostok', 'Novosibirsk'], correct: 1 },
+            { q: 'Which country produces the most chocolate?', a: ['Belgium', 'Switzerland', 'Ghana', 'Netherlands'], correct: 3 },
+            { q: 'How deep can a sperm whale dive?', a: ['1000m', '2000m', '3000m', '7000m'], correct: 3 },
+            { q: 'What is the capital of Turkey?', a: ['Istanbul', 'Ankara', 'Izmir', 'Bursa'], correct: 1 },
+            { q: 'Which animal can sleep for 3 years?', a: ['Bear', 'Snail', 'Crocodile', 'Whale'], correct: 1 },
+            { q: 'How many times does a hummingbird beat its wings per second?', a: ['20', '50', '80', '200'], correct: 2 },
+            { q: 'What is the capital of South Korea?', a: ['Busan', 'Seoul', 'Incheon', 'Daegu'], correct: 1 },
+            { q: 'Which country has the most active volcanoes?', a: ['Iceland', 'Philippines', 'Japan', 'Indonesia'], correct: 3 },
+            { q: 'How many bones does a bird have in its skeleton?', a: ['100', '150', 'Fewer than mammals', 'More than humans'], correct: 2 },
+            { q: 'What is the capital of Thailand?', a: ['Phuket', 'Chiang Mai', 'Bangkok', 'Pattaya'], correct: 2 },
+            { q: 'Which animal has the longest migration?', a: ['Whale', 'Wildebeest', 'Butterfly', 'Arctic Tern'], correct: 3 },
+            { q: 'How many stomachs does a cow have?', a: ['1', '2', '3', '4'], correct: 3 },
+            { q: 'What is the capital of Vietnam?', a: ['Ho Chi Minh City', 'Hanoi', 'Da Nang', 'Hai Phong'], correct: 1 },
+            { q: 'Which ocean is saltiest?', a: ['Atlantic', 'Pacific', 'Indian', 'Arctic'], correct: 0 },
+            { q: 'How many teeth does a human baby have?', a: ['0', '10', '20', '32'], correct: 0 },
+            { q: 'What is the capital of Indonesia?', a: ['Surabaya', 'Bandung', 'Jakarta', 'Medan'], correct: 2 },
+            { q: 'Which animal has the best eyesight?', a: ['Eagle', 'Hawk', 'Owl', 'Falcon'], correct: 0 },
+            { q: 'How fast can a peregrine falcon dive?', a: ['150 mph', '200 mph', '250 mph', '300 mph'], correct: 2 },
+            { q: 'What is the capital of the Philippines?', a: ['Cebu', 'Davao', 'Manila', 'Quezon City'], correct: 2 },
+            { q: 'Which country produces the most oil?', a: ['Saudi Arabia', 'Russia', 'USA', 'Iraq'], correct: 2 },
+            { q: 'How many species of sharks exist?', a: ['500', '1000', '1500', '2000'], correct: 1 },
+            { q: 'What is the capital of Malaysia?', a: ['Penang', 'Kuala Lumpur', 'Johor Bahru', 'Klang'], correct: 1 },
+            { q: 'Which animal has the largest brain?', a: ['Elephant', 'Whale', 'Dolphin', 'Human'], correct: 1 },
+            { q: 'How many bones does a snake have?', a: ['50', '100', 'Over 300', 'Over 500'], correct: 3 },
+            { q: 'What is the capital of Argentina?', a: ['Córdoba', 'Rosario', 'Buenos Aires', 'La Plata'], correct: 2 },
+            { q: 'Which country has the most forests?', a: ['USA', 'Canada', 'Russia', 'Brazil'], correct: 2 },
+            { q: 'How many days does it take Earth to orbit the Sun?', a: ['300', '365', '400', '425'], correct: 1 },
+            { q: 'What is the capital of Chile?', a: ['Valparaíso', 'Santiago', 'Concepción', 'Temuco'], correct: 1 },
+            { q: 'Which animal can drink saltwater?', a: ['Camel', 'Polar Bear', 'Crocodile', 'All of them'], correct: 3 },
+            { q: 'How long is a blue whale?', a: ['60 feet', '80 feet', '100 feet', '120 feet'], correct: 2 },
+            { q: 'What is the capital of Colombia?', a: ['Medellín', 'Cali', 'Bogotá', 'Cartagena'], correct: 2 },
+            { q: 'Which country has the most bears?', a: ['Canada', 'Russia', 'USA', 'Finland'], correct: 1 },
+            { q: 'How many years can a tortoise live?', a: ['50', '100', '200', 'Over 300'], correct: 3 }
         ];
         let triviaScore = 0, triviaTotal = 0, triviaCurrentQ = null, triviaAnswered = false;
 
@@ -394,7 +479,10 @@ const html = `<!DOCTYPE html>
             renderHangmanLetters();
             renderHangman();
             const text = '🎮 ' + USERS[currentUser] + ' started a Hangman game! Everyone guess the word!';
-            if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
+                ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat, wordLength: hangmanWord.length }));
+            }
         }
 
         function renderHangmanLetters() {
@@ -416,8 +504,12 @@ const html = `<!DOCTYPE html>
             if (hangmanGameOver || hangmanGuessed.includes(letter)) return;
             hangmanGuessed.push(letter);
             if (!hangmanWord.includes(letter)) hangmanWrong++;
+            if (connected) {
+                ws.send(JSON.stringify({ type: 'hangman_guess', user: currentUser, chatId: currentChat, letter: letter, isCorrect: hangmanWord.includes(letter) }));
+            }
             renderHangman();
         }
+
 
         function renderHangman() {
             const word = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
@@ -448,6 +540,20 @@ const html = `<!DOCTYPE html>
             }
         }
 
+        function renderHangmanOther() {
+            const word = Array(hangmanWordLength).fill('_').map((_, i) => hangmanOtherGuessed.includes(hangmanWord[i]) ? hangmanWord[i] : '_').join(' ');
+            document.getElementById('hangmanWord').textContent = word;
+            document.getElementById('hangmanDrawing').textContent = HANGMAN_STAGES[hangmanOtherWrong];
+            document.getElementById('hangmanGuesses').textContent = 'Wrong: ' + hangmanOtherWrong + '/6 | Guessed: ' + hangmanOtherGuessed.join(', ');
+
+            document.querySelectorAll('#hangmanContainer .rps-btn').forEach(btn => {
+                if (hangmanOtherGuessed.includes(btn.textContent)) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                }
+            });
+        }
+
         function playTrivia() {
             triviaScore = 0;
             triviaTotal = 0;
@@ -462,12 +568,12 @@ const html = `<!DOCTYPE html>
         }
 
         function nextTriviaQuestion() {
-            if (triviaTotal >= 5) {
+            if (triviaTotal >= 10) {
                 document.getElementById('triviaQuestion').textContent = '🎉 Quiz Complete!';
                 document.getElementById('triviaAnswers').innerHTML = '';
                 document.getElementById('triviaResult').textContent = '';
-                document.getElementById('triviaScore').textContent = 'Score: ' + triviaScore + '/5';
-                const text = '🎮 ' + USERS[currentUser] + ' scored ' + triviaScore + '/5 on Trivia!';
+                document.getElementById('triviaScore').textContent = 'Score: ' + triviaScore + '/10';
+                const text = '🎮 ' + USERS[currentUser] + ' scored ' + triviaScore + '/10 on Trivia!';
                 if (connected) ws.send(JSON.stringify({ type: 'new_message', user: 'system', chatId: currentChat, text }));
                 setTimeout(() => document.getElementById('gamesPanel').classList.remove('show'), 2000);
                 return;
@@ -488,7 +594,7 @@ const html = `<!DOCTYPE html>
                 answers.appendChild(btn);
             });
             document.getElementById('triviaResult').textContent = '';
-            document.getElementById('triviaScore').textContent = 'Question ' + (triviaTotal + 1) + '/5';
+            document.getElementById('triviaScore').textContent = 'Question ' + (triviaTotal + 1) + '/10';
         }
 
         function submitTriviaAnswer(idx) {
@@ -897,6 +1003,26 @@ const html = `<!DOCTYPE html>
                             setTimeout(announceRPSResult, 500);
                         }
                     }
+                } else if (data.type === 'hangman_start') {
+                    if (data.chatId === currentChat && data.user !== currentUser) {
+                        hangmanGameActive = true;
+                        hangmanSetByUser = data.user;
+                        hangmanWordLength = data.wordLength;
+                        hangmanOtherGuessed = [];
+                        hangmanOtherWrong = 0;
+                        document.getElementById('hangmanSetupPhase').style.display = 'none';
+                        document.getElementById('hangmanGamePhase').style.display = 'block';
+                        renderHangmanLetters();
+                        renderHangmanOther();
+                    }
+                } else if (data.type === 'hangman_guess') {
+                    if (data.chatId === currentChat && hangmanGameActive) {
+                        if (!hangmanOtherGuessed.includes(data.letter)) {
+                            hangmanOtherGuessed.push(data.letter);
+                            if (!data.isCorrect) hangmanOtherWrong++;
+                            renderHangmanOther();
+                        }
+                    }
                 } else if (data.type === 'dice_roll') {
                     if (data.chatId === currentChat && diceGameActive) {
                         diceRolls[data.user] = data.result;
@@ -989,19 +1115,7 @@ const html = `<!DOCTYPE html>
             if (!text || !connected) return;
             ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text }));
             
-            const newMsg = {
-                id: Date.now(),
-                user: currentUser,
-                text: text,
-                chatId: currentChat,
-                reactions: []
-            };
-            if (!messages[currentChat]) messages[currentChat] = [];
-            messages[currentChat].push(newMsg);
-            localStorage.setItem('chat_' + currentChat, JSON.stringify(messages[currentChat]));
-            
             inp.value = '';
-            render();
         }
 
         function render() {
@@ -1018,7 +1132,8 @@ const html = `<!DOCTYPE html>
                 
                 let content = '';
                 if (m.isDrawing) {
-                    content = '<div class="message-sender">' + USERS[m.user] + '</div><img src="' + m.text + '" style="max-width: 100%; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">';
+                    const avatar = '<div class="avatar">' + AVATARS[m.user] + '</div>';
+                    content = '<div class="message-content">' + avatar + '<div><div class="message-sender">' + USERS[m.user] + '</div><img src="' + m.text + '" style="max-width: 100%; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"></div></div>';
                 } else {
                     const sender = m.user === 'system' ? 'Game' : USERS[m.user];
                     const avatar = m.user === 'system' ? '' : '<div class="avatar">' + AVATARS[m.user] + '</div>';
@@ -1104,6 +1219,18 @@ wss.on('connection', (ws) => {
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({ type: 'rps_choice', user: msg.user, chatId: msg.chatId, choice: msg.choice }));
+          }
+        });
+      } else if (msg.type === 'hangman_start') {
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'hangman_start', user: msg.user, chatId: msg.chatId, wordLength: msg.wordLength }));
+          }
+        });
+      } else if (msg.type === 'hangman_guess') {
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'hangman_guess', user: msg.user, chatId: msg.chatId, letter: msg.letter, isCorrect: msg.isCorrect }));
           }
         });
       } else if (msg.type === 'dice_roll') {
