@@ -13,33 +13,35 @@ const html = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Games</title>
+    <title>💬 Chat Games</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #FFC4DB 0%, #FFE5B4 16%, #FFFFCC 32%, #D4F1ED 48%, #C9D9F4 64%, #E0D4F7 80%, #FFC4DB 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
         body.dark-mode { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
         .login-screen { width: 100%; max-width: 480px; background: white; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 40px; text-align: center; }
         .dark-mode .login-screen { background: #2a2a3e; color: white; }
-        .login-screen h1 { font-size: 42px; margin-bottom: 8px; color: #333; font-weight: 800; }
-        .dark-mode .login-screen h1 { color: white; }
-        .login-screen p { font-size: 15px; color: #666; margin-bottom: 35px; font-weight: 500; }
-        .dark-mode .login-screen p { color: #aaa; }
+        .login-screen h1 { font-size: 42px; margin-bottom: 8px; color: #9C27B0; font-weight: 800; }
+        .dark-mode .login-screen h1 { color: #9C27B0; }
+        .login-screen p { font-size: 15px; color: #9C27B0; margin-bottom: 35px; font-weight: 600; }
+        .dark-mode .login-screen p { color: #9C27B0; }
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .login-btn { padding: 16px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
         .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
         .container { width: 100%; max-width: 480px; background: white; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: none; flex-direction: column; height: 90vh; max-height: 750px; overflow: hidden; }
         .dark-mode .container { background: #2a2a3e; }
         .container.show { display: flex; }
-        .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; padding: 16px; border-radius: 28px 28px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
+        .header { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; padding: 16px; border-radius: 28px 28px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
         .header-title { flex-grow: 1; }
         #myname { color: #9C27B0; font-weight: 900; }
-        .logout-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; }
-        .dark-mode-btn { background: rgba(255,255,255,0.25); border: none; color: white; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; }
+        .logout-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; }
+        .logout-btn:hover { background: rgba(156, 39, 176, 0.35); }
+        .dark-mode-btn { background: rgba(156, 39, 176, 0.25); border: none; color: #9C27B0; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; }
+        .dark-mode-btn:hover { background: rgba(156, 39, 176, 0.35); }
         .tabs { display: flex; gap: 6px; padding: 10px; background: #f8f9fb; border-bottom: 2px solid #e8eaf6; overflow-x: auto; }
         .dark-mode .tabs { background: #1a1a2e; border-color: #444; }
-        .tab { padding: 10px 14px; background: white; border: 2px solid #e0e0e0; border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap; color: #666; }
-        .dark-mode .tab { background: #3a3a4e; border-color: #555; color: #aaa; }
-        .tab.active { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3); }
+        .tab { padding: 10px 14px; background: white; border: 2px solid #e0e0e0; border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap; color: #9C27B0; }
+        .dark-mode .tab { background: #3a3a4e; border-color: #555; color: #9C27B0; }
+        .tab.active { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3); }
         .chat-display { flex: 1; overflow-y: auto; padding: 20px 16px; }
         .dark-mode .chat-display { background: #1a1a2e; }
         .message { margin-bottom: 12px; display: flex; flex-direction: column; }
@@ -60,8 +62,8 @@ const html = `<!DOCTYPE html>
         .message.poppy .message-bubble { background: #4CAF50; color: white; }
         .message.sienna .message-bubble { background: #9C27B0; color: white; }
         .message.penelope .message-bubble { background: #FF1493; color: white; }
-        .message-sender { font-size: 12px; color: #666; margin: 0 0 6px 0; font-weight: 600; text-transform: capitalize; }
-        .dark-mode .message-sender { color: #aaa; }
+        .message-sender { font-size: 12px; color: #9C27B0; margin: 0 0 6px 0; font-weight: 600; text-transform: capitalize; }
+        .dark-mode .message-sender { color: #9C27B0; }
         .message.own .message-sender { text-align: right; }
         .input-area { padding: 12px; background: white; border-top: 2px solid #e8eaf6; display: flex; flex-direction: column; gap: 8px; }
         .dark-mode .input-area { background: #2a2a3e; border-color: #444; }
@@ -72,13 +74,13 @@ const html = `<!DOCTYPE html>
         .dark-mode .games-panel { background: #3a3a4e; border-color: #555; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .game-btn { padding: 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .game-btn { padding: 12px; background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
         .game-btn:hover { transform: scale(1.02); }
         .game-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .letter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0; }
-        .letter-btn { padding: 8px; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        .letter-btn { padding: 8px; background: white; border: 2px solid #9C27B0; border-radius: 8px; cursor: pointer; font-weight: 700; color: #9C27B0; }
         .letter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .hangman-word { font-size: 32px; font-weight: 700; letter-spacing: 8px; text-align: center; margin: 12px 0; font-family: monospace; }
+        .hangman-word { font-size: 32px; font-weight: 700; letter-spacing: 8px; text-align: center; margin: 12px 0; font-family: monospace; color: #9C27B0; }
         .hangman-stage { font-size: 64px; text-align: center; margin: 12px 0; }
         .input-container { display: flex; gap: 10px; align-items: center; }
         .input-field { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; font-family: inherit; height: 40px; }
@@ -87,38 +89,38 @@ const html = `<!DOCTYPE html>
         .input-field::placeholder { color: #999; }
         .emoji-btn { background: white; border: 2px solid #ffc107; color: #333; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; height: 40px; }
         .emoji-btn:hover { background: #ffc107; }
-        .games-btn { background: white; border: 2px solid #FF9FBE; color: #333; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; height: 40px; }
-        .games-btn:hover { background: #FFE5F0; }
-        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: white; border: none; padding: 8px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; height: 40px; min-width: 50px; }
+        .games-btn { background: white; border: 2px solid #9C27B0; color: #9C27B0; padding: 8px 10px; border-radius: 12px; font-size: 16px; cursor: pointer; height: 40px; font-weight: 700; }
+        .games-btn:hover { background: #f3e5f5; }
+        .send-btn { background: linear-gradient(90deg, #FF9FBE 0%, #FFD180 25%, #FFFF99 50%, #B8E6DB 75%, #9DB8E6 100%); color: #9C27B0; border: none; padding: 8px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; height: 40px; min-width: 50px; }
         .send-btn:hover { transform: translateY(-2px); }
         .send-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .empty { text-align: center; color: #999; padding: 40px 20px; font-size: 15px; font-weight: 500; }
-        .game-status { text-align: center; padding: 12px; background: #fff9e6; border-radius: 10px; color: #333; font-weight: 600; margin-bottom: 8px; }
+        .empty { text-align: center; color: #9C27B0; padding: 40px 20px; font-size: 15px; font-weight: 600; }
+        .game-status { text-align: center; padding: 12px; background: #f3e5f5; border-radius: 10px; color: #9C27B0; font-weight: 600; margin-bottom: 8px; }
     </style>
 </head>
 <body>
     <div class="login-screen" id="login">
-        <h1>Chat Games</h1>
-        <p>Select your name</p>
+        <h1>💜 Chat</h1>
+        <p>Select Your Name 💜</p>
         <div class="login-buttons">
-            <button class="login-btn" onclick="window.login('esther')">Esther</button>
-            <button class="login-btn" onclick="window.login('valley')">Valley</button>
-            <button class="login-btn" onclick="window.login('amaaya')">Amaaya</button>
-            <button class="login-btn" onclick="window.login('mama')">Mama</button>
-            <button class="login-btn" onclick="window.login('mummy')">Mummy</button>
-            <button class="login-btn" onclick="window.login('hilary')">Hilary</button>
-            <button class="login-btn" onclick="window.login('nan')">Nan</button>
-            <button class="login-btn" onclick="window.login('rishy')">Rishy</button>
-            <button class="login-btn" onclick="window.login('poppy')">Poppy</button>
-            <button class="login-btn" onclick="window.login('sienna')">Sienna</button>
-            <button class="login-btn" onclick="window.login('penelope')">Penelope</button>
+            <button class="login-btn" onclick="window.login('esther')">🐱 Esther</button>
+            <button class="login-btn" onclick="window.login('valley')">😺 Valley</button>
+            <button class="login-btn" onclick="window.login('amaaya')">😸 Amaaya</button>
+            <button class="login-btn" onclick="window.login('mama')">😻 Mama</button>
+            <button class="login-btn" onclick="window.login('mummy')">😼 Mummy</button>
+            <button class="login-btn" onclick="window.login('hilary')">😽 Hilary</button>
+            <button class="login-btn" onclick="window.login('nan')">🐱 Nan</button>
+            <button class="login-btn" onclick="window.login('rishy')">😺 Rishy</button>
+            <button class="login-btn" onclick="window.login('poppy')">😸 Poppy</button>
+            <button class="login-btn" onclick="window.login('sienna')">😻 Sienna</button>
+            <button class="login-btn" onclick="window.login('penelope')">😼 Penelope</button>
         </div>
     </div>
 
     <div class="container" id="app">
         <div class="header">
-            <div class="header-title">Chat <span id="myname"></span></div>
-            <button class="dark-mode-btn" onclick="window.toggleDarkMode()">Moon</button>
+            <div class="header-title">💬 <span id="myname"></span></div>
+            <button class="dark-mode-btn" onclick="window.toggleDarkMode()">🌙</button>
             <button class="logout-btn" onclick="window.logout()">Logout</button>
         </div>
         <div class="tabs" id="tabs"></div>
@@ -128,51 +130,51 @@ const html = `<!DOCTYPE html>
             <div id="emojiPicker" class="emoji-picker" style="display: none;"></div>
             <div id="gamesPanel" class="games-panel">
                 <div class="game-buttons">
-                    <button class="game-btn" onclick="window.playRPS()">RPS</button>
-                    <button class="game-btn" onclick="window.playDice()">Dice</button>
-                    <button class="game-btn" onclick="window.playHangman()">Hangman</button>
-                    <button class="game-btn" onclick="window.playWordle()">Wordle</button>
+                    <button class="game-btn" onclick="window.playRPS()">✊ RPS</button>
+                    <button class="game-btn" onclick="window.playDice()">🎲 Dice</button>
+                    <button class="game-btn" onclick="window.playHangman()">🎯 Hangman</button>
+                    <button class="game-btn" onclick="window.playWordle()">🎮 Wordle</button>
                 </div>
 
                 <div id="rpsContainer" style="display: none;">
                     <div class="game-status" id="rpsStatus">Choose in 10 seconds!</div>
                     <div class="game-buttons">
-                        <button class="game-btn" onclick="window.selectRPS('rock')">Rock</button>
-                        <button class="game-btn" onclick="window.selectRPS('paper')">Paper</button>
-                        <button class="game-btn" onclick="window.selectRPS('scissors')">Scissors</button>
+                        <button class="game-btn" onclick="window.selectRPS('rock')">✊ Rock</button>
+                        <button class="game-btn" onclick="window.selectRPS('paper')">✋ Paper</button>
+                        <button class="game-btn" onclick="window.selectRPS('scissors')">✌️ Scissors</button>
                     </div>
                 </div>
 
                 <div id="diceContainer" style="display: none;">
-                    <div class="game-status">Closest to 6 wins!</div>
-                    <div style="font-size: 48px; text-align: center; margin: 12px 0;" id="diceResult">Dice</div>
-                    <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">Roll Now</button>
+                    <div class="game-status">🎲 Closest to 6 wins!</div>
+                    <div style="font-size: 48px; text-align: center; margin: 12px 0;" id="diceResult">🎲</div>
+                    <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">🎲 Roll</button>
                 </div>
 
                 <div id="hangmanContainer" style="display: none;">
-                    <div class="game-status" id="hangmanStatus">Set a word!</div>
+                    <div class="game-status" id="hangmanStatus">🎯 Hangman</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="15" style="width: 100%; padding: 8px; margin: 8px 0; border: 2px solid #667eea; border-radius: 8px;">
-                        <button class="game-btn" style="width: 100%;" onclick="window.startHangman()">Set Word</button>
+                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="15" style="width: 100%; padding: 8px; margin: 8px 0; border: 2px solid #9C27B0; border-radius: 8px; color: #9C27B0;">
+                        <button class="game-btn" style="width: 100%;" onclick="window.startHangman()">🎯 Set Word</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div class="hangman-stage" id="hangmanStage">😊</div>
                         <div class="hangman-word" id="hangmanWord">_ _ _ _ _</div>
                         <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 8px;"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: 700; margin-top: 8px; color: #9C27B0;"></div>
                     </div>
                 </div>
 
                 <div id="wordleContainer" style="display: none;">
-                    <div class="game-status">Guess the word!</div>
+                    <div class="game-status">🎮 Guess the word!</div>
                     <div id="wordleGuesses" style="text-align: center; margin: 12px 0;"></div>
-                    <input type="text" id="wordleInput" placeholder="5 letters..." maxlength="5" style="width: 100%; padding: 8px; margin: 8px 0; border: 2px solid #667eea; border-radius: 8px;">
-                    <button class="game-btn" style="width: 100%;" onclick="window.submitWordleGuess()">Guess</button>
+                    <input type="text" id="wordleInput" placeholder="5 letters..." maxlength="5" style="width: 100%; padding: 8px; margin: 8px 0; border: 2px solid #9C27B0; border-radius: 8px; color: #9C27B0;">
+                    <button class="game-btn" style="width: 100%;" onclick="window.submitWordleGuess()">🎮 Guess</button>
                 </div>
             </div>
             <div class="input-container">
                 <button class="emoji-btn" onclick="window.toggleEmoji()">😀</button>
-                <button class="games-btn" onclick="window.toggleGames()">Games</button>
+                <button class="games-btn" onclick="window.toggleGames()">🎮</button>
                 <input type="text" class="input-field" id="msg" placeholder="Type message..." disabled>
                 <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>Send</button>
             </div>
@@ -180,7 +182,7 @@ const html = `<!DOCTYPE html>
     </div>
 
     <script>
-        const EMOJIS = ['😀','😂','😍','🥰','😎','🤗','😊','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🧋','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡'];
+        const EMOJIS = ['😀','😂','😍','🥰','😎','🤗','😊','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🧋','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','💜','💜','💜'];
         const WORDLE_WORDS = ['HAPPY', 'SMILE', 'DANCE', 'PIZZA', 'BEACH', 'MUSIC', 'DREAM', 'MAGIC', 'SUNNY', 'HEART', 'FRIEND', 'LAUGH', 'PARTY', 'CANDY', 'KITTY', 'PUPPY', 'GAME', 'CHAT', 'PLAY', 'FUN'];
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
 
@@ -209,14 +211,18 @@ const html = `<!DOCTYPE html>
             if (!user) return;
             currentUser = user;
             localStorage.setItem('user', user);
-            allChats = ['group', user + '-mama', user + '-mummy'].filter(c => c !== 'group-mama' && c !== 'group-mummy');
+            allChats = ['group'];
+            
             if (user === 'esther') {
                 allChats = ['group', 'esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna', 'esther-penelope'];
             } else if (['mama', 'mummy'].includes(user)) {
-                allChats = ['group'];
-            } else if (['valley', 'amaaya', 'hilary', 'nan', 'rishy', 'poppy', 'sienna', 'penelope'].includes(user)) {
-                allChats = ['group'];
+                allChats = ['group', 'esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna', 'esther-penelope'];
+            } else if (['valley', 'amaaya', 'hilary'].includes(user)) {
+                allChats.push('esther-' + user);
+            } else if (['nan', 'rishy', 'poppy', 'sienna', 'penelope'].includes(user)) {
+                allChats = ['esther-' + user];
             }
+            
             currentChat = allChats[0];
             allChats.forEach(chat => {
                 if (!messages[chat]) {
@@ -257,7 +263,7 @@ const html = `<!DOCTYPE html>
                     if (data.data.chatId === currentChat) window.render();
                 } else if (data.type === 'rps_choice') {
                     if (data.chatId === currentChat) {
-                        document.getElementById('rpsStatus').textContent = data.user + ' chose ' + data.choice;
+                        document.getElementById('rpsStatus').textContent = data.user + ' chose ' + data.choice + ' ✊';
                     }
                 } else if (data.type === 'hangman_start') {
                     if (data.chatId === currentChat && data.user !== currentUser) {
@@ -275,11 +281,6 @@ const html = `<!DOCTYPE html>
                         if (!data.correct) hangmanWrong++;
                         window.renderHangmanGame();
                     }
-                } else if (data.type === 'hangman_result') {
-                    if (data.chatId === currentChat) {
-                        hangmanGameActive = false;
-                        document.getElementById('hangmanResult').textContent = data.message;
-                    }
                 }
             };
             ws.onclose = () => { connected = false; setTimeout(window.connect, 3000); };
@@ -291,7 +292,7 @@ const html = `<!DOCTYPE html>
             allChats.forEach(chatId => {
                 const btn = document.createElement('button');
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
-                btn.textContent = chatId === 'group' ? 'Group' : chatId.split('-')[1];
+                btn.textContent = chatId === 'group' ? '👥 Group' : '💜 ' + chatId.split('-')[1];
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
             });
@@ -325,10 +326,10 @@ const html = `<!DOCTYPE html>
             document.getElementById('wordleContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             rpsTimeLeft = 10;
-            document.getElementById('rpsStatus').textContent = '10 seconds to choose!';
+            document.getElementById('rpsStatus').textContent = '⏱️ 10 seconds to choose!';
             rpsTimer = setInterval(() => {
                 rpsTimeLeft--;
-                document.getElementById('rpsStatus').textContent = rpsTimeLeft + ' seconds left';
+                document.getElementById('rpsStatus').textContent = '⏱️ ' + rpsTimeLeft + ' seconds left';
                 if (rpsTimeLeft <= 0) {
                     clearInterval(rpsTimer);
                     document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
@@ -340,7 +341,8 @@ const html = `<!DOCTYPE html>
             rpsChoice = choice;
             document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
             if (connected) ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 ' + currentUser + ' played ' + choice + ' in Rock Paper Scissors!' }));
+            const emojis = { rock: '✊', paper: '✋', scissors: '✌️' };
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 ' + currentUser + ' played ' + emojis[choice] }));
         };
 
         window.playDice = function() {
@@ -349,14 +351,15 @@ const html = `<!DOCTYPE html>
             document.getElementById('rpsContainer').style.display = 'none';
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('wordleContainer').style.display = 'none';
-            document.getElementById('diceResult').textContent = 'Roll dice';
+            document.getElementById('diceResult').textContent = '🎲';
         };
 
         window.rollDice = function() {
             const result = Math.floor(Math.random() * 6) + 1;
-            document.getElementById('diceResult').textContent = result;
+            const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
+            document.getElementById('diceResult').textContent = emojis[result - 1];
             document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 ' + currentUser + ' rolled a ' + result + '!' }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 ' + currentUser + ' rolled: ' + result }));
         };
 
         window.playHangman = function() {
@@ -387,7 +390,7 @@ const html = `<!DOCTYPE html>
             window.renderHangmanGame();
             if (connected) {
                 ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat, wordLength: word.length }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 ' + currentUser + ' started Hangman! Guess the word.' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 ' + currentUser + ' started Hangman! Guess the word.' }));
             }
         };
 
@@ -396,7 +399,7 @@ const html = `<!DOCTYPE html>
             const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
             document.getElementById('hangmanWord').textContent = display;
             document.getElementById('hangmanStage').textContent = HANGMAN_STAGES[hangmanWrong];
-            document.getElementById('hangmanStatus').textContent = 'Wrong: ' + hangmanWrong + '/6 | Set by: ' + hangmanSetBy;
+            document.getElementById('hangmanStatus').textContent = '🎯 Wrong: ' + hangmanWrong + '/6';
             
             const grid = document.getElementById('hangmanLetterGrid');
             if (grid.children.length === 0) {
@@ -417,11 +420,11 @@ const html = `<!DOCTYPE html>
             if (won) {
                 hangmanGameActive = false;
                 document.getElementById('hangmanResult').textContent = '🎉 YOU WIN! Word: ' + hangmanWord;
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Someone won Hangman! Word: ' + hangmanWord }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 Someone won Hangman! Word: ' + hangmanWord }));
             } else if (lost) {
                 hangmanGameActive = false;
                 document.getElementById('hangmanResult').textContent = '💀 GAME OVER! Word: ' + hangmanWord;
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Hangman game over. Word was: ' + hangmanWord }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 Hangman over. Word: ' + hangmanWord }));
             }
         };
 
@@ -464,10 +467,10 @@ const html = `<!DOCTYPE html>
             });
             if (input === wordleWord) {
                 wordleGameOver = true;
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Someone won Wordle! Word was: ' + wordleWord }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Someone won Wordle! Word: ' + wordleWord }));
             } else if (wordleGuesses.length >= 6) {
                 wordleGameOver = true;
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Wordle game over. Word was: ' + wordleWord }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Wordle over. Word: ' + wordleWord }));
             }
         };
 
@@ -483,7 +486,7 @@ const html = `<!DOCTYPE html>
             const div = document.getElementById('chat');
             div.innerHTML = '';
             const msgs = messages[currentChat] || [];
-            if (msgs.length === 0) { div.innerHTML = '<div class="empty">Start chatting!!</div>'; return; }
+            if (msgs.length === 0) { div.innerHTML = '<div class="empty">💬 Start chatting! 💜</div>'; return; }
             msgs.forEach(m => {
                 const d = document.createElement('div');
                 d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
@@ -546,4 +549,4 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => { console.log('Server running on ' + PORT); });
+server.listen(PORT, () => { console.log('💜 Server running on ' + PORT); });
