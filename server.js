@@ -1,138 +1,140 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 app.use(express.json());
-app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
-    <title>✨ Anime Chat ✨</title>
+    <title>✨ Cosmic Anime Chat ✨</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        @keyframes drift { 0%, 100% { transform: translateY(0px) translateX(0px); } 25% { transform: translateY(-15px) translateX(5px); } 75% { transform: translateY(-10px) translateX(-5px); } }
-        @keyframes flutter { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-        @keyframes shimmer { 0%, 100% { background-position: 0% center; } 50% { background-position: 100% center; } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 10px #FF00FF, 0 0 20px #00FFFF; } 50% { box-shadow: 0 0 20px #FF00FF, 0 0 40px #00FFFF; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes shimmer { 0%, 100% { text-shadow: 0 0 10px #FF00FF; } 50% { text-shadow: 0 0 20px #00FFFF; } }
         html { height: 100%; }
-        body { height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; -webkit-user-select: none; user-select: none; background: linear-gradient(135deg, #D4E8D9 0%, #E8D9E8 25%, #E8E0D9 50%, #D9E8E8 75%, #E8DDD9 100%); }
-        .login-screen { position: fixed; width: 100vw; height: 100vh; background: linear-gradient(135deg, #D4E8D9 0%, #E8D9E8 25%, #E8E0D9 50%, #D9E8E8 75%, #E8DDD9 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; z-index: 100; }
-        .login-screen h1 { font-size: 52px; margin-bottom: 8px; color: #6B4423; font-weight: 800; text-shadow: 0 4px 8px rgba(107, 68, 35, 0.15); font-family: 'Poppins'; letter-spacing: 1px; }
-        .login-screen p { font-size: 18px; color: #8B6F47; margin-bottom: 25px; font-weight: 700; }
+        body { height: 100%; overflow: hidden; font-family: 'Arial Black', sans-serif; -webkit-user-select: none; user-select: none; background: #000814; }
+        .stars { position: fixed; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: pulse 3s infinite; }
+        .login-screen { position: fixed; width: 100vw; height: 100vh; background: radial-gradient(circle at 20% 50%, #001a4d 0%, #000814 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; z-index: 100; }
+        .login-screen h1 { font-size: 54px; margin-bottom: 10px; color: #00FFFF; font-weight: 900; text-shadow: 0 0 20px #00FFFF, 0 0 40px #FF00FF; animation: glow 2s infinite; }
+        .login-screen p { font-size: 18px; color: #FFD700; margin-bottom: 30px; font-weight: 800; text-shadow: 0 0 10px #FFD700; }
         .login-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px; }
-        .login-btn { padding: 16px; background: linear-gradient(135deg, #A89F87 0%, #B8AFAA 100%); color: #6B4423; border: 3px solid #6B4423; border-radius: 18px; font-size: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.15); transition: all 0.3s; font-family: 'Poppins'; }
-        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 18px rgba(107, 68, 35, 0.25); }
-        .login-btn:active { transform: scale(0.96); }
-        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #D4E8D9 0%, #E8D9E8 25%, #E8E0D9 50%, #D9E8E8 75%, #E8DDD9 100%); display: none; flex-direction: column; z-index: 50; }
+        .login-btn { padding: 16px; background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 50%, #FFD700 100%); color: #000814; border: none; border-radius: 20px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px #FF00FF; transition: all 0.3s; }
+        .login-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px #00FFFF; }
+        .login-btn:active { transform: scale(0.95); }
+        .container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #001a4d 0%, #000814 100%); display: none; flex-direction: column; z-index: 50; }
         .container.show { display: flex; }
-        .header { background: linear-gradient(90deg, #A89F87 0%, #B8AFAA 50%, #C0B5AA 100%); color: #6B4423; padding: 14px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 800; flex-shrink: 0; gap: 8px; box-shadow: 0 6px 15px rgba(107, 68, 35, 0.12); border-bottom: 3px solid #6B4423; font-family: 'Poppins'; }
-        #myname { font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .logout-btn { background: rgba(255, 255, 255, 0.7); border: 2px solid #6B4423; color: #6B4423; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .dark-mode-btn { background: rgba(255, 255, 255, 0.7); border: 2px solid #8B6F47; color: #6B4423; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 700; }
-        .tabs { display: flex; gap: 8px; padding: 12px; background: rgba(255, 255, 255, 0.5); border-bottom: 2px solid #A89F87; overflow-x: auto; flex-shrink: 0; }
-        .tab { padding: 10px 16px; background: rgba(168, 159, 135, 0.2); border: 2px solid #A89F87; border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 13px; white-space: nowrap; color: #6B4423; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; }
-        .tab:hover { background: rgba(168, 159, 135, 0.4); transform: scale(1.05); }
-        .tab.active { background: linear-gradient(135deg, #A89F87, #8B6F47); color: #FFFAF0; border-color: #6B4423; box-shadow: 0 4px 12px rgba(107, 68, 35, 0.2); }
-        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; background: rgba(255, 255, 255, 0.4); position: relative; }
-        .chat-display::before { content: ''; position: fixed; top: 90px; right: -20px; width: 300px; height: 300px; background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwhLS0gUGxhY2Vob2xkZXIgZm9yIGN1dGUgY2F0IGltYWdlcyAtLT4KPC9zdmc+'); background-size: contain; background-repeat: no-repeat; opacity: 0.15; pointer-events: none; z-index: 1; }
-        .message { margin-bottom: 14px; display: flex; flex-direction: column; animation: drift 6s infinite ease-in-out; position: relative; z-index: 2; }
+        .header { background: linear-gradient(90deg, #FF00FF 0%, #00FFFF 50%, #FFD700 100%); color: #000814; padding: 16px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 900; flex-shrink: 0; gap: 8px; text-shadow: 0 0 10px rgba(255,255,255,0.5); box-shadow: 0 8px 25px #FF00FF; }
+        #myname { font-size: 22px; text-transform: uppercase; letter-spacing: 2px; }
+        .logout-btn { background: rgba(0,8,20,0.7); border: 2px solid #FFD700; color: #FFD700; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 900; text-transform: uppercase; }
+        .dark-mode-btn { background: rgba(0,8,20,0.7); border: 2px solid #00FFFF; color: #00FFFF; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 900; }
+        .tabs { display: flex; gap: 8px; padding: 12px; background: rgba(0,8,20,0.8); border-bottom: 3px solid #00FFFF; overflow-x: auto; flex-shrink: 0; box-shadow: 0 0 15px #00FFFF; }
+        .tab { padding: 10px 18px; background: rgba(255,0,255,0.2); border: 2px solid #FF00FF; border-radius: 15px; cursor: pointer; font-weight: 900; font-size: 13px; white-space: nowrap; color: #00FFFF; flex-shrink: 0; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+        .tab:hover { background: rgba(0,255,255,0.2); border-color: #00FFFF; box-shadow: 0 0 10px #00FFFF; }
+        .tab.active { background: linear-gradient(135deg, #FF00FF, #00FFFF); color: #000814; border-color: #FFD700; box-shadow: 0 0 20px #00FFFF; }
+        .chat-display { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px 10px; -webkit-overflow-scrolling: touch; font-size: 14px; background: rgba(0,8,20,0.6); position: relative; }
+        .chat-display::before { content: ''; position: fixed; top: 90px; right: -30px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(255,0,255,0.1) 0%, transparent 70%); pointer-events: none; z-index: 1; border-radius: 50%; }
+        .message { margin-bottom: 14px; display: flex; flex-direction: column; animation: float 3s infinite; position: relative; z-index: 2; }
         .message.own { align-items: flex-end; }
         .message-content { display: flex; gap: 10px; align-items: flex-end; }
         .message.own .message-content { flex-direction: row-reverse; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: linear-gradient(135deg, #C0B5AA, #A89F87); border: 3px solid #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
-        .message-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; word-wrap: break-word; font-size: 13px; font-weight: 600; line-height: 1.4; border: 2px solid; }
-        .message.own .message-bubble { background: linear-gradient(135deg, #A89F87, #8B6F47); color: #FFFAF0; border-color: #6B4423; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.2); }
-        .message.esther .message-bubble { background: linear-gradient(135deg, #B8D4E8, #A8C4D8); color: #2C3E50; border-color: #6B9BB0; box-shadow: 0 4px 10px rgba(107, 155, 176, 0.15); }
-        .message.valley .message-bubble { background: linear-gradient(135deg, #D4A89F, #C89890); color: #6B4423; border-color: #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
-        .message.amaaya .message-bubble { background: linear-gradient(135deg, #B8D8B0, #A8C8A0); color: #2C5F2C; border-color: #6B9B6B; box-shadow: 0 4px 10px rgba(107, 155, 107, 0.15); }
-        .message.mama .message-bubble { background: linear-gradient(135deg, #D4C8A8, #C8BCA0); color: #6B4423; border-color: #8B7F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
-        .message.mummy .message-bubble { background: linear-gradient(135deg, #D8B8B0, #C8A8A0); color: #6B4423; border-color: #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
-        .message.hilary .message-bubble { background: linear-gradient(135deg, #D4B0D8, #C8A0C8); color: #4A2C4A; border-color: #7B4F7B; box-shadow: 0 4px 10px rgba(123, 79, 123, 0.15); }
-        .message.nan .message-bubble { background: linear-gradient(135deg, #D4A0C0, #C89FB0); color: #6B2C4A; border-color: #8B5F7B; box-shadow: 0 4px 10px rgba(107, 68, 80, 0.15); }
-        .message.rishy .message-bubble { background: linear-gradient(135deg, #D8D0A8, #C8C0A0); color: #6B6423; border-color: #8B7F47; box-shadow: 0 4px 10px rgba(107, 100, 35, 0.15); }
-        .message.poppy .message-bubble { background: linear-gradient(135deg, #D4B8D0, #C8A8C0); color: #6B2C4A; border-color: #8B5F7B; box-shadow: 0 4px 10px rgba(107, 68, 80, 0.15); }
-        .message.sienna .message-bubble { background: linear-gradient(135deg, #D8A88F, #C89880); color: #6B4423; border-color: #8B6F47; box-shadow: 0 4px 10px rgba(107, 68, 35, 0.15); }
-        .message.penelope .message-bubble { background: linear-gradient(135deg, #D4A8C0, #C89FB0); color: #6B2C4A; border-color: #8B5F7B; box-shadow: 0 4px 10px rgba(107, 68, 80, 0.15); }
-        .message-sender { font-size: 12px; color: #6B4423; margin: 0 0 4px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .message.own .message-sender { text-align: right; color: #8B7F47; }
-        .input-area { background: rgba(255, 255, 255, 0.7); border-top: 3px solid #A89F87; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; box-shadow: 0 -6px 15px rgba(107, 68, 35, 0.1); }
-        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 12px; background: rgba(232, 232, 232, 0.5); border-radius: 15px; max-height: 140px; overflow-y: auto; border: 2px solid #C0B5AA; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,255,255,0.2); border: 2px solid #00FFFF; box-shadow: 0 0 10px #00FFFF; }
+        .message-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; word-wrap: break-word; font-size: 13px; font-weight: 700; line-height: 1.4; border: 2px solid; }
+        .message.own .message-bubble { background: linear-gradient(135deg, #FF00FF, #FF1493); color: #FFFFFF; border-color: #FFD700; box-shadow: 0 0 15px #FF00FF; text-transform: uppercase; }
+        .message.esther .message-bubble { background: linear-gradient(135deg, #1E90FF, #00BFFF); color: white; border-color: #00FFFF; box-shadow: 0 0 12px #1E90FF; }
+        .message.valley .message-bubble { background: linear-gradient(135deg, #FF1493, #FF69B4); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF1493; }
+        .message.amaaya .message-bubble { background: linear-gradient(135deg, #00CED1, #40E0D0); color: #000814; border-color: #FFD700; box-shadow: 0 0 12px #00CED1; }
+        .message.mama .message-bubble { background: linear-gradient(135deg, #32CD32, #00FF00); color: #000814; border-color: #FFD700; box-shadow: 0 0 12px #00FF00; }
+        .message.mummy .message-bubble { background: linear-gradient(135deg, #FF4500, #FF6347); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF4500; }
+        .message.hilary .message-bubble { background: linear-gradient(135deg, #9370DB, #BA55D3); color: white; border-color: #FFD700; box-shadow: 0 0 12px #9370DB; }
+        .message.nan .message-bubble { background: linear-gradient(135deg, #FF00FF, #FF1493); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF00FF; }
+        .message.rishy .message-bubble { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000814; border-color: #FF00FF; box-shadow: 0 0 12px #FFD700; }
+        .message.poppy .message-bubble { background: linear-gradient(135deg, #00FF7F, #32CD32); color: #000814; border-color: #FFD700; box-shadow: 0 0 12px #00FF7F; }
+        .message.sienna .message-bubble { background: linear-gradient(135deg, #FF6347, #DC143C); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF6347; }
+        .message.penelope .message-bubble { background: linear-gradient(135deg, #FF00FF, #FF69B4); color: white; border-color: #FFD700; box-shadow: 0 0 12px #FF00FF; }
+        .message-sender { font-size: 12px; color: #00FFFF; margin: 0 0 4px 0; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px #00FFFF; }
+        .message.own .message-sender { text-align: right; color: #FFD700; }
+        .input-area { background: rgba(0,8,20,0.95); border-top: 3px solid #FF00FF; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding: 10px; max-height: 50vh; overflow-y: auto; box-shadow: 0 -8px 25px #FF00FF; }
+        .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 12px; background: rgba(255,215,0,0.1); border-radius: 15px; max-height: 140px; overflow-y: auto; border: 2px solid #FFD700; }
         .emoji-picker.show { display: grid; }
-        .emoji-option { font-size: 24px; cursor: pointer; text-align: center; padding: 8px; border-radius: 12px; background: rgba(168, 159, 135, 0.1); transition: all 0.2s; }
-        .emoji-option:hover { background: rgba(168, 159, 135, 0.3); transform: scale(1.2) rotate(5deg); }
+        .emoji-option { font-size: 24px; cursor: pointer; text-align: center; padding: 8px; border-radius: 10px; background: rgba(0,255,255,0.1); transition: all 0.2s; }
+        .emoji-option:hover { background: rgba(255,0,255,0.2); transform: scale(1.2); }
         .emoji-option:active { transform: scale(0.9); }
-        .games-panel { display: none; background: rgba(232, 224, 216, 0.5); border-radius: 15px; padding: 12px; border: 2px solid #C0B5AA; max-height: 250px; overflow-y: auto; }
+        .games-panel { display: none; background: rgba(255,0,255,0.1); border-radius: 15px; padding: 12px; border: 2px solid #FF00FF; max-height: 250px; overflow-y: auto; }
         .games-panel.show { display: block; }
         .game-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .game-btn { padding: 14px; background: linear-gradient(135deg, #A89F87, #B8AFAA); color: #6B4423; border: 3px solid #6B4423; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.15); transition: all 0.3s; font-family: 'Poppins'; }
-        .game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(107, 68, 35, 0.2); }
+        .game-btn { padding: 14px; background: linear-gradient(135deg, #FF00FF, #FF1493); color: white; border: 2px solid #FFD700; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 12px #FF00FF; transition: all 0.3s; }
+        .game-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px #00FFFF; }
         .game-btn:active { transform: scale(0.95); }
-        .game-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .game-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .input-container { display: flex; gap: 8px; align-items: center; width: 100%; }
-        .input-field { flex: 1; padding: 12px 16px; border: 3px solid #A89F87; border-radius: 18px; font-size: 14px; font-family: inherit; height: 48px; background: rgba(255, 255, 255, 0.9); color: #6B4423; font-weight: 600; }
-        .input-field:focus { outline: none; border-color: #8B6F47; box-shadow: 0 0 12px rgba(107, 68, 35, 0.15); }
-        .input-field::placeholder { color: #A89F87; }
-        .emoji-btn { background: rgba(255, 255, 255, 0.8); border: 3px solid #C0B5AA; color: #6B4423; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; min-width: 48px; flex-shrink: 0; font-weight: 700; transition: all 0.3s; }
-        .emoji-btn:hover { background: rgba(192, 181, 170, 0.2); transform: scale(1.1); }
-        .games-btn { background: rgba(255, 255, 255, 0.8); border: 3px solid #A89F87; color: #6B4423; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; font-weight: 800; min-width: 48px; flex-shrink: 0; transition: all 0.3s; }
-        .games-btn:hover { background: rgba(168, 159, 135, 0.2); transform: scale(1.1); }
-        .send-btn { background: linear-gradient(135deg, #A89F87, #8B6F47); color: #FFFAF0; border: 3px solid #6B4423; padding: 10px 14px; border-radius: 18px; font-size: 12px; font-weight: 800; cursor: pointer; height: 48px; min-width: 60px; flex-shrink: 0; text-transform: uppercase; box-shadow: 0 6px 12px rgba(107, 68, 35, 0.15); transition: all 0.3s; font-family: 'Poppins'; }
-        .send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(107, 68, 35, 0.2); }
+        .input-field { flex: 1; padding: 12px 16px; border: 2px solid #00FFFF; border-radius: 20px; font-size: 14px; font-family: inherit; height: 48px; background: rgba(0,255,255,0.1); color: #00FFFF; font-weight: 700; }
+        .input-field:focus { outline: none; border-color: #FF00FF; box-shadow: 0 0 15px #FF00FF; }
+        .input-field::placeholder { color: #00FFFF; opacity: 0.7; }
+        .emoji-btn { background: rgba(255,215,0,0.2); border: 2px solid #FFD700; color: #FFD700; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; min-width: 48px; flex-shrink: 0; font-weight: 900; transition: all 0.3s; }
+        .emoji-btn:hover { background: rgba(255,215,0,0.4); box-shadow: 0 0 12px #FFD700; }
+        .games-btn { background: rgba(0,255,255,0.2); border: 2px solid #00FFFF; color: #00FFFF; padding: 10px 12px; border-radius: 12px; font-size: 18px; cursor: pointer; height: 48px; font-weight: 900; min-width: 48px; flex-shrink: 0; transition: all 0.3s; }
+        .games-btn:hover { background: rgba(0,255,255,0.4); box-shadow: 0 0 12px #00FFFF; }
+        .send-btn { background: linear-gradient(135deg, #FF00FF, #00FFFF); color: #000814; border: 2px solid #FFD700; padding: 10px 14px; border-radius: 20px; font-size: 12px; font-weight: 900; cursor: pointer; height: 48px; min-width: 60px; flex-shrink: 0; text-transform: uppercase; box-shadow: 0 0 15px #FF00FF; transition: all 0.3s; }
+        .send-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px #00FFFF; }
         .send-btn:active { transform: scale(0.95); }
-        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .empty { text-align: center; color: #6B4423; padding: 50px 15px; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 2px 4px rgba(107, 68, 35, 0.1); }
-        .game-status { text-align: center; padding: 12px; background: rgba(168, 159, 135, 0.15); border-radius: 12px; color: #6B4423; font-weight: 800; margin-bottom: 10px; font-size: 14px; border: 2px solid #A89F87; text-transform: uppercase; }
-        .trivia-q { font-weight: 800; margin-bottom: 12px; color: #6B4423; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .send-btn:disabled { background: #333; cursor: not-allowed; }
+        .empty { text-align: center; color: #00FFFF; padding: 50px 15px; font-size: 18px; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px #00FFFF; }
+        .game-status { text-align: center; padding: 12px; background: rgba(0,255,255,0.1); border-radius: 12px; color: #FFD700; font-weight: 900; margin-bottom: 10px; font-size: 14px; border: 2px solid #00FFFF; text-transform: uppercase; }
+        .trivia-q { font-weight: 900; margin-bottom: 12px; color: #00FFFF; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 8px #00FFFF; }
         .trivia-answers { display: grid; gap: 10px; margin-bottom: 12px; }
-        .trivia-btn { padding: 12px; background: rgba(168, 159, 135, 0.15); border: 2px solid #A89F87; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; color: #6B4423; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; }
-        .trivia-btn:hover { background: rgba(168, 159, 135, 0.3); transform: scale(1.02); }
-        .trivia-btn.correct { background: linear-gradient(135deg, #B8D8B0, #A8C8A0); color: #2C5F2C; border-color: #6B9B6B; }
-        .trivia-btn.wrong { background: linear-gradient(135deg, #D4A89F, #C89890); color: #6B4423; border-color: #8B6F47; }
-        .trivia-result { text-align: center; margin-top: 12px; font-weight: 800; color: #6B4423; font-size: 16px; text-transform: uppercase; }
+        .trivia-btn { padding: 12px; background: rgba(0,255,255,0.1); border: 2px solid #00FFFF; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 13px; color: #00FFFF; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 0 8px #00FFFF; }
+        .trivia-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 15px #00FFFF; }
+        .trivia-btn.correct { background: linear-gradient(135deg, #00FF7F, #32CD32); color: #000814; border-color: #FFD700; box-shadow: 0 0 15px #00FF7F; }
+        .trivia-btn.wrong { background: linear-gradient(135deg, #FF4500, #FF6347); color: white; border-color: #FFD700; box-shadow: 0 0 15px #FF4500; }
+        .trivia-result { text-align: center; margin-top: 12px; font-weight: 900; color: #FFD700; font-size: 16px; text-transform: uppercase; text-shadow: 0 0 10px #FFD700; }
         .letter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
-        .letter-btn { padding: 10px; background: rgba(168, 159, 135, 0.15); border: 2px solid #A89F87; border-radius: 10px; cursor: pointer; font-weight: 700; color: #6B4423; font-size: 12px; text-transform: uppercase; transition: all 0.2s; }
-        .letter-btn:hover { background: rgba(168, 159, 135, 0.3); transform: scale(1.05); }
+        .letter-btn { padding: 10px; background: rgba(0,255,255,0.1); border: 2px solid #00FFFF; border-radius: 8px; cursor: pointer; font-weight: 900; color: #00FFFF; font-size: 12px; text-transform: uppercase; box-shadow: 0 0 8px #00FFFF; transition: all 0.2s; }
+        .letter-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 12px #FF00FF; }
         .letter-btn:disabled { opacity: 0.2; cursor: not-allowed; }
-        .hangman-word { font-size: 36px; font-weight: 800; letter-spacing: 8px; text-align: center; margin: 14px 0; font-family: 'Poppins'; color: #6B4423; }
-        .hangman-stage { font-size: 60px; text-align: center; margin: 8px 0; animation: drift 4s infinite ease-in-out; }
+        .hangman-word { font-size: 36px; font-weight: 900; letter-spacing: 10px; text-align: center; margin: 14px 0; font-family: monospace; color: #00FFFF; text-shadow: 0 0 10px #00FFFF; }
+        .hangman-stage { font-size: 60px; text-align: center; margin: 8px 0; animation: float 3s infinite; }
     </style>
 </head>
 <body>
+    <div class="stars" id="stars"></div>
+    
     <div class="login-screen" id="login">
-        <h1>✨ Anime Chat ✨</h1>
-        <p>💚 Pick Your Character 💚</p>
+        <h1>🚀 COSMIC CHAT 🚀</h1>
+        <p>⭐ Pick Your Space Name ⭐</p>
         <div class="login-buttons">
             <button class="login-btn" onclick="window.login('esther')">🐱 ESTHER</button>
             <button class="login-btn" onclick="window.login('valley')">🎀 VALLEY</button>
             <button class="login-btn" onclick="window.login('amaaya')">✨ AMAAYA</button>
             <button class="login-btn" onclick="window.login('mama')">👑 MAMA</button>
             <button class="login-btn" onclick="window.login('mummy')">💎 MUMMY</button>
-            <button class="login-btn" onclick="window.login('hilary')">🌸 HILARY</button>
-            <button class="login-btn" onclick="window.login('nan')">💜 NAN</button>
-            <button class="login-btn" onclick="window.login('rishy')">⭐ RISHY</button>
-            <button class="login-btn" onclick="window.login('poppy')">🌷 POPPY</button>
-            <button class="login-btn" onclick="window.login('sienna')">🌺 SIENNA</button>
+            <button class="login-btn" onclick="window.login('hilary')">🌟 HILARY</button>
+            <button class="login-btn" onclick="window.login('nan')">💫 NAN</button>
+            <button class="login-btn" onclick="window.login('rishy')">🔆 RISHY</button>
+            <button class="login-btn" onclick="window.login('poppy')">🌈 POPPY</button>
+            <button class="login-btn" onclick="window.login('sienna')">🎪 SIENNA</button>
             <button class="login-btn" onclick="window.login('penelope')">💝 PENELOPE</button>
         </div>
     </div>
 
     <div class="container" id="app">
         <div class="header">
-            <div>💚 <span id="myname"></span> 💚</div>
+            <div>🚀 <span id="myname"></span> 🚀</div>
             <button class="dark-mode-btn" onclick="window.toggleDarkMode()">🌙</button>
             <button class="logout-btn" onclick="window.logout()">LOGOUT</button>
         </div>
         <div class="tabs" id="tabs"></div>
-        <div class="chat-display" id="chat"><div class="empty">💚 loading anime chat...</div></div>
+        <div class="chat-display" id="chat"><div class="empty">🚀 LOADING COSMIC CHAT...</div></div>
         
         <div class="input-area">
             <div id="emojiPicker" class="emoji-picker"></div>
@@ -154,8 +156,8 @@ const html = `<!DOCTYPE html>
                 </div>
 
                 <div id="diceContainer" style="display: none;">
-                    <div class="game-status">🎲 ROLL!</div>
-                    <div style="font-size: 48px; text-align: center; margin: 12px 0;" id="diceResult">🎲</div>
+                    <div class="game-status">🎲 ROLL THE DICE!</div>
+                    <div style="font-size: 48px; text-align: center; margin: 12px 0; animation: spin 2s linear infinite;" id="diceResult">🎲</div>
                     <button class="game-btn" style="width: 100%;" onclick="window.rollDice()">🎲 ROLL!</button>
                 </div>
 
@@ -163,57 +165,91 @@ const html = `<!DOCTYPE html>
                     <div class="trivia-q" id="triviaQuestion"></div>
                     <div id="triviaAnswers" class="trivia-answers"></div>
                     <div class="trivia-result" id="triviaResult"></div>
-                    <div style="text-align: center; font-size: 13px; color: #6B4423; margin-top: 8px; font-weight: 700;" id="playersScore"></div>
+                    <div style="text-align: center; font-size: 13px; color: #00FFFF; margin-top: 8px;" id="playersScore"></div>
                     <div class="game-status" id="triviaScore"></div>
                 </div>
 
                 <div id="hangmanContainer" style="display: none;">
-                    <div class="game-status" id="hangmanStatus">🎯 HANGMAN</div>
+                    <div class="game-status" id="hangmanStatus">🎯 HANGMAN CHALLENGE</div>
                     <div id="hangmanSetupPhase">
-                        <input type="text" id="hangmanSetWord" placeholder="Enter word..." maxlength="12" style="width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #A89F87; border-radius: 10px; color: #6B4423; font-size: 13px; background: rgba(168, 159, 135, 0.1); font-weight: 700;">
-                        <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">💚 SET!</button>
+                        <input type="text" id="hangmanSetWord" placeholder="Enter secret word..." maxlength="12" style="width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #00FFFF; border-radius: 8px; color: #00FFFF; font-size: 13px; background: rgba(0,255,255,0.1); font-weight: 700;">
+                        <button class="game-btn" style="width: 100%; margin-top: 6px;" onclick="window.startHangman()">🚀 SET WORD!</button>
                     </div>
                     <div id="hangmanGamePhase" style="display: none;">
                         <div class="hangman-stage" id="hangmanStage">😊</div>
                         <div class="hangman-word" id="hangmanWord">_ _ _</div>
                         <div id="hangmanLetterGrid" class="letter-grid"></div>
-                        <div id="hangmanResult" style="text-align: center; font-weight: 800; margin-top: 8px; color: #6B4423; font-size: 14px; text-transform: uppercase;"></div>
+                        <div id="hangmanResult" style="text-align: center; font-weight: 900; margin-top: 8px; color: #FFD700; font-size: 14px; text-transform: uppercase;"></div>
                     </div>
                 </div>
             </div>
             <div class="input-container">
-                <button class="emoji-btn" onclick="window.toggleEmoji()">😊</button>
+                <button class="emoji-btn" onclick="window.toggleEmoji()">😀</button>
                 <button class="games-btn" onclick="window.toggleGames()">🎮</button>
-                <input type="text" class="input-field" id="msg" placeholder="💬 say something..." disabled>
-                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>SEND</button>
+                <input type="text" class="input-field" id="msg" placeholder="💬 Say something..." disabled>
+                <button class="send-btn" id="sendBtn" onclick="window.send()" disabled>SEND!</button>
             </div>
         </div>
     </div>
 
     <script>
-        const EMOJIS = ['😊','😍','🥰','😘','😻','🐱','💚','💜','💕','✨','🌸','🌺','🌼','🌷','🎀','👯','🎉','🎊','🎈','🎁','🍰','🍪','☕','🧋','🍭','🍬','💚','🎀','⭐','🌟','💫'];
+        // Create stars background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        const EMOJIS = ['😀','😂','😍','🥰','😎','🤗','😊','🎉','🎊','🎈','🎁','🎂','🍰','🍕','🍔','🍟','☕','🧋','🍹','🍩','🍪','🐱','😺','😸','😻','😼','🦁','🐮','🐷','🦊','🐻','🐼','🐨','🐹','🐰','👍','👏','🙌','💪','🤝','💋','💕','💖','💗','💓','💞','💘','💝','⭐','✨','🌟','💫','🔥','⚡','💜','🚀','🛸'];
         
         const TRIVIA_QUESTIONS = [
-            {q: '🌍 Capital of Australia?', a: ['Sydney','Melbourne','Canberra','Brisbane'], c: 2},
-            {q: '🌊 Largest ocean?', a: ['Atlantic','Indian','Arctic','Pacific'], c: 3},
-            {q: '⛰️ Tallest mountain?', a: ['Kilimanjaro','Everest','Denali','Blanc'], c: 1},
-            {q: '🇫🇷 Capital of France?', a: ['Lyon','Marseille','Paris','Nice'], c: 2},
-            {q: '🐆 Fastest land animal?', a: ['Lion','Gazelle','Cheetah','Pronghorn'], c: 2},
-            {q: '🐋 Largest animal?', a: ['Elephant','Blue Whale','Giraffe','Hippo'], c: 1},
-            {q: '🌊 Longest river?', a: ['Amazon','Congo','Nile','Yangtze'], c: 2},
-            {q: '🇯🇵 Capital of Japan?', a: ['Osaka','Kyoto','Tokyo','Yokohama'], c: 2},
-            {q: '🕳️ Deepest trench?', a: ['Mariana','Tonga','Philippine','Kuril'], c: 0},
-            {q: '🇪🇬 Capital of Egypt?', a: ['Alexandria','Cairo','Giza','Luxor'], c: 1},
-            {q: '🦅 Bird cannot fly?', a: ['Ostrich','Chicken','Penguin','Kiwi'], c: 0},
-            {q: '🇧🇷 Capital of Brazil?', a: ['Rio','Brasília','Salvador','Sao Paulo'], c: 1},
-            {q: '🐙 Octopus legs?', a: ['6','8','10','12'], c: 1},
-            {q: '🇨🇦 Capital of Canada?', a: ['Toronto','Vancouver','Ottawa','Montreal'], c: 2},
-            {q: '🇩🇪 Capital of Germany?', a: ['Munich','Hamburg','Berlin','Cologne'], c: 2},
-            {q: '🏜️ Largest desert?', a: ['Sahara','Gobi','Kalahari','Antarctic'], c: 3},
-            {q: '🇮🇹 Capital of Italy?', a: ['Milan','Rome','Venice','Florence'], c: 1},
-            {q: '🌎 Continents total?', a: ['5','6','7','8'], c: 2},
-            {q: '🇪🇸 Capital of Spain?', a: ['Barcelona','Madrid','Valencia','Seville'], c: 1},
-            {q: '🏰 Smallest country?', a: ['Monaco','Vatican','San Marino','Liechtenstein'], c: 1}
+            {q: '🌍 CAPITAL OF AUSTRALIA?', a: ['SYDNEY','MELBOURNE','CANBERRA','BRISBANE'], c: 2},
+            {q: '🌊 LARGEST OCEAN?', a: ['ATLANTIC','INDIAN','ARCTIC','PACIFIC'], c: 3},
+            {q: '⛰️ TALLEST MOUNTAIN?', a: ['KILIMANJARO','EVEREST','DENALI','BLANC'], c: 1},
+            {q: '🇫🇷 CAPITAL OF FRANCE?', a: ['LYON','MARSEILLE','PARIS','NICE'], c: 2},
+            {q: '🐆 FASTEST LAND ANIMAL?', a: ['LION','GAZELLE','CHEETAH','PRONGHORN'], c: 2},
+            {q: '🐋 LARGEST ANIMAL?', a: ['ELEPHANT','BLUE WHALE','GIRAFFE','HIPPO'], c: 1},
+            {q: '🌊 LONGEST RIVER?', a: ['AMAZON','CONGO','NILE','YANGTZE'], c: 2},
+            {q: '🇯🇵 CAPITAL OF JAPAN?', a: ['OSAKA','KYOTO','TOKYO','YOKOHAMA'], c: 2},
+            {q: '🕳️ DEEPEST TRENCH?', a: ['MARIANA','TONGA','PHILIPPINE','KURIL'], c: 0},
+            {q: '🇪🇬 CAPITAL OF EGYPT?', a: ['ALEXANDRIA','CAIRO','GIZA','LUXOR'], c: 1},
+            {q: '🦅 BIRD CANNOT FLY?', a: ['OSTRICH','CHICKEN','PENGUIN','KIWI'], c: 0},
+            {q: '🇧🇷 CAPITAL OF BRAZIL?', a: ['RIO','BRASÍLIA','SALVADOR','SAO PAULO'], c: 1},
+            {q: '🐙 OCTOPUS LEGS?', a: ['6','8','10','12'], c: 1},
+            {q: '🇨🇦 CAPITAL OF CANADA?', a: ['TORONTO','VANCOUVER','OTTAWA','MONTREAL'], c: 2},
+            {q: '🇩🇪 CAPITAL OF GERMANY?', a: ['MUNICH','HAMBURG','BERLIN','COLOGNE'], c: 2},
+            {q: '🏜️ LARGEST DESERT?', a: ['SAHARA','GOBI','KALAHARI','ANTARCTIC'], c: 3},
+            {q: '🇮🇹 CAPITAL OF ITALY?', a: ['MILAN','ROME','VENICE','FLORENCE'], c: 1},
+            {q: '🌎 CONTINENTS TOTAL?', a: ['5','6','7','8'], c: 2},
+            {q: '🇪🇸 CAPITAL OF SPAIN?', a: ['BARCELONA','MADRID','VALENCIA','SEVILLE'], c: 1},
+            {q: '🏰 SMALLEST COUNTRY?', a: ['MONACO','VATICAN','SAN MARINO','LIECHTENSTEIN'], c: 1},
+            {q: '🎬 MICKEY MOUSE CREATOR?', a: ['BOB KANE','WALT DISNEY','CHUCK JONES','HAL ROACH'], c: 1},
+            {q: '🎨 VAN GOGH LOST BODY PART?', a: ['NOSE','EYE','FINGER','TOOTH'], c: 2},
+            {q: '🍎 GRAVITY DISCOVERY?', a: ['NEWTON','EINSTEIN','GALILEO','ARCHIMEDES'], c: 0},
+            {q: '⚡ ELECTRICITY SCIENTIST?', a: ['TESLA','NEWTON','KEPLER','BOYLE'], c: 0},
+            {q: '🏀 BASKETBALL CREATOR?', a: ['NAISMITH','SPALDING','MORGAN','GULICK'], c: 0},
+            {q: '🐢 FASTEST REPTILE?', a: ['SNAKE','IGUANA','LIZARD','CROCODILE'], c: 2},
+            {q: '🎯 DARTS PERFECT SCORE?', a: ['100','180','150','200'], c: 1},
+            {q: '📚 FIRST PRINTED BOOK?', a: ['BIBLE','QURAN','TORAH','DICTIONARY'], c: 0},
+            {q: '🎸 GUITAR STRINGS?', a: ['5','6','7','8'], c: 1},
+            {q: '🌸 FASTEST FLOWER?', a: ['BAMBOO','WATERLILY','SUNFLOWER','DANDELION'], c: 0},
+            {q: '💎 HARDEST MATERIAL?', a: ['STEEL','DIAMOND','TUNGSTEN','TITANIUM'], c: 1},
+            {q: '🎤 LOUDEST ANIMAL?', a: ['WHALE','LION','ELEPHANT','MONKEY'], c: 0},
+            {q: '👁️ HUMAN EYE COLOR?', a: ['12','16','5','8'], c: 1},
+            {q: '🦴 ADULT BONES?', a: ['206','216','186','226'], c: 0},
+            {q: '❤️ HEARTBEATS PER MINUTE?', a: ['50-100','100-150','60-120','70-80'], c: 0},
+            {q: '🧠 BRAIN WEIGHT PERCENT?', a: ['1%','2%','3%','5%'], c: 1},
+            {q: '🌙 MOON FULL CYCLE DAYS?', a: ['20','25','28','30'], c: 2},
+            {q: '☀️ SUN AGE BILLIONS YEARS?', a: ['3','4','5','6'], c: 2},
+            {q: '🪐 PLANETS IN SOLAR SYSTEM?', a: ['7','8','9','10'], c: 1},
+            {q: '🌡️ ABSOLUTE ZERO CELSIUS?', a: ['-273','-273.15','-300','-250'], c: 1}
         ];
 
         const HANGMAN_STAGES = ['😊', '😐', '😕', '😟', '😢', '😭', '💀'];
@@ -225,7 +261,7 @@ const html = `<!DOCTYPE html>
 
         const AVATARS = {
             esther: '🐱', valley: '🎀', amaaya: '✨', mama: '👑', mummy: '💎',
-            hilary: '🌸', nan: '💜', rishy: '⭐', poppy: '🌷', sienna: '🌺', penelope: '💝'
+            hilary: '🌟', nan: '💫', rishy: '🔆', poppy: '🌈', sienna: '🎪', penelope: '💝'
         };
 
         let currentUser = null, currentChat = 'group', allChats = [], messages = {}, ws = null, connected = false;
@@ -309,7 +345,7 @@ const html = `<!DOCTYPE html>
                     }
                 } else if (data.type === 'rps_choice') {
                     if (data.chatId === currentChat) {
-                        document.getElementById('rpsStatus').textContent = '💚 ' + data.user + ' chose!';
+                        document.getElementById('rpsStatus').textContent = '🎮 ' + data.user + ' chose!';
                     }
                 } else if (data.type === 'hangman_start') {
                     if (data.chatId === currentChat && data.user !== currentUser) {
@@ -390,7 +426,7 @@ const html = `<!DOCTYPE html>
             document.querySelectorAll('#rpsContainer .game-btn').forEach(b => b.disabled = true);
             if (connected) {
                 ws.send(JSON.stringify({ type: 'rps_choice', user: currentUser, chatId: currentChat, choice: choice }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Played: ' + choice.toUpperCase() }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎮 Played RPS: ' + choice.toUpperCase() }));
             }
         };
 
@@ -406,7 +442,7 @@ const html = `<!DOCTYPE html>
             const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
             document.getElementById('diceResult').textContent = emojis[result - 1];
             document.querySelector('#diceContainer .game-btn').disabled = true;
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 rolled: ' + result }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎲 ROLLED: ' + result }));
         };
 
         window.playTrivia = function() {
@@ -419,13 +455,13 @@ const html = `<!DOCTYPE html>
             document.getElementById('hangmanContainer').style.display = 'none';
             document.getElementById('diceContainer').style.display = 'none';
             ws.send(JSON.stringify({ type: 'trivia_start', user: currentUser, chatId: currentChat }));
-            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 trivia started!' }));
+            ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🧠 TRIVIA CHALLENGE STARTED!' }));
             window.nextTriviaQuestion();
         };
 
         window.nextTriviaQuestion = function() {
             if (triviaTotal >= 5) {
-                let scores = 'FINAL: ';
+                let scores = 'FINAL SCORES: ';
                 Object.entries(triviaScore).forEach(([u, s]) => { scores += u + ':' + s + ' '; });
                 document.getElementById('triviaQuestion').textContent = '🏆 DONE!';
                 document.getElementById('triviaAnswers').innerHTML = '';
@@ -450,7 +486,7 @@ const html = `<!DOCTYPE html>
             });
             document.getElementById('triviaResult').textContent = '';
             document.getElementById('playersScore').textContent = '';
-            document.getElementById('triviaScore').textContent = triviaTotal + '/5';
+            document.getElementById('triviaScore').textContent = 'QUESTION ' + triviaTotal + ' OF 5';
         };
 
         window.submitTriviaAnswer = function(idx) {
@@ -490,7 +526,7 @@ const html = `<!DOCTYPE html>
 
         window.startHangman = function() {
             const word = document.getElementById('hangmanSetWord').value.toUpperCase();
-            if (word.length < 3) { alert('Too short!'); return; }
+            if (word.length < 3) { alert('Word too short!'); return; }
             hangmanWord = word;
             hangmanGuessed = [];
             hangmanWrong = 0;
@@ -500,7 +536,7 @@ const html = `<!DOCTYPE html>
             window.renderHangmanGame();
             if (connected) {
                 ws.send(JSON.stringify({ type: 'hangman_start', user: currentUser, chatId: currentChat }));
-                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 hangman started!' }));
+                ws.send(JSON.stringify({ type: 'new_message', user: currentUser, chatId: currentChat, text: '🎯 HANGMAN CHALLENGE STARTED!' }));
             }
         };
 
@@ -509,7 +545,7 @@ const html = `<!DOCTYPE html>
             const display = hangmanWord.split('').map(l => hangmanGuessed.includes(l) ? l : '_').join(' ');
             document.getElementById('hangmanWord').textContent = display;
             document.getElementById('hangmanStage').textContent = HANGMAN_STAGES[Math.min(hangmanWrong, 6)];
-            document.getElementById('hangmanStatus').textContent = '🎯 ' + hangmanWrong + '/6';
+            document.getElementById('hangmanStatus').textContent = '🎯 WRONG: ' + hangmanWrong + '/6';
             const grid = document.getElementById('hangmanLetterGrid');
             if (grid.children.length === 0) {
                 for (let i = 65; i <= 90; i++) {
@@ -527,7 +563,7 @@ const html = `<!DOCTYPE html>
             const lost = hangmanWrong >= 6;
             if (won || lost) {
                 hangmanGameActive = false;
-                document.getElementById('hangmanResult').textContent = won ? '🎉 WIN!' : '💀 ' + hangmanWord;
+                document.getElementById('hangmanResult').textContent = won ? '🎉 YOU WIN!' : '💀 WORD: ' + hangmanWord;
             }
         };
 
@@ -551,7 +587,7 @@ const html = `<!DOCTYPE html>
             const div = document.getElementById('chat');
             div.innerHTML = '';
             const msgs = messages[currentChat] || [];
-            if (msgs.length === 0) { div.innerHTML = '<div class="empty">💚 anime chat ready 💚</div>'; return; }
+            if (msgs.length === 0) { div.innerHTML = '<div class="empty">🚀 COSMIC CHAT READY! 🚀</div>'; return; }
             msgs.forEach(m => {
                 const d = document.createElement('div');
                 d.className = 'message ' + (m.user === currentUser ? 'own' : m.user);
@@ -564,6 +600,7 @@ const html = `<!DOCTYPE html>
         };
 
         window.renderEmojiPicker();
+        createStars();
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('msg').addEventListener('keypress', (e) => { if (e.key === 'Enter') window.send(); });
             const savedUser = localStorage.getItem('user');
@@ -614,4 +651,4 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => { console.log('💚 anime chat ready 💚'); });
+server.listen(PORT, () => { console.log('🚀 COSMIC CHAT SERVER LAUNCHED! 🚀'); });
