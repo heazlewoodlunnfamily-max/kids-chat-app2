@@ -1,12 +1,54 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 app.use(express.json());
+
+// Persistent storage file
+const messagesFile = path.join(__dirname, 'messages.json');
+
+// Load messages from file or initialize
+function loadMessages() {
+  try {
+    if (fs.existsSync(messagesFile)) {
+      const data = fs.readFileSync(messagesFile, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error loading messages:', error);
+  }
+  return {
+    'group': [],
+    'family-group': [],
+    'esther-mama': [],
+    'esther-mummy': [],
+    'esther-hilary': [],
+    'esther-nan': [],
+    'esther-rishy': [],
+    'esther-poppy': [],
+    'esther-sienna': [],
+    'esther-penelope': [],
+    'lola-nan': [],
+    'lola-mummy': [],
+    'lola-mama': [],
+    'lola-poppy': []
+  };
+}
+
+// Save messages to file
+function saveMessages(msgs) {
+  try {
+    fs.writeFileSync(messagesFile, JSON.stringify(msgs, null, 2));
+  } catch (error) {
+    console.error('Error saving messages:', error);
+  }
+}
 
 const html = `<!DOCTYPE html>
 <html lang="en">
@@ -148,7 +190,14 @@ const html = `<!DOCTYPE html>
             } else if (['nan', 'rishy', 'poppy', 'sienna', 'penelope'].includes(user)) {
                 allChats = ['esther-' + user];
             } else if (user === 'lola') {
-                allChats = ['group', 'lola-nan', 'lola-mummy', 'lola-mama', 'lola-poppy'];
+                allChats = ['group', 'family-group', 'lola-nan', 'lola-mummy', 'lola-mama', 'lola-poppy'];
+            }
+            if (user === 'mama') {
+                allChats = ['group', 'family-group', 'esther-mama'];
+            } else if (user === 'mummy') {
+                allChats = ['group', 'family-group', 'esther-mummy'];
+            } else if (user === 'esther') {
+                allChats = ['group', 'family-group', 'esther-mama', 'esther-mummy', 'esther-hilary', 'esther-nan', 'esther-rishy', 'esther-poppy', 'esther-sienna', 'esther-penelope'];
             }
             currentChat = allChats[0];
             allChats.forEach(chat => {
@@ -201,14 +250,21 @@ const html = `<!DOCTYPE html>
                 btn.className = 'tab' + (chatId === currentChat ? ' active' : '');
                 if (chatId === 'group') {
                     btn.textContent = '👥 Group';
+                } else if (chatId === 'family-group') {
+                    btn.textContent = '👨‍👩‍👧‍👦 Family';
                 } else {
+                    const parts = chatId.split('-');
+                    let otherName;
                     if (currentUser === 'esther') {
-                        const parts = chatId.split('-');
-                        const otherName = parts[0] === 'esther' ? parts[1] : parts[0];
-                        btn.textContent = '💬 ' + otherName.toUpperCase();
+                        otherName = parts[0] === 'esther' ? parts[1] : parts[0];
+                    } else if (currentUser === 'lola') {
+                        otherName = parts[0] === 'lola' ? parts[1] : parts[0];
+                    } else if (currentUser === 'mama' || currentUser === 'mummy') {
+                        otherName = parts[0] === 'esther-mama' || parts[0] === 'esther-mummy' ? parts[1] : 'ESTHER';
                     } else {
-                        btn.textContent = '💬 ESTHER';
+                        otherName = 'ESTHER';
                     }
+                    btn.textContent = '💬 ' + otherName.toUpperCase();
                 }
                 btn.onclick = () => { currentChat = chatId; window.renderTabs(); window.render(); };
                 div.appendChild(btn);
@@ -282,21 +338,7 @@ const html = `<!DOCTYPE html>
 
 app.get('/', (req, res) => { res.type('text/html').send(html); });
 
-let messages = {
-  'group': [],
-  'esther-mama': [],
-  'esther-mummy': [],
-  'esther-hilary': [],
-  'esther-nan': [],
-  'esther-rishy': [],
-  'esther-poppy': [],
-  'esther-sienna': [],
-  'esther-penelope': [],
-  'lola-nan': [],
-  'lola-mummy': [],
-  'lola-mama': [],
-  'lola-poppy': []
-};
+let messages = loadMessages();
 
 wss.on('connection', (ws) => {
   ws.send(JSON.stringify({ type: 'load_messages', messages }));
@@ -308,6 +350,7 @@ wss.on('connection', (ws) => {
         const chatId = msg.chatId || 'group';
         if (!messages[chatId]) messages[chatId] = [];
         messages[chatId].push(newMsg);
+        saveMessages(messages);
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({ type: 'message', data: newMsg }));
@@ -319,4 +362,4 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => { console.log('Chat Server Running'); });
+server.listen(PORT, () => { console.log('Chat Server Running on port ' + PORT); });
